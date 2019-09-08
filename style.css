@@ -1,0 +1,92 @@
+#topbar {
+  height: 80px;
+}
+
+#subbar {
+  height: 80px;
+}
+
+button.selected {
+  background: #f8f8f8;
+  border-style: inset;
+}
+
+.listview {
+  width: 200px;
+  height: 150px;
+  overflow-y: scroll;
+}
+
+.listitem {
+  background: #ddd;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #fff;
+}
+
+.listitem.selected {
+  color: #fff;
+  background: #bbb;
+  border-color: #000;
+}
+
+.canvas {
+  width: 100%;
+}
+
+.noteview {
+  overflow: scroll;
+  width: 100%;
+  height: 600px;
+  position: relative;
+  background: #f8f8f8;
+}
+
+.ghost {
+  position: absolute;
+  background: #ddd;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 3px;
+  border-color: #ddd;
+}
+
+.ghost.selected {
+  background: #aaa;
+  border-color: #aaa;
+}
+
+.note {
+  position: absolute;
+  background: #fff;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 3px;
+  border-color: #aaa;
+}
+
+.note_right {
+  position: absolute;
+  right: 0px;
+  width: 8px;
+  height: 100%;
+  cursor: e-resize;
+}
+
+.note_left {
+  position: absolute;
+  left: 0px;
+  width: 8px;
+  height: 100%;
+  cursor: w-resize;
+}
+
+.note.selected {
+  background: #ddd;
+  border-style: solid;
+  border-color: #888;
+}
+
+.note:hover {
+  border-color: #000;
+}

@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/redux@latest/dist/redux.min.js" crossorigin></script>
+    <script src="logger.js"></script>
+    <script src="reducers/notes.js"></script>
+    <script src="reducers/voices.js"></script>
+    <script src="reducers/brushes.js"></script>
+    <script src="reducers/tempo.js"></script>
+    <script src="reducers/store.js"></script>
+    <script src="midi-parser-js.js"></script>
+    <script src="midiLoader.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="color.css">
+    <!-- https://coolors.co/0074e8-e87c00-e80000-00e8c9-e8d100 -->
+    <!-- https://coolors.co/2e8dec-ec932e-ec2e2e-2eecd2-ecd92e -->
+  </head>
+  
+  <body>
+    <input type="file" id="midifile">
+    
+    <div id="root"></div>
+
+    <!--script src="https://unpkg.com/babel-standalone@6/babel.min.js" crossorigin></script>-->
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-redux@latest/dist/react-redux.js" crossorigin></script>
+    <script src="components/List.js"></script>
+    <script src="components/BrushList.js"></script>
+    <script src="components/VoiceList.js"></script>
+    <script src="components/Note.js"></script>
+    <script src="components/GhostNote.js"></script>
+    <script src="components/NoteView.js"></script>
+    <script src="components/NoteViewContainer.js"></script>
+    <script src="components/Select.js"></script>
+    <script src="components/EditModeSelect.js"></script>
+    <script src="components/ColorModeSelect.js"></script>
+    <script src="components/PropModeSelect.js"></script>
+    <script src="components/PieceProps.js"></script>
+    <script src="components/BrushProps.js"></script>
+    <script src="components/VoiceProps.js"></script>
+    <script src="components/VisualView.js"></script>
+    <script src="components/App.js"></script>
+  </body>
+
+  <script>// type="text/babel"
+  (() => {
+    const e = React.createElement;
+    ReactDOM.render(
+      e(ReactRedux.Provider, {store}, e(App)),
+      document.getElementById('root'),
+    );
+    MidiParser.parse(document.getElementById('midifile'), midiLoader);
+  })();
+  </script>
+</html>

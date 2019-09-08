@@ -1,0 +1,31 @@
+.color1 {
+  background: #ff4545;
+}
+
+.color1.selected {
+  background: #d10000;
+}
+
+.color2 {
+  background: #45ffe6;
+}
+
+.color2.selected {
+  background: #00d1b5;
+}
+
+.color3 {
+  background: #ffec45;
+}
+
+.color3.selected {
+  background: #d1bc00;
+}
+
+.color4 {
+  background: #2e8dec;
+}
+
+.color4.selected {
+  background: #005fbe;
+}
