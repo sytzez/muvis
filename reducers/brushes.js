@@ -5,6 +5,8 @@ const brushDesign = {
   name: 'BRush 1',
   type: 0, // idk
   noteColor: noteColors.RED,
+
+  timeZoom: 1, // relative zoom on time axis
 };
 
 const maxBrushes = 32;
@@ -19,6 +21,8 @@ const brushes = (state, action) => {
         ...action.brush,
         id:  brushIdCounter++,
         noteColor: getNextBrushColor(state),
+        
+        timeZoom: 1,
        } ];
     case 'REMOVE_BRUSH':
       return state.filter(b => b.id !== action.id);
@@ -34,7 +38,7 @@ const brushes = (state, action) => {
       return [
         ...state.slice(0, index),
         {
-          ...state[index],
+          ...state[action.id],
           id: brushIdCounter++,
           noteColor: getNextBrushColor(state),
         },

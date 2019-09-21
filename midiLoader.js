@@ -14,6 +14,8 @@ const midiLoader = file => {
       noteColors.BLUE,
     ][voices.length % 4]
   );
+
+  // TODO: set scaleY and tempo to reflect tick resolution
   
   file.track.forEach(track => {
     let zero = true; // track still empty?
@@ -22,7 +24,6 @@ const midiLoader = file => {
 
     track.event.forEach(event => {
       time += event.deltaTime;
-
 
       if (event.type === 9) { // note on
         if (zero) { // create new voice on first note
@@ -54,5 +55,6 @@ const midiLoader = file => {
     });
   });
 
+  noteIdCounter = notes.length;
   store.dispatch({ type: 'LOAD_NOTES', voices, notes });
 };

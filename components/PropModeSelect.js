@@ -3,9 +3,9 @@ const PropModeSelect = (() => {
 
   const mapStateToProps = state => ({
     options: [
-      { value: propModes.PIECE, text: 'Piece properties' },
-      { value: propModes.BRUSH, text: 'Brush properties' },
-      { value: propModes.VOICE, text: 'Voice properties' },
+      { value: propModes.PIECE, text: 'Piece' },
+      { value: propModes.BRUSH, text: 'Brush' },
+      { value: propModes.VOICE, text: 'Voice' },
     ],
     selected: state.propMode,
   });
