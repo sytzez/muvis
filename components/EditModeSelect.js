@@ -12,7 +12,7 @@ const EditModeSelect = (() => {
   });
 
   const mapDispatchToProps = dispatch => ({
-    onChange: (e) => dispatch({ type: 'SET_EDIT_MODE', mode: e.target.value }),
+    change: (val) => dispatch({ type: 'SET_EDIT_MODE', mode: val }),
   });
 
   return ReactRedux.connect(

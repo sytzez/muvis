@@ -11,7 +11,7 @@ const PropModeSelect = (() => {
   });
 
   const mapDispatchToProps = dispatch => ({
-    onChange: (e) => dispatch({ type: 'SET_PROP_MODE', mode: e.target.value }),
+    change: (val) => dispatch({ type: 'SET_PROP_MODE', mode: val }),
   });
 
   return ReactRedux.connect(

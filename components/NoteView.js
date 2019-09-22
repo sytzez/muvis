@@ -32,9 +32,7 @@ const NoteView = (() => {
       //if (notes.some(n => !nextNotes.some(n2 => n.id === n2.id))) return true;
 
       console.log('skip rerender');
-      return (
-        false
-      );
+      return false;
     }
     
     setMouseCallback(move, up) {
@@ -134,15 +132,15 @@ const NoteView = (() => {
 
       let fullWidth = window.innerWidth;
 
-      // TODO memoize
-      const filteredNotes = notes.filter(n => {
-        fullWidth = Math.max(fullWidth, (n.start + n.length) * scaleX + 500);
-        return n.start < rightTimeBound && (n.start + n.length) > leftTimeBound;
-      });
+      const noteElements = [];
 
-      const noteElements = filteredNotes.map(
-        n => e(Note, { id: n.id, key: n.id, noteview: this })
-      );
+      for(let i = 0; i < notes.length; i++) {
+        const n = notes[i];
+        const end = n.start + n.length;
+        fullWidth = Math.max(fullWidth, end * scaleX + 500);
+        if (n.start < rightTimeBound && end > leftTimeBound)
+          noteElements.push(e(Note, { id: n.id, key: n.id, noteview: this }));
+      }
 
       const pitchTopBar = e(PitchRangeBars.Top, {
         noteview: this,

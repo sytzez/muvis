@@ -31,7 +31,7 @@ void main() {
 
   gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
-  function load(newBrushes, notes, background, pitchBottom, pitchTop, timeSpan) {
+  function load(newBrushes, voices, notes, background, pitchBottom, pitchTop, timeSpan) {
     gl.clearColor(...background, 1.0);
 
     brushes = [];
@@ -42,17 +42,53 @@ void main() {
         xzoom: timeSpan * b.timeZoom,
         yzoom: pitchBottom - pitchTop,
         yoffset: pitchTop - 0.5,
-        xoffset: 0, // TODO time
+        xoffset: -0.5 * timeSpan * b.timeZoom, // set 0 in the middle of the screen
+        shape: b.shape,
+        playMode: b.playMode,
+        size: b.size,
+        sizeCurve: b.sizeCurve,
         // TODO other properties
       };
 
+      let colorFunc;
+      switch(b.colorMode) {
+        case brushColorModes.VOICE:
+          colorFunc = (n) => {
+            // if (n.voice === -1) return [[1,1,1], [0,0,0]];
+            const voice = voices[n.voice];
+            return [voice.voiceColor, voice.voiceColor];
+          };
+          break;
+        case brushColorModes.PITCH:
+          colorFunc = (n) => [
+            [[1,0,0], [1,1,1]],
+            [[.75,0,.25], [1,1,1]],
+            [[.5,0,.5], [1,1,1]],
+            [[.25,0,.75], [1,1,1]],
+            [[0,0,1], [1,1,1]],
+            [[0,.5,.5], [1,1,1]],
+            [[0,1,0], [1,1,1]],
+            [[.25,.75,0], [1,1,1]],
+            [[.5,.5,0], [1,1,1]],
+            [[.625,.375,0], [1,1,1]],
+            [[.75,.25,0], [1,1,1]],
+            [[.875,.125,0], [1,1,1]],
+          ][(n.pitch * 7) % 12];
+          break;
+        case brushColorModes.UNIFORM:
+        default:
+          colorFunc = () => [b.leftColor, b.rightColor];
+      }
+
       notes.forEach(n => {
         if (n.brush === b.id) {
+          const colors = colorFunc(n);
           brush.notes.push({
             pitch: n.pitch,
             start: n.start, // TODO convert?
             length: n.length,
-            color: [1,1,1], // TODO calculate color based on brush settings
+            color1: colors[0],
+            color2: colors[1],
           });
         }
       });

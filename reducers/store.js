@@ -23,10 +23,10 @@ const store = (() => {
     // editor state
 
     voices: [
-      { noteColor: noteColors.RED },
-      { noteColor: noteColors.TURQOISE },
-      { noteColor: noteColors.YELLOW },
-      { noteColor: noteColors.BLUE },
+      { noteColor: noteColors.RED, voiceColor: [1,0,0] },
+      { noteColor: noteColors.TURQOISE, voiceColor: [0,1,0] },
+      { noteColor: noteColors.YELLOW, voiceColor: [1,1,0] },
+      { noteColor: noteColors.BLUE, voiceColor: [0,0,1] },
     ],
     notes: [],
     brushes: [],

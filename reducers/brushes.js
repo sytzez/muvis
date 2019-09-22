@@ -1,13 +1,40 @@
 'use strict';
 
-const brushDesign = {
+const brushShapes = Object.freeze({
+  RECT: '1',
+  CIRCLE: '2',
+  TRIANGLE: '3',
+});
+
+const brushColorModes = Object.freeze({
+  UNIFORM: 'UNIFORM',
+  VOICE: 'VOICE',
+  PITCH: 'PITCH',
+});
+
+const brushPlayModes = Object.freeze({
+  MASK: '1', // color changes at current point
+  FLIP: '2', // whole note flips color at once
+  ON_OFF: '3', // flips color when played and flip back
+});
+
+const brushTemplate = Object.freeze({
   id: 0,
   name: 'BRush 1',
   type: 0, // idk
   noteColor: noteColors.RED,
 
   timeZoom: 1, // relative zoom on time axis
-};
+  timeCurve: 0.0, // curvature around center
+
+  shape: brushShapes.RECT,
+  playMode: brushPlayModes.MASK,
+  colorMode: brushColorModes.UNIFORM,
+  size: 1.0, // size of the notes
+  sizeCurve: 0.0, // size change when being played
+  leftColor: [1,1,1], // before being played
+  rightColor: [1,1,1], // after being played
+});
 
 const maxBrushes = 32;
 var brushIdCounter = 0;
@@ -18,11 +45,10 @@ const brushes = (state, action) => {
       if (state.length >= maxBrushes) return state;
 
       return [ ...state, {
+        ...brushTemplate,
         ...action.brush,
         id:  brushIdCounter++,
         noteColor: getNextBrushColor(state),
-        
-        timeZoom: 1,
        } ];
     case 'REMOVE_BRUSH':
       return state.filter(b => b.id !== action.id);

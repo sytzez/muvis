@@ -1,15 +1,20 @@
 'use strict';
 
-const voiceDesign = {
+const voiceTemplate = Object.freeze({
   noteColor: noteColors.RED,
-};
+  
+  voiceColor: [0,0,0],
+});
 
 const voices = (state, action) => {
   switch(action.type) {
     case 'NEW_VOICE':
       return [
         ...state,
-        { noteColor: getNextVoiceColor(state) },
+        {
+          ...voiceTemplate,
+          noteColor: getNextVoiceColor(state)
+        },
       ]
     default:
       return state;

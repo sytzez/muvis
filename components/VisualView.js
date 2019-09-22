@@ -1,23 +1,24 @@
 const VisualView = (() => {
   'use strict';
 
+  const e = React.createElement;
+
   class VisualView extends React.Component {
-    canv = null;
+    canv = React.createRef();
     renderer = null;
     playbackListener = this.playback.bind(this);
 
     renderGL() {
-      const { brushes, notes, pitchTop, pitchBottom, timeSpan } = this.props;
+      const { brushes, voices, notes, pitchTop, pitchBottom, timeSpan } = this.props;
 
       if (!this.renderer) return;
 
-      this.renderer.load(brushes, notes, [0.1, 0.2, 0.3], pitchTop, pitchBottom, timeSpan);
+      this.renderer.load(brushes, voices, notes, [0.1, 0.1, 0.1], pitchTop, pitchBottom, timeSpan);
       this.renderer.render(hotPlayback.getTime()); // TODO: appropriate time
     }
 
     componentDidMount() {
-      this.canv = document.getElementById('canvas');
-      this.renderer = renderer(this.canv);
+      this.renderer = renderer(this.canv.current);
       this.renderGL();
       hotPlayback.addListener(this.playbackListener);
     }
@@ -33,17 +34,20 @@ const VisualView = (() => {
     render() {
       this.renderGL();
 
-      return React.createElement('canvas', {
-        id: 'canvas',
+      return e('div', {
+        className: 'canvas_outside',
+      }, e('canvas', {
         className: 'canvas',
-        width: 800,
-        height: 600,
-      });
+        ref: this.canv,
+        width: 1280,
+        height: 1024,
+      }));
     }
   }
 
   const mapStateToProps = state => ({
     brushes: state.brushes,
+    voices: state.voices,
     notes: state.notes,
     pitchTop: state.pitchTop,
     pitchBottom: state.pitchBottom,
