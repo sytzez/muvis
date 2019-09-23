@@ -11,6 +11,10 @@ const NoteView = (() => {
       mouseUpCallback: null,
     }
 
+    last = {
+      noteIdCounter: 0,
+    }
+
     state = {
       leftTimeBound: 0,
       rightTimeBound: 0,
@@ -23,12 +27,15 @@ const NoteView = (() => {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-      if (this.state.leftTimeBound !== nextState.leftTimeBound ||
-        this.state.rightTimeBound !== nextState.rightTimeBound) return true;
+      if (
+        this.state.leftTimeBound !== nextState.leftTimeBound ||
+        this.state.rightTimeBound !== nextState.rightTimeBound ||
+        this.props.scaleX !== nextProps.scaleX ||
+        this.last.noteIdCounter !== noteIdCounter || // redundant?
+        this.props.notes.length !== nextProps.notes.length
+      ) return true;
       
-      //if (this.state.scaleX !== nextState.scaleX) return true;
-      
-      if (this.props.notes !== nextProps.notes) return true; 
+      //if (this.props.notes !== nextProps.notes) return true; 
       //if (notes.some(n => !nextNotes.some(n2 => n.id === n2.id))) return true;
 
       console.log('skip rerender');
@@ -130,6 +137,8 @@ const NoteView = (() => {
         leftTimeBound, rightTimeBound
       } = this.state;
 
+      this.last.noteIdCounter = noteIdCounter;
+
       let fullWidth = window.innerWidth;
 
       const noteElements = [];
@@ -177,7 +186,6 @@ const NoteView = (() => {
         // //onClick: (e) => this.onClick(e),
         // onMouseDown: (e) => this.onPress(e),
         // onMouseUp: (e) => this.onRelease(e),
-        // onContextMenu: (e) => e.preventDefault(),
         // onMouseMove: (e) => this.onMouseMove(e),
       }, [
         pitchTopBar,

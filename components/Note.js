@@ -71,6 +71,8 @@ const Note = (() => {
       } else if (editMode === editModes.PAINT) {
         if (buttons === 1)
           paintNote(id, brush);
+        else if (buttons === 2)
+          paintNote(id, -1);
       } else if (editMode === editModes.VOICES) {
         if (buttons === 1)
           voiceNote(id, voice);

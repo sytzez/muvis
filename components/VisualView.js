@@ -9,11 +9,15 @@ const VisualView = (() => {
     playbackListener = this.playback.bind(this);
 
     renderGL() {
-      const { brushes, voices, notes, pitchTop, pitchBottom, timeSpan } = this.props;
+      const {
+        brushes, voices, notes,
+        background,
+        pitchTop, pitchBottom, timeSpan
+      } = this.props;
 
       if (!this.renderer) return;
 
-      this.renderer.load(brushes, voices, notes, [0.1, 0.1, 0.1], pitchTop, pitchBottom, timeSpan);
+      this.renderer.load(brushes, voices, notes, background, pitchTop, pitchBottom, timeSpan);
       this.renderer.render(hotPlayback.getTime()); // TODO: appropriate time
     }
 
@@ -39,13 +43,14 @@ const VisualView = (() => {
       }, e('canvas', {
         className: 'canvas',
         ref: this.canv,
-        width: 1280,
-        height: 1024,
+        width: 800,//1280,
+        height: 600,//1024,
       }));
     }
   }
 
   const mapStateToProps = state => ({
+    background: state.backgroundColor,
     brushes: state.brushes,
     voices: state.voices,
     notes: state.notes,

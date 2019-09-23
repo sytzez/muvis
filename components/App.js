@@ -8,8 +8,11 @@ const App = (() => {
   }, [
     e('header', {key: 0}, [
       e(FileChooser, {key: 0}),
-      e(PlaybackControls, {key: 1}),
-      e(TimeDisplay, {key: 2}),
+      e(EditorModeSelect, {key: 1}),
+      '-|-',
+      e(PlaybackControls, {key: 2}),
+      e(TimeDisplay, {key: 3}),
+      e(UndoRedoControl, {key: 4}),
     ]),
     e('main', {key: 1}, [
       e('aside', {key: 0, className: 'left'}, [
@@ -17,10 +20,10 @@ const App = (() => {
         e('hr', {key: 11}),
         e(VoiceList, {key: 20}),
       ]),
-      ((visual) => visual ?
+      (visual ?
         e(VisualView, {key: 1}) :
         e(NoteView, {key: 2})
-      )(visual),
+      ),
       e('aside', {key: 3, className: 'right'}, [
         e(PropModeSelect, {key: 30}),
         ((propMode) => {
@@ -46,7 +49,7 @@ const App = (() => {
   ]);
 
   const mapStateToProps = state => ({
-    visual: state.editMode === editModes.VISUAL,
+    visual: state.editorMode === editorModes.VISUAL,
     propMode: state.propMode,
   });
 

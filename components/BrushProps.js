@@ -11,6 +11,7 @@ const BrushProps = (() => {
     colorMode, changeColorMode,
     playMode, changePlayMode,
     timeZoom, changeTimeZoom,
+    timeCurve1, changeTimeCurve1, timeCurve2, changeTimeCurve2,
   }) => available ?
     e('div', {}, [
 
@@ -69,6 +70,7 @@ const BrushProps = (() => {
           { value: brushPlayModes.MASK, text: 'Gradual' },
           { value: brushPlayModes.FLIP, text: 'Flip on' },
           { value: brushPlayModes.ON_OFF, text: 'Flip on/off' },
+          { value: brushPlayModes.FLASH, text: 'Flash' },
         ],
         selected: playMode,
         change: (m) => changePlayMode(id, m),
@@ -84,6 +86,24 @@ const BrushProps = (() => {
         automated: false,
         change: (z) => changeTimeZoom(id, z),
         key: 40,
+      }),
+      e(ValueInput, {
+        text: 'Time curve width: ',
+        min: 0.0,
+        max: 50.0,
+        value: timeCurve1,
+        automated: false,
+        change: (c) => changeTimeCurve1(id, c),
+        key: 41,
+      }),
+      e(ValueInput, {
+        text: 'Time curve intensity: ',
+        min: 1.0,
+        max: 20.0,
+        value: timeCurve2,
+        automated: false,
+        change: (c) => changeTimeCurve2(id, c),
+        key: 42,
       }),
 
       'size',
@@ -105,6 +125,8 @@ const BrushProps = (() => {
       brushColor: brush.leftColor,
       colorMode: brush.colorMode,
       playMode: brush.playMode,
+      timeCurve1: brush.timeCurve1,
+      timeCurve2: brush.timeCurve2,
     };
   };
 
@@ -121,6 +143,10 @@ const BrushProps = (() => {
       dispatch({ type: 'UPDATE_BRUSH', id, brush: { colorMode: val } }),
     changePlayMode: (id, val) =>
       dispatch({ type: 'UPDATE_BRUSH', id, brush: { playMode: val } }),
+    changeTimeCurve1: (id, val) =>
+      dispatch({ type: 'UPDATE_BRUSH', id, brush: { timeCurve1: val } }),
+    changeTimeCurve2: (id, val) =>
+      dispatch({ type: 'UPDATE_BRUSH', id, brush: { timeCurve2: val } }),
   });
 
   return ReactRedux.connect(

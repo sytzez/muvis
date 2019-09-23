@@ -16,6 +16,7 @@ const brushPlayModes = Object.freeze({
   MASK: '1', // color changes at current point
   FLIP: '2', // whole note flips color at once
   ON_OFF: '3', // flips color when played and flip back
+  FLASH: '4', // flip color and slowly change back
 });
 
 const brushTemplate = Object.freeze({
@@ -24,15 +25,16 @@ const brushTemplate = Object.freeze({
   type: 0, // idk
   noteColor: noteColors.RED,
 
-  timeZoom: 1, // relative zoom on time axis
-  timeCurve: 0.0, // curvature around center
+  timeZoom: 1.0, // relative zoom on time axis
+  timeCurve1: 50.0, // curvature around center
+  timeCurve2: 10.0,
 
   shape: brushShapes.RECT,
-  playMode: brushPlayModes.MASK,
+  playMode: brushPlayModes.FLASH,
   colorMode: brushColorModes.UNIFORM,
   size: 1.0, // size of the notes
   sizeCurve: 0.0, // size change when being played
-  leftColor: [1,1,1], // before being played
+  leftColor: [0,0,1], // before being played
   rightColor: [1,1,1], // after being played
 });
 

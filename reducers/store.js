@@ -1,10 +1,17 @@
 'use strict';
 
+const editorModes = Object.freeze({
+  FILES: 'FILES',
+  NOTES: 'NOTES',
+  VISUAL: 'VISUAL',
+  TEMPO: 'TEMPO',
+  YOUTUBE: 'YOUTUBE',
+})
+
 const editModes = Object.freeze({
   PAINT: 'PAINT',
   NOTES: 'NOTES',
   VOICES: 'VOICES',
-  VISUAL: 'VISUAL',
 });
 
 const colorModes = Object.freeze({
@@ -32,6 +39,7 @@ const store = (() => {
     brushes: [],
     tempo: [],
 
+    editorMode: editorModes.NOTES,
     editMode: editModes.NOTES,
     colorMode: colorModes.VOICE,
     propMode: propModes.PIECE,
@@ -52,7 +60,7 @@ const store = (() => {
     pitchTop: 64 - 20, // how many semitones fit on a screen
     pitchBottom: 64 + 20, // which pitch is at the center of the screen
 
-    backgroundColor: [0.1, 0.2, 0.3],
+    backgroundColor: [0.1, 0.1, 0.1],
 
     // playback state
 
@@ -61,11 +69,42 @@ const store = (() => {
       time: 0.0,
       hot: null,
     },
+
+    // history
+
+    history: {
+      past: [],
+      future: [],
+    }
   };
 
   const reducer = (state = initialState, action) => {
     switch(action.type) {
-      case 'LOAD_NOTES':
+      case 'UNDO': {
+        const past = state.history.past;
+        const future = state.history.future;
+        if (past.length === 0) return state;
+        return {
+          ...state,
+          ...past[past.length - 1],
+          history: {
+            past: past.slice(0, past.length - 1),
+            future: [ ...future, historyFromState(state) ],
+          },
+        };
+      } case 'REDO': {
+        const past = state.history.past;
+        const future = state.history.future;
+        if (future.length === 0) return state;
+        return {
+          ...state,
+          ...future[future.length - 1],
+          history: {
+            past: [ ...past, historyFromState(state) ],
+            future: future.slice(0, future.length - 1),
+          },
+        };
+      } case 'LOAD_NOTES':
         return {
           ...state,
           voices: action.voices,
@@ -131,6 +170,11 @@ const store = (() => {
           colorMode: action.mode === editModes.PAINT ?
             colorModes.BRUSH : action.mode === editModes.VOICES ?
             colorModes.VOICE : state.colorMode,
+        };
+      case 'SET_EDITOR_MODE':
+        return {
+          ...state,
+          editorMode: action.mode,
         };
       case 'SET_COLOR_MODE':
         return {
@@ -241,6 +285,7 @@ const store = (() => {
           selectedNotes: selectedNotes(state.selectedNotes, action),
           brushes: brushes(state.brushes, action),
           playback: playback(state.playback, action),
+          history: history(state, action),
         };
     }
   };

@@ -4,6 +4,8 @@ const NormalBrush = (gl, vertexShader) => {
   const source = `// GLSL fragment shader
 #line 6
 
+#define M_PI 3.1415926535897932384626433832795
+
 #define SHAPE_RECT 1
 #define SHAPE_CIRCLE 2
 #define SHAPE_TRIANGLE 3
@@ -11,6 +13,7 @@ const NormalBrush = (gl, vertexShader) => {
 #define PLAY_MASK 1 // color changes at current point
 #define PLAY_FLIP 2 // whole note flips color at once
 #define PLAY_ON_OFF 3 // flips color when played and flip back
+#define PLAY_FLASH 4 // flip color and slowly change back
 
 precision lowp float;
 
@@ -21,6 +24,7 @@ uniform vec2 u_scale;
 uniform vec2 u_offset;
 
 uniform float u_time; // current time
+uniform vec2 u_curve; // time curvature
 
 uniform vec3 u_note; // x: start, y: pitch, z: length
 
@@ -36,8 +40,31 @@ float rect(const vec2 coord) {
   return 1.0;
 }
 
+float triangle(const vec2 coord) {
+  return 0.0;
+}
+
 void main() {
   vec2 coord = (gl_FragCoord.xy * u_scale) + u_offset;
+
+  coord.x -= u_time;
+  coord.x /= u_curve.x;
+
+  if (coord.x <= -1.0) {
+    coord.x += 1.0 - u_curve.y;
+  } else if (coord.x < 1.0) {
+    coord.x *= u_curve.y; // += cos
+  } else {
+    coord.x -= 1.0 - u_curve.y;
+  }
+
+  // if (coord.x > -1.0 && coord.x < 1.0)
+  //   coord.x -= sin(coord.x * M_PI) * exp(-1.5 / (1.0 - coord.x*coord.x));
+
+  coord.x *= u_curve.x;
+  coord.x += u_time;
+
+  //coord.x = pow((coord.x - u_time) * 0.03, 3.0) + u_time;
 
   float val;
   if (u_shape == SHAPE_RECT) {
@@ -52,8 +79,9 @@ void main() {
   }
 
   vec3 color;
+
   if (u_play_mode == PLAY_MASK) {
-    if (coord.x > u_note.x)
+    if (coord.x > u_time)
       color = u_color1;
     else
       color = u_color2;
@@ -67,12 +95,17 @@ void main() {
       color = u_color1;
     else
       color = u_color2;
+  } else if (u_play_mode == PLAY_FLASH) {
+    if (u_note.x  > u_time || u_note.x + u_note.z < u_time)
+      color = u_color1;
+    else
+      color = mix(u_color2, u_color1, (u_time - u_note.x) / u_note.z);
   } else {
     color = u_color1;
   }
 
   gl_FragColor = vec4(color * val, val);
-}`;
+}`; // end of GLSL shader
 
   const shader = gl.createShader(gl.FRAGMENT_SHADER);
   gl.shaderSource(shader, source);
@@ -93,6 +126,7 @@ void main() {
     u_scale = u('u_scale'),
     u_offset = u('u_offset'),
     u_time = u('u_time'),
+    u_curve = u('u_curve'),
     u_note = u('u_note'),
     u_color1 = u('u_color1'),
     u_color2 = u('u_color2');
@@ -114,6 +148,7 @@ void main() {
 
     gl.uniform1i(u_playMode, brush.playMode);
     gl.uniform1i(u_shape, brush.shape);
+    gl.uniform2f(u_curve, brush.timeCurve1, brush.timeCurve2);
 
     gl.enableVertexAttribArray(a_position);
     gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, 0, 0);

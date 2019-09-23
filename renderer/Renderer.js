@@ -39,25 +39,23 @@ void main() {
     newBrushes.forEach(b => {
       const brush = {
         notes: [],
-        xzoom: timeSpan * b.timeZoom,
+        xzoom: timeSpan / b.timeZoom,
         yzoom: pitchBottom - pitchTop,
         yoffset: pitchTop - 0.5,
-        xoffset: -0.5 * timeSpan * b.timeZoom, // set 0 in the middle of the screen
+        xoffset: -0.5 * timeSpan / b.timeZoom, // set 0 in the middle of the screen
         shape: b.shape,
         playMode: b.playMode,
         size: b.size,
         sizeCurve: b.sizeCurve,
+        timeCurve1: b.timeCurve1,
+        timeCurve2: 1.0 / b.timeCurve2,
         // TODO other properties
       };
 
       let colorFunc;
       switch(b.colorMode) {
         case brushColorModes.VOICE:
-          colorFunc = (n) => {
-            // if (n.voice === -1) return [[1,1,1], [0,0,0]];
-            const voice = voices[n.voice];
-            return [voice.voiceColor, voice.voiceColor];
-          };
+          colorFunc = (n) => [voices[n.voice].voiceColor, [1,1,1]];
           break;
         case brushColorModes.PITCH:
           colorFunc = (n) => [
