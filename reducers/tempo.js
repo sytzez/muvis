@@ -26,6 +26,14 @@ const tempo = (state, action) => {
   }
 };
 
-const getTimeAt = (state, t) => {
-  return 0.0; // TODO
+// get midi time from real time
+const getMidiFromReal = (state, real) => {
+  const length = state.length;
+  let i = 1;
+  while(i < length - 1 && state[i].real < real)
+    i++;
+  const a = state[i - 1];
+  const b = state[i];
+  const slope = (b.midi - a.midi) / (b.real - a.real);
+  return a.midi + (real - a.real) * slope;
 };

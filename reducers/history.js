@@ -32,5 +32,6 @@ const historyFromState = (state) => ({
   notes: state.notes,
   voices: state.voices,
   brushes: state.brushes,
+  tempo: state.tempo,
   // TODO other properties
 });
