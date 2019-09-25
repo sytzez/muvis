@@ -212,6 +212,12 @@ button.selected {
   fill: none;
 }
 
+.tempoLine3 {
+  stroke: #888;
+  stroke-width: 1px;
+  fill: none;
+}
+
 .tempoHandle {
   stroke: #888;
   stroke-width: 5px;

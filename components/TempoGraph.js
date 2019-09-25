@@ -24,9 +24,12 @@ const TempoGraph = (() => {
   class TempoGraph extends React.Component {
     outside = React.createRef();
     inside = React.createRef();
+    midiBar = React.createRef();
+    realBar = React.createRef();
     grabbed = -1;
     lastScrollY = 0;
     timeListener = this.time.bind(this);
+    height = 0;
 
     state = {
       lastChanges: {},
@@ -43,7 +46,17 @@ const TempoGraph = (() => {
     }
 
     time(t) {
-      console.log(t);
+      const { scaleX, scaleY } = this.props;
+      const { changes } = this.state;
+      const { midiBar, realBar, height } = this;
+
+      realBar.current.setAttribute('x1', t * scaleX);
+      realBar.current.setAttribute('x2', t * scaleX);
+
+      const midi = getMidiFromReal(changes, t);
+
+      midiBar.current.setAttribute('y1', height - midi * scaleY);
+      midiBar.current.setAttribute('y2', height - midi * scaleY);
     }
 
     grab(id) {
@@ -146,9 +159,7 @@ const TempoGraph = (() => {
     }
 
     onScroll() {
-      this.lastScrollY =
-        this.inside.current.getAttribute('height') - 
-        this.outside.current.scrollTop;
+      this.lastScrollY = this.height - this.outside.current.scrollTop;
     }
 
     componentDidMount() {
@@ -173,9 +184,11 @@ const TempoGraph = (() => {
         Math.max(val[1], c.midi),
       ], [0, 0]);
 
-      //const outsideRect = outside.current ? outside.current.getBoundingClientRect() : {width: 0, height: 0};
-      const width = Math.max(maxReal * scaleX + 500, 500);
-      const height = Math.max(maxMidi * scaleY + 500, 500);
+      const outsideRect = outside.current ?
+        outside.current.getBoundingClientRect() : {width: 1000, height: 1000};
+      const width = maxReal * scaleX + outsideRect.width;
+      const height = maxMidi * scaleY + outsideRect.height;
+      this.height = height;
 
       const points = changes.map(c => (
         `${c.real * scaleX},${height - c.midi * scaleY}`
@@ -212,8 +225,25 @@ const TempoGraph = (() => {
         -11,
       );
 
-      const realBar = e('div',
-      )
+      const time = hotPlayback.getTime();
+      const realBar = e('line', {
+        className: 'tempoLine3',
+        ref: this.realBar,
+        x1: time * scaleX, y1: 0,
+        x2: time * scaleX, y2: height,
+        key: -2,
+      });
+
+      const midi = getMidiFromReal(changes, time);
+      const midiBar = e('line', {
+        className: 'tempoLine3',
+        ref: this.midiBar,
+        x1: 0,
+        y1: height - midi * scaleY,
+        x2: width, 
+        y2: height - midi * scaleY,
+        key: -3,
+      })
 
       if (outside.current) {
         outside.current.scrollTop = height - this.lastScrollY;
@@ -232,6 +262,8 @@ const TempoGraph = (() => {
         onMouseUp: this.onMouseUp.bind(this),
         onContextMenu: (e) => e.preventDefault(),
       }, [
+        realBar,
+        midiBar,
         infiniteLine1,
         infiniteLine2,
         e('polyline', {

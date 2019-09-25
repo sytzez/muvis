@@ -22,7 +22,7 @@ const hotPlayback = ((store) => {
     startTime = storeTime = performance.now();
     zeroTime = time;
     step();
-    interval = setInterval(step, 1000 / 25);
+    interval = setInterval(step, 1000 / 15);
   }
 
   function stop() {
@@ -52,7 +52,10 @@ const hotPlayback = ((store) => {
   }
 
   function getTime() {
-    return time;
+    if (interval === 0)
+      return time;
+    else 
+      return zeroTime + (performance.now() - startTime) * 0.001;
   }
 
   function setTime(t) {

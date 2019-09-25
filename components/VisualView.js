@@ -6,9 +6,11 @@ const VisualView = (() => {
   class VisualView extends React.Component {
     canv = React.createRef();
     renderer = null;
-    playbackListener = this.playback.bind(this);
+    animationFrame = 0;
+    frameCallback = this.frame.bind(this);
+    lastTime = 0;
 
-    renderGL() {
+    loadGL() {
       const {
         brushes, voices, notes, tempo,
         background,
@@ -18,25 +20,30 @@ const VisualView = (() => {
       if (!this.renderer) return;
 
       this.renderer.load(brushes, voices, notes, tempo, background, pitchTop, pitchBottom, timeSpan);
-      this.renderer.render(hotPlayback.getTime()); // TODO: appropriate time
+      this.renderer.render(hotPlayback.getTime());
+    }
+
+    frame() {
+      const time = hotPlayback.getTime();
+      if (time !== this.lastTime) {
+        this.renderer.render(time);
+        this.lastTime = time;
+      }
+      this.animationFrame = requestAnimationFrame(this.frameCallback);
     }
 
     componentDidMount() {
       this.renderer = renderer(this.canv.current);
-      this.renderGL();
-      hotPlayback.addListener(this.playbackListener);
+      this.loadGL();
+      this.animationFrame = requestAnimationFrame(this.frameCallback);
     }
 
     componentWillUnmount() {
-      hotPlayback.removeListener(this.playbackListener);
-    }
-
-    playback(time) {
-      this.renderer.render(time);
+      cancelAnimationFrame(this.animationFrame);
     }
 
     render() {
-      this.renderGL();
+      this.loadGL();
 
       return e('div', {
         className: 'canvas_outside',
