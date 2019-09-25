@@ -7,9 +7,12 @@ const NoteView = (() => {
     internal = {
       outerDiv: React.createRef(),
       innerDiv: React.createRef(),
+      selectDiv: React.createRef(),
       mouseMoveCallback: null,
       mouseUpCallback: null,
     }
+
+    selectBox = null
 
     last = {
       noteIdCounter: 0,
@@ -31,8 +34,9 @@ const NoteView = (() => {
         this.state.leftTimeBound !== nextState.leftTimeBound ||
         this.state.rightTimeBound !== nextState.rightTimeBound ||
         this.props.scaleX !== nextProps.scaleX ||
-        this.last.noteIdCounter !== noteIdCounter || // redundant?
-        this.props.notes.length !== nextProps.notes.length
+        this.props.notes !== nextProps.notes
+        //this.last.noteIdCounter !== noteIdCounter || // redundant?
+        //this.props.notes.length !== nextProps.notes.length
       ) return true;
       
       //if (this.props.notes !== nextProps.notes) return true; 
@@ -76,6 +80,53 @@ const NoteView = (() => {
       });
     }
 
+    startSelectBox(x, y, shift) {
+      const { left, top } = this.internal.innerDiv.current.getBoundingClientRect();
+      this.selectBox = {
+        x: x - left,
+        y: y - top,
+        shift,
+      };
+    }
+
+    updateSelectBox(x, y) {
+      const { left, top } = this.internal.innerDiv.current.getBoundingClientRect();
+      const { style } = this.internal.selectDiv.current;
+      style.left = Math.min(this.selectBox.x, x - left);
+      style.top = Math.min(this.selectBox.y, y - top);
+      style.width = Math.abs(this.selectBox.x - (x - left));
+      style.height = Math.abs(this.selectBox.y - (y - top));
+      this.internal.selectDiv.current.hidden = false;
+    }
+
+    finishSelectBox(x, y) {
+      this.updateSelectBox(x, y);
+
+      const { scaleX, scaleY, notes, visibleBrushes, visibleVoices,
+        selectNotes, shiftSelectNotes } = this.props;
+      const { style } = this.internal.selectDiv.current;
+
+      const left = Math.floor(parseInt(style.left) / scaleX);
+      const top = Math.floor(parseInt(style.top) / scaleY);
+      const right = Math.ceil((parseInt(style.left) + parseInt(style.width)) / scaleX);
+      const bottom = Math.ceil((parseInt(style.top) + parseInt(style.height)) / scaleY);
+
+      const selection = notes.filter(n => (
+        n.start > left && n.start + n.length < right &&
+        n.pitch > top && n.pitch < bottom - 1 &&
+        (n.brush === -1 || visibleBrushes.includes(n.brush)) &&
+        visibleVoices.includes(n.voice)
+      )).map(n => n.id);
+      
+      if (this.selectBox.shift)
+        shiftSelectNotes(selection);
+      else
+        selectNotes(selection);
+
+      this.selectBox = null;
+      this.internal.selectDiv.current.hidden = true;
+    }
+
     updateTimeBounds() {
       const { scaleX } = this.props;
       const { leftTimeBound, rightTimeBound } = this.state;
@@ -97,22 +148,34 @@ const NoteView = (() => {
     }
 
     onMouseDown(e) {
-      const { editMode } = this.props;
+      const { editMode, deselectAll } = this.props;
 
-      if (editMode === editModes.NOTES) {
-        if (e.button === 0)
-          this.insertNoteAtPoint(e.clientX, e.clientY);
+      if (e.ctrlKey) {
+        if (editMode === editModes.NOTES) {
+          if (e.button === 0)
+            this.insertNoteAtPoint(e.clientX, e.clientY);
+        }
+      } else {
+        if (e.button === 0) {
+          if (!e.shiftKey) deselectAll();
+          this.startSelectBox(e.clientX, e.clientY, e.shiftKey);
+        }
       }
     }
 
     onMouseUp(e) {
       const callback = this.internal.mouseUpCallback;
       if (callback) callback(e);
+
+      if (this.selectBox) this.finishSelectBox(e.clientX, e.clientY);
     }
 
     onMouseMove(e) {
       const callback = this.internal.mouseMoveCallback;
       if (callback) callback(e);
+      
+      const select = this.selectBox;
+      if (select) this.updateSelectBox(e.clientX, e.clientY);
     }
 
     onScroll(e) {
@@ -131,7 +194,7 @@ const NoteView = (() => {
 
       const { notes, scaleX, scaleY } = this.props;
 
-      const { innerDiv, outerDiv } = this.internal;
+      const { innerDiv, outerDiv, selectDiv } = this.internal;
 
       const {
         leftTimeBound, rightTimeBound
@@ -143,8 +206,7 @@ const NoteView = (() => {
 
       const noteElements = [];
 
-      for(let i = 0; i < notes.length; i++) {
-        const n = notes[i];
+      for(const n of notes) {
         const end = n.start + n.length;
         fullWidth = Math.max(fullWidth, end * scaleX + 500);
         if (n.start < rightTimeBound && end > leftTimeBound)
@@ -161,6 +223,13 @@ const NoteView = (() => {
         noteview: this,
         w: fullWidth,
         key: -2,
+      });
+
+      const selectBox = e('div', {
+        className: 'selectBox',
+        ref: selectDiv,
+        hidden: true,
+        key: -3,
       });
 
       return e('div', {
@@ -190,6 +259,7 @@ const NoteView = (() => {
       }, [
         pitchTopBar,
         pitchBotBar,
+        selectBox,
         ...noteElements,
       ]));
     }
@@ -204,10 +274,15 @@ const NoteView = (() => {
     scaleY: state.scaleY,
     pitchTop: state.pitchTop,
     pitchBot: state.pitchBot,
+    visibleBrushes: state.visibleBrushes,
+    visibleVoices: state.visibleVoices,
   });
 
   const mapDispatchToProps = dispatch => ({
     insertNote: (note) => dispatch({ type: 'INSERT_NOTE', note }),
+    selectNotes: (ids) => dispatch({ type: 'SELECT_NOTES', ids }),
+    shiftSelectNotes: (ids) => dispatch({ type: 'SHIFT_SELECT_NOTES', ids }),
+    deselectAll: () => dispatch({ type: 'DESELECT_ALL_NOTES' }),
   });
 
   return ReactRedux.connect(

@@ -65,9 +65,8 @@ button.selected {
 }
 
 .listitem.selected {
-  color: #fff;
-  background: #bbb;
   border-color: #000;
+  font-weight: bold;
 }
 
 .canvas {
@@ -113,10 +112,16 @@ button.selected {
 .note {
   position: absolute;
   background: #fff;
-  border-style: solid;
-  border-width: 1px;
-  /* border-radius: 3px; */
-  border-color: #aaa;
+  border: 1px outset #888;
+}
+
+.note.selected {
+  border: 2px dotted #000;
+}
+
+.note:hover {
+  border-color: #000;
+  z-index: 1;
 }
 
 .note_right {
@@ -130,24 +135,6 @@ button.selected {
 
 .note_right:hover {
   background: #888;
-}
-
-.note_left {
-  position: absolute;
-  left: 0px;
-  width: 8px;
-  height: 100%;
-  cursor: w-resize;
-}
-
-.note.selected {
-  background: #ddd;
-  border-style: solid;
-  border-color: #888;
-}
-
-.note:hover {
-  border-color: #000;
 }
 
 .verticalLine {
@@ -171,8 +158,45 @@ button.selected {
   width: 1px;
 }
 
+.selectBox {
+  border: 2px dashed #00f;
+  background-color: rgba(128, 128, 255, 0.5);
+  position: absolute;
+  z-index: 2;
+}
+
 .colorSquare {
   border: 2px outset #bbb;
   width: 18px;
   height: 18px;
+}
+
+.tempograph_outside {
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+  position: relative;
+}
+
+.tempograph {
+  background: #ddd;
+  position: absolute;
+}
+
+.tempoLine {
+  stroke: #888;
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.tempoHandle {
+  stroke: #888;
+  stroke-width: 5px;
+  fill: none;
+  cursor: move;
+}
+
+.tempoHandle:hover {
+  fill: #888;
 }

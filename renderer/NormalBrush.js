@@ -166,7 +166,7 @@ void main() {
 
     for(;nxt.done !== true && nxt.value.start < rightBound;
       nxt = i.next())
-    {
+    { // TODO: put whole note into one datastructure, at load()
       const note = nxt.value;
       gl.uniform3f(u_note, note.start, note.pitch, note.length);
       gl.uniform3f(u_color1, ...note.color1);

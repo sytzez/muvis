@@ -40,17 +40,51 @@ const notes = (state, action) => {
     case 'REMOVE_ALL_NOTES':
       return [];
     case 'UPDATE_NOTE':
-      return state.map(n => n.id === action.id ? { ...n, ...action.note } : n);
+      // return state.map(n => n.id === action.id ? { ...n, ...action.note } : n);
+      return [
+        ...state.filter(n => n.id !== action.id),
+        { ...getNoteById(state, action.id), ...action.note },
+      ];
     case 'UPDATE_NOTES':
-      return state.map(n => {
-        const index = action.ids.indexOf(n.id);
-        if (index !== -1) {
-          return { ...n, ...action.notes[id] };
-        } else {
-          return n;
-        }
-      });
-    case 'PAINT_NOTE':
+      // return state.map(n => {
+      //   const index = action.ids.indexOf(n.id);
+      //   if (index !== -1) {
+      //     return { ...n, ...action.notes[id] };
+      //   } else {
+      //     return n;
+      //   }
+      // });
+      return state;
+    case 'MOVE_NOTES': {
+      const notes = getNotesByIds(state, action.ids);
+      let time = action.time;
+      let pitch = action.pitch;
+      // TODO: limit
+      return [
+        ...state.filter(n => !action.ids.includes(n.id)),
+        ...notes.map(n => ({
+          ...n,
+          start: n.start + time,
+          pitch: n.pitch + pitch
+        })),
+      ];
+    } case 'RESIZE_NOTES' : {
+      const notes = getNotesByIds(state, action.ids);
+      let length = action.length;
+      if (length < 0) {
+        notes.forEach(n => {
+          if (-n.length + 1 > length)
+            length = -n.length + 1;
+        });
+      }
+      return [
+        ...state.filter(n => !action.ids.includes(n.id)),
+        ...notes.map(n => ({
+          ...n,
+          length: n.length + length,
+        })),
+      ];
+    } case 'PAINT_NOTE':
       return state.map(n => n.id === action.id ? { ...n, brush: action.brushId } : n);
     case 'PAINT_NOTES':
       return state.map(n =>
@@ -84,12 +118,11 @@ const selectedNotes = (state, action) => {
     case 'SELECT_NOTE':
       return [ action.id ];
     case 'SELECT_NOTES':
-      return [ ...action.ids ];
+      return action.ids;
     case 'SHIFT_SELECT_NOTE':
-      return state.includes(action.id) ? state :
+      return state.includes(action.id) ?
+        state.filter(id => id !== action.id) :
         [ ...state, action.id ];
-    case 'SHIFT_DESELECT_NOTE':
-      return state.filter(id => id !== action.id);
     case 'SHIFT_SELECT_NOTES':
       return [
         ...state,

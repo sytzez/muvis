@@ -18,20 +18,32 @@ const Note = (() => {
         nextProps.start !== props.start ||
         nextProps.length !== props.length ||
         nextProps.pitch !== props.pitch ||
-        // nextProps.x !== props.x ||
-        // nextProps.y !== props.y ||
-        // nextProps.w !== props.w ||
-        // nextProps.h !== props.h ||
         nextProps.color !== props.color ||
         nextProps.selected !== props.selected
       );
+    }
+
+    move(time, pitch) {
+      const { id, selected, selectedNotes, moveNote, moveNotes } = this.props;
+      if (selected)
+        moveNotes(selectedNotes, time - this.props.start, pitch - this.props.pitch);
+      else
+        moveNote(id, time, pitch);
+    }
+
+    resize(length) {
+      const { id, selected, selectedNotes, resizeNote, resizeNotes } = this.props;
+      if (selected)
+        resizeNotes(selectedNotes, length - this.props.length);
+      else
+        resizeNote(id, length);
     }
 
     onMouseDown(e) {
       e.stopPropagation();
 
       const {
-        id, editMode, brush, voice,
+        id, editMode, brush, voice, resizable,
         paintNote, voiceNote, removeNote, selectNote,
       } = this.props;
 
@@ -39,18 +51,20 @@ const Note = (() => {
         if (e.button === 0)
           selectNote(id);
       } else {
-        if (editMode === editModes.NOTES) {
+        if (resizable) {
           if (e.button === 0)
             this.startMoving(e);
-          else if (e.button === 2)
+        }
+        if (editMode === editModes.NOTES) {
+          if (e.button === 2 && e.ctrlKey)
             removeNote(id);
-        } else if (editMode === editModes.PAINT) {
-          if (e.button === 0)
+        } if (editMode === editModes.PAINT) {
+          if (e.button === 0 && e.ctrlKey)
             paintNote(id, brush);
-          else if (e.button === 2)
+          else if (e.button === 2 && e.ctrlKey)
             paintNote(id, -1);
         } else if (editMode === editModes.VOICES) {
-          if (e.button === 0)
+          if (e.button === 0 && e.ctrlKey)
             voiceNote(id, voice);
         }
       }
@@ -66,15 +80,15 @@ const Note = (() => {
       } = this.props;
 
       if (editMode === editModes.NOTES) {
-        if (buttons === 2)
+        if (buttons === 2 && e.ctrlKey)
           removeNote(id);
       } else if (editMode === editModes.PAINT) {
-        if (buttons === 1)
+        if (buttons === 1 && e.ctrlKey)
           paintNote(id, brush);
-        else if (buttons === 2)
+        else if (buttons === 2 && e.ctrlKey)
           paintNote(id, -1);
       } else if (editMode === editModes.VOICES) {
-        if (buttons === 1)
+        if (buttons === 1 && e.ctrlKey)
           voiceNote(id, voice);
       }
     }
@@ -92,7 +106,7 @@ const Note = (() => {
 
     moveCallback(e) {
       const now = performance.now();
-      const { id, noteview, moveNote } = this.props;
+      const { noteview } = this.props;
 
       const { time, pitch } = noteview.getTimeAndPitch(
         e.clientX - this.grabX,
@@ -100,20 +114,20 @@ const Note = (() => {
       );
 
       if (now < this.last) {
-        const { scaleX, scaleY } = this.props;
+        const { scaleX, scaleY, selected } = this.props;
         const div = this.ref.current;
-        div.style.left = scaleX * time;
-        div.style.top = scaleY * pitch;
+        div.style.left = scaleX * time - (selected ? 2 : 1);
+        div.style.top = scaleY * pitch - (selected ? 2 : 1);
       } else {
-        this.last = now + 100;
-        moveNote(id, time, pitch);
+        this.last = now + 80;
+        this.move(time, pitch);
       }
     }
 
     moveRelease(e) {
-      const { id, noteview, moveNote, scaleX, scaleY } = this.props;
+      const { noteview, scaleX, scaleY } = this.props;
       const { top, left } = this.ref.current.style;
-      moveNote(id, Math.round(parseInt(left) / scaleX), Math.round(parseInt(top) / scaleY))
+      this.move(Math.round(parseInt(left) / scaleX), Math.round(parseInt(top) / scaleY))
       noteview.removeMouseCallback();
     }
 
@@ -130,7 +144,7 @@ const Note = (() => {
 
     resizeCallback(e) {
       const now = performance.now();
-      const { id, noteview, resizeNote, start } = this.props;
+      const { noteview, start } = this.props;
 
       const { time } = noteview.getTimeAndPitch(e.clientX, 0);
 
@@ -140,14 +154,14 @@ const Note = (() => {
         div.style.width = scaleX * (time - start);
       } else {
         this.last = now + 100;
-        resizeNote(id, Math.max(time - start, 1));
+        this.resize(Math.max(time - start, 1));
       }
     }
 
     resizeRelease(e) {
-      const { id, noteview, resizeNote, scaleX } = this.props;
+      const { noteview, scaleX } = this.props;
       const { width } = this.ref.current.style;
-      resizeNote(id, Math.max(Math.round(parseInt(width) / scaleX), 1));
+      this.resize(Math.max(Math.round(parseInt(width) / scaleX), 1));
       noteview.removeMouseCallback();
     }
 
@@ -170,28 +184,25 @@ const Note = (() => {
         },);
       }
 
-      return e(
-        'div',
-        {
+      return e('div', {
           className: 'note ' + (selected ? 'selected ' : '') + color,
           ref: this.ref,
           onMouseDown: this.onMouseDown.bind(this),
           onMouseEnter: this.onMouseEnter.bind(this),
-          onDragStart: () => false,
+          onDragStart: (e) => e.preventDefault(),
           // onMouseUp: (e) => this.props.onMouseUp(id, e),
           onContextMenu: (e) => {
             e.preventDefault();
             // this.onMouseUp.bind(this)(e);
           },
           style: {
-            left: scaleX * start,
-            top: scaleY * pitch,
+            left: scaleX * start - (selected ? 2 : 1),
+            top: scaleY * pitch - (selected ? 2 : 1),
             width: scaleX * length,
             height: scaleY,
             cursor: resizable ? 'move' : 'auto',
           },
-        },
-        resizable ? e('div', {
+        }, resizable ? e('div', {
           className: 'note_right',
           onMouseDown: (e) => {
             e.stopPropagation();
@@ -203,60 +214,154 @@ const Note = (() => {
     }
   }
 
-  const mapStateToProps = (state, ownProps) => {
+  const mapStateToProps = (_, ownProps) => {
     const { id } = ownProps;
-
-    const note = getNoteById(state.notes, id);
-
-    const {
-      colorMode, editMode, brushes, voices, visibleBrushes, visibleVoices
-    } = state;
     
-    // determine color
-    let color = '';
-    if (colorMode === colorModes.VOICE) {
-      color = voices[note.voice].noteColor;
-    } else if (colorMode === colorModes.BRUSH) {
-      if (note.brush !== -1)
-        color = getBrushById(brushes, note.brush).noteColor;
-    }
+    let lastNote = {
+      voice: null,
+      brush: null,
+    };
 
-    // determine visibility
-    let ghost = !visibleVoices.includes(note.voice);
-    if (note.brush !== -1)
-      ghost |= !visibleBrushes.includes(note.brush);
- 
-    return {
-      selected: state.selectedNotes.includes(id),
-      ghost,
-      scaleX: state.scaleX,
-      scaleY: state.scaleY,
-      start: note.start,
-      length: note.length,
-      pitch: note.pitch,
-      // x: note.start * state.scaleX,
-      // y: note.pitch * state.scaleY,
-      // w: note.length * state.scaleX,
-      // h: state.scaleY,
-      color,
-      resizable: editMode === editModes.NOTES,
-      editMode: state.editMode,
-      brush: state.selectedBrush,
-      voice: state.selectedVoice,
+    let last = {
+      notes: null,
+      brushes: null,
+      voices: null,
+      visibleBrushes: null,
+      visibleVoices: null,
+    };
+
+    let lastBrush = null;
+    let lastBrushGhost = false;
+    let lastVoiceGhost = false;
+    let lastSelected = false;
+
+    return state => {
+      const note = (last.notes !== state.notes) ?
+         getNoteById(state.notes, id) : lastNote;
+
+      // determine visibility
+      let ghost = false;
+
+      const voiceGhost = (note.voice !== lastNote.voice ||
+        state.visibleVoices !== last.visibleVoices) ?
+        !state.visibleVoices.includes(note.voice) :
+        lastVoiceGhost;
+      lastVoiceGhost = voiceGhost;
+
+      if (note.brush !== -1) {
+        const brushGhost = (note.brush !== lastNote.brush ||
+          state.visibleBrushes !== last.visibleBrushes) ?
+          !state.visibleBrushes.includes(note.brush) :
+          lastBrushGhost;
+        lastBrushGhost = brushGhost;
+        
+        ghost = voiceGhost || brushGhost;
+      } else {
+        ghost = voiceGhost;
+      }
+
+      // determine color
+      let color = '';
+
+      if (!ghost) {
+        if (state.colorMode === colorModes.VOICE) {
+          color = state.voices[note.voice].noteColor;
+        } else if (state.colorMode === colorModes.BRUSH) {
+          if (note.brush !== -1) {
+            const brush = (last.brushes !== state.brushes ||
+              lastNote.brush !== note.brush) ?
+              getBrushById(state.brushes, note.brush) :
+              lastBrush;
+            lastBrush = brush;
+
+            color = brush.noteColor;
+          }
+        }
+      }
+
+      // determine selected
+      const selected = (state.selectedNotes !== last.selectedNotes) ?
+        state.selectedNotes.includes(id) : lastSelected;
+      lastSelected = selected;
+      
+      // return props
+      lastNote = note;
+      last = state;
+
+      return {
+        selected,
+        ghost,
+        scaleX: state.scaleX,
+        scaleY: state.scaleY,
+        start: note.start,
+        length: note.length,
+        pitch: note.pitch,
+        color,
+        resizable: true,//state.editMode === editModes.NOTES,
+        editMode: state.editMode,
+        brush: state.selectedBrush,
+        voice: state.selectedVoice,
+        selectedNotes: state.selectedNotes,
+      };
     };
  };
+//   const mapStateToProps = (state, ownProps) => { // TODO make func in func, remember things
+//     const { id } = ownProps;
+
+//     const note = getNoteById(state.notes, id);
+
+//     const {
+//       colorMode, editMode, brushes, voices, visibleBrushes, visibleVoices
+//     } = state;
+    
+//     // determine visibility
+//     let ghost = !visibleVoices.includes(note.voice);
+//     if (note.brush !== -1)
+//       ghost |= !visibleBrushes.includes(note.brush);
+
+//     // determine color
+//     let color = '';
+//     if (!ghost) {
+//       if (colorMode === colorModes.VOICE) {
+//         color = voices[note.voice].noteColor;
+//       } else if (colorMode === colorModes.BRUSH) {
+//         if (note.brush !== -1)
+//           color = getBrushById(brushes, note.brush).noteColor;
+//       }
+//     }
+
+//     return {
+//       selected: state.selectedNotes.includes(id),
+//       ghost,
+//       scaleX: state.scaleX,
+//       scaleY: state.scaleY,
+//       start: note.start,
+//       length: note.length,
+//       pitch: note.pitch,
+//       color,
+//       resizable: editMode === editModes.NOTES,
+//       editMode: state.editMode,
+//       brush: state.selectedBrush,
+//       voice: state.selectedVoice,
+//       selectedNotes: state.selectedNotes,
+//     };
+//  };
 
   const mapDispatchToProps = dispatch => ({
     selectNote: (id) =>
-      dispatch({ type: 'SELECT_NOTE', id }),
+      dispatch({ type: 'SHIFT_SELECT_NOTE', id }),
     paintNote: (id, brushId) =>
       dispatch({ type: 'PAINT_NOTE', id, brushId }),
     voiceNote: (id, voiceId) =>
       dispatch({ type: 'VOICE_NOTE', id, voiceId }),
     moveNote: (id, start, pitch) =>
       dispatch({ type: 'UPDATE_NOTE', id, note: { pitch, start } }),
+    moveNotes: (ids, time, pitch) =>
+      dispatch({ type: 'MOVE_NOTES', ids, time, pitch }),
     resizeNote: (id, length) =>
       dispatch({ type: 'UPDATE_NOTE', id, note: { length } }),
+    resizeNotes: (ids, length) =>
+      dispatch({ type: 'RESIZE_NOTES', ids, length }),
     removeNote: (id) =>
       dispatch({ type: 'REMOVE_NOTE', id }),
   });

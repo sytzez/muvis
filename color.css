@@ -1,33 +1,20 @@
 /* https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/ */
 
 .color1 {
-  background: #e6194B;
-}
-
-.color1.selected {
-  background: #d10000;
+  background: #ff0040;
+  color: #fff;
 }
 
 .color2 {
   background: #3cb44b;
-}
-
-.color2.selected {
-  background: #00d100;
+  color: #fff;
 }
 
 .color3 {
   background: #ffe119;
 }
 
-.color3.selected {
-  background: #d1d100;
-}
-
 .color4 {
-  background: #4363d8;
-}
-
-.color4.selected {
-  background: #0000d1;
+  background: #667bc9;
+  color: #fff;
 }

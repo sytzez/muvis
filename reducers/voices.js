@@ -3,7 +3,7 @@
 const voiceTemplate = Object.freeze({
   noteColor: noteColors.RED,
   
-  voiceColor: [0,0,0],
+  voiceColor: [0, 0, 1],
 });
 
 const voices = (state, action) => {

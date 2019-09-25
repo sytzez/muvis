@@ -3,7 +3,7 @@ const App = (() => {
 
   const e = React.createElement;
 
-  const App = ({ visual, propMode }) => e('div', {
+  const App = ({ editorMode, propMode }) => e('div', {
     className: 'app',
   }, [
     e('header', {key: 0}, [
@@ -20,11 +20,19 @@ const App = (() => {
         e('hr', {key: 11}),
         e(VoiceList, {key: 20}),
       ]),
-      (visual ?
-        e(VisualView, {key: 1}) :
-        e(NoteView, {key: 2})
-      ),
-      e('aside', {key: 3, className: 'right'}, [
+      (() => {
+        switch(editorMode) {
+          case editorModes.NOTES:
+            return e(NoteView, {key: 1});
+          case editorModes.VISUAL:
+            return e(VisualView, {key: 2});
+          case editorModes.TEMPO:
+            return e(TempoGraph, {key: 3});
+          default:
+            return null;
+        }
+      })(),
+      e('aside', {key: 100, className: 'right'}, [
         e(PropModeSelect, {key: 30}),
         ((propMode) => {
           switch(propMode) {
@@ -49,7 +57,7 @@ const App = (() => {
   ]);
 
   const mapStateToProps = state => ({
-    visual: state.editorMode === editorModes.VISUAL,
+    editorMode: state.editorMode,
     propMode: state.propMode,
   });
 

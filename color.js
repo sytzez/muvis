@@ -11,7 +11,7 @@ const color = (() => {
 
   const toHex = x => (x < 16 ? '0' : '') + x.toString(16)
 
-  const rgbToCss = ([ r, g, b ]) => `#` + 
+  const rgbToCss = ([ r, g, b ]) => '#' + 
     toHex(Math.round(r*255)) +
     toHex(Math.round(g*255)) +
     toHex(Math.round(b*255));

@@ -37,7 +37,12 @@ const store = (() => {
     ],
     notes: [],
     brushes: [],
-    tempo: [],
+    tempo: [
+      { real: 0.0, midi: 0.0, id: 0 },
+      { real: 1.0, midi: 100.0, id: 1 },
+      { real: 2.0, midi: 105.0, id: 2 },
+      { real: 4.0, midi: 305.0, id: 3 },
+    ],
 
     editorMode: editorModes.NOTES,
     editMode: editModes.NOTES,
@@ -53,6 +58,9 @@ const store = (() => {
 
     scaleX: 1,
     scaleY: 16,
+
+    tempoScaleX: 100,
+    tempoScaleY: 1,
 
     // song properties
 
@@ -284,6 +292,7 @@ const store = (() => {
           voices: voices(state.voices, action),
           selectedNotes: selectedNotes(state.selectedNotes, action),
           brushes: brushes(state.brushes, action),
+          tempo: tempo(state.tempo, action),
           playback: playback(state.playback, action),
           history: history(state, action),
         };
