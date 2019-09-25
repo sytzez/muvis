@@ -29,7 +29,7 @@ const PitchRangeBars = (() => {
       this.newPitch = pitch;
 
       return React.createElement('div', {
-        className: 'verticalLine',
+        className: 'horizontalLine',
         ref: this.ref,
         style: {
           top: pitch * scaleY,

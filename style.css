@@ -137,7 +137,7 @@ button.selected {
   background: #888;
 }
 
-.verticalLine {
+.horizontalLine {
   position: absolute;
   left: 0px;
   width: auto;
@@ -147,8 +147,22 @@ button.selected {
   cursor: ns-resize;
 }
 
-.verticalLine:hover {
+.horizontalLine:hover {
   border-top: 2px solid #000;
+}
+
+.verticalLine {
+  position: absolute;
+  top: 0px;
+  height: auto;
+  width: 16px;
+  background: #f8f8f8;
+  border-left: 2px solid #bbb;
+  cursor: ew-resize;
+}
+
+.verticalLine:hover {
+  border-left: 2px solid #000;
 }
 
 .rockBottom {
@@ -187,6 +201,14 @@ button.selected {
   stroke: #888;
   stroke-width: 5px;
   stroke-linejoin: round;
+  stroke-linecap: round;
+  fill: none;
+}
+
+.tempoLine2 {
+  stroke: #888;
+  stroke-width: 5px;
+  stroke-dasharray: 5;
   fill: none;
 }
 
