@@ -5,7 +5,7 @@ const EditorModeSelect = (() => {
     options: [
       { value: editorModes.FILES, text: 'Files' },
       { value: editorModes.NOTES, text: 'Note editor' },
-      { value: editorModes.TEMPO, text: 'Tempo editor' },
+      { value: editorModes.TEMPO, text: 'Time editor' },
       { value: editorModes.VISUAL, text: 'Preview' },
       { value: editorModes.YOUTUBE, text: 'Video' },
     ],

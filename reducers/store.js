@@ -40,8 +40,8 @@ const store = (() => {
     tempo: [
       { real: 0.0, midi: 0.0, id: 0 },
       { real: 1.0, midi: 100.0, id: 1 },
-      { real: 2.0, midi: 105.0, id: 2 },
-      { real: 4.0, midi: 305.0, id: 3 },
+      { real: 2.0, midi: 200.0, id: 2 },
+      { real: 5.0, midi: 500.0, id: 3 },
     ],
 
     editorMode: editorModes.NOTES,
@@ -64,7 +64,7 @@ const store = (() => {
 
     // song properties
 
-    timeSpan: 1000, // how much time fits on a screen
+    timeSpan: 6, // how much time fits on a screen (in seconds)
     pitchTop: 64 - 20, // how many semitones fit on a screen
     pitchBottom: 64 + 20, // which pitch is at the center of the screen
 

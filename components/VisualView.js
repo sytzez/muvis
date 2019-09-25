@@ -10,14 +10,14 @@ const VisualView = (() => {
 
     renderGL() {
       const {
-        brushes, voices, notes,
+        brushes, voices, notes, tempo,
         background,
         pitchTop, pitchBottom, timeSpan
       } = this.props;
 
       if (!this.renderer) return;
 
-      this.renderer.load(brushes, voices, notes, background, pitchTop, pitchBottom, timeSpan);
+      this.renderer.load(brushes, voices, notes, tempo, background, pitchTop, pitchBottom, timeSpan);
       this.renderer.render(hotPlayback.getTime()); // TODO: appropriate time
     }
 
@@ -54,6 +54,7 @@ const VisualView = (() => {
     brushes: state.brushes,
     voices: state.voices,
     notes: state.notes,
+    tempo: state.tempo,
     pitchTop: state.pitchTop,
     pitchBottom: state.pitchBottom,
     timeSpan: state.timeSpan,

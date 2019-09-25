@@ -31,7 +31,7 @@ void main() {
 
   gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
-  function load(newBrushes, voices, notes, background, pitchBottom, pitchTop, timeSpan) {
+  function load(newBrushes, voices, notes, tempo, background, pitchBottom, pitchTop, timeSpan) {
     gl.clearColor(...background, 1.0);
 
     brushes = [];
@@ -81,10 +81,12 @@ void main() {
       notes.forEach(n => {
         if (n.brush === b.id) {
           const colors = colorFunc(n);
+          const realStart = getRealFromMidi(tempo, n.start);
+          const realLength = getRealFromMidi(tempo, n.start + n.length) - realStart;
           brush.notes.push({
             pitch: n.pitch,
-            start: n.start, // TODO convert?
-            length: n.length,
+            start: realStart,
+            length: realLength,
             color1: colors[0],
             color2: colors[1],
           });
@@ -102,7 +104,7 @@ void main() {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     brushes.forEach(b => {
-      normalBrush.render(b, b.notes, time * 100.0);
+      normalBrush.render(b, b.notes, time);
     });
   };
 

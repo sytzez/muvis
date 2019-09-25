@@ -26,8 +26,8 @@ const brushTemplate = Object.freeze({
   noteColor: noteColors.RED,
 
   timeZoom: 1.0, // relative zoom on time axis
-  timeCurve1: 50.0, // curvature around center
-  timeCurve2: 10.0,
+  timeCurve1: 0.3, // curvature around center
+  timeCurve2: 5.0,
 
   shape: brushShapes.RECT,
   playMode: brushPlayModes.FLASH,

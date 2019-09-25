@@ -58,13 +58,8 @@ void main() {
     coord.x -= 1.0 - u_curve.y;
   }
 
-  // if (coord.x > -1.0 && coord.x < 1.0)
-  //   coord.x -= sin(coord.x * M_PI) * exp(-1.5 / (1.0 - coord.x*coord.x));
-
   coord.x *= u_curve.x;
   coord.x += u_time;
-
-  //coord.x = pow((coord.x - u_time) * 0.03, 3.0) + u_time;
 
   float val;
   if (u_shape == SHAPE_RECT) {

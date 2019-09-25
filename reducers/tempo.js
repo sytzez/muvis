@@ -37,3 +37,15 @@ const getMidiFromReal = (state, real) => {
   const slope = (b.midi - a.midi) / (b.real - a.real);
   return a.midi + (real - a.real) * slope;
 };
+
+// get real time from midi time
+const getRealFromMidi = (state, midi) => {
+  const length = state.length;
+  let i = 1;
+  while(i < length - 1 && state[i].midi < midi)
+    i++;
+  const a = state[i - 1];
+  const b = state[i];
+  const slope = (b.real - a.real) / (b.midi - a.midi);
+  return a.real + (midi - a.midi) * slope;
+}
