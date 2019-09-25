@@ -52,7 +52,7 @@ const Note = (() => {
           selectNote(id);
       } else {
         if (resizable) {
-          if (e.button === 0)
+          if (e.button === 0 && !e.ctrlKey)
             this.startMoving(e);
         }
         if (editMode === editModes.NOTES) {

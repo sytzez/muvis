@@ -38,7 +38,7 @@ const YouTubeView = (() => {
 
       const { url } = this.props;
 
-      this.player = new YT.Player(iframe.current, {
+      this.player = new YT.Player(this.iframe.current, {
         videoUrl: url,
         events: {
           'onStateChange': this.onStateChange.bind(this),
@@ -66,7 +66,7 @@ const YouTubeView = (() => {
         }, 'Open'),
         e('iframe', {
           ref: this.iframe,
-          key: 1,
+          key: 2,
         }),
       ]);
     }
