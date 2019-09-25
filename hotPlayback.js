@@ -31,6 +31,10 @@ const hotPlayback = ((store) => {
     listeners.forEach(f => f(time));
   }
 
+  function isPlaying() {
+    return interval !== 0;
+  }
+
   function pause() {
     if (interval === 0) return;
     
@@ -72,6 +76,7 @@ const hotPlayback = ((store) => {
     removeListener,
     start,
     stop,
+    isPlaying,
     pause,
     setTime,
     getTime,

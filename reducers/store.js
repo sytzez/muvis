@@ -70,6 +70,8 @@ const store = (() => {
 
     backgroundColor: [0.1, 0.1, 0.1],
 
+    ytUrl: '',
+
     // playback state
 
     playback: {

@@ -28,6 +28,8 @@ const App = (() => {
             return e(VisualView, {key: 2});
           case editorModes.TEMPO:
             return e(TempoGraph, {key: 3});
+          case editorModes.YOUTUBE:
+            return e(YouTubeView, {key: 4});
           default:
             return null;
         }
