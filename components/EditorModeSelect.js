@@ -6,7 +6,7 @@ const EditorModeSelect = (() => {
       { value: editorModes.FILES, text: 'File' },
       { value: editorModes.NOTES, text: 'Note editor' },
       { value: editorModes.TEMPO, text: 'Time syncher' },
-      { value: editorModes.YOUTUBE, text: 'Video' },
+      // { value: editorModes.YOUTUBE, text: 'Video' },
       { value: editorModes.VISUAL, text: 'Preview' },
     ],
     selected: state.editorMode,

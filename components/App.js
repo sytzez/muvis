@@ -9,9 +9,9 @@ const App = (() => {
     e('header', {key: 0}, [
       e(FileChooser, {key: 0}),
       e(EditorModeSelect, {key: 1}),
-      '-|-',
-      e(PlaybackControls, {key: 2}),
-      e(TimeDisplay, {key: 3}),
+      '/\\/\\/\\/\\/\\',
+      //e(PlaybackControls, {key: 2}),
+      //e(TimeDisplay, {key: 3}),
       e(UndoRedoControl, {key: 4}),
     ]),
     e('main', {key: 1}, [
@@ -19,23 +19,33 @@ const App = (() => {
         e(BrushList, {key: 10}),
         e('hr', {key: 11}),
         e(VoiceList, {key: 20}),
+        e('hr', {key: 21}),
+        e(YouTubeView, {key: 30}),
+        e('hr', {key: 31}),
+        (editorMode !== editorModes.VISUAL ?
+          e(VisualView, {
+            small: true,
+            w: 200, h: 150,
+            key: 40
+          }) : null),
       ]),
       (() => {
         switch(editorMode) {
           case editorModes.NOTES:
             return e(NoteView, {key: 1});
           case editorModes.VISUAL:
-            return e(VisualView, {key: 2});
+            return e(VisualView, { key: 2, small: false, w: 800, h: 600 });
           case editorModes.TEMPO:
             return e(TempoGraph, {key: 3});
-          case editorModes.YOUTUBE:
-            return e(YouTubeView, {key: 4});
+          //case editorModes.YOUTUBE:
+          //  return e(YouTubeView, {key: 4});
           default:
             return null;
         }
       })(),
       e('aside', {key: 100, className: 'right'}, [
         e(PropModeSelect, {key: 30}),
+        e('hr', {key: 30.5}),
         ((propMode) => {
           switch(propMode) {
             case propModes.PIECE:

@@ -30,6 +30,7 @@ const TempoGraph = (() => {
     lastScrollY = 0;
     timeListener = this.time.bind(this);
     height = 0;
+    lastDispatch = 0;
 
     state = {
       lastChanges: {},
@@ -79,8 +80,13 @@ const TempoGraph = (() => {
 
     onMouseMove(e) {
       if (this.grabbed === -1) return;
+
+      const now = performance.now();
+      const dispatch = now > this.lastDispatch + 100;
+      if (dispatch) this.lastDispatch = now;
+      
       const { real, midi } = this.getRealAndMidi(e.clientX, e.clientY);
-      this.setChange(this.grabbed, real, midi);
+      this.setChange(this.grabbed, real, midi, dispatch);
     }
 
     setChange(id, real, midi, dispatch = false) {

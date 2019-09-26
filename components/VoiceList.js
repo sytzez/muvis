@@ -8,8 +8,8 @@ const VoiceList = (() => {
 
     return e('div', {}, [
       'Voices:',
+      e('button', {onClick: onNew, key: 1}, 'New'),
       e(List, {...props, key: 0}),
-      e('button', {onClick: onNew, key: 1}, 'New voice'),
     ]);
   };
 

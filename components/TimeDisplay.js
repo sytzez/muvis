@@ -19,7 +19,7 @@ const TimeDisplay = (() => {
 
     render() {
       return React.createElement('input', {
-        size: 5,
+        size: 2,
         value: this.state.time.toFixed(2),
         onChange: (e) => this.props.setTime(parseFloat(e.target.value)),
       });

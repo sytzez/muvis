@@ -35,6 +35,7 @@
     <script src="components/VoiceList.js"></script>
     <script src="components/Note.js"></script>
     <script src="components/PitchRangeBars.js"></script>
+    <script src="components/TimeBar.js"></script>
     <script src="components/NoteView.js"></script>
     <script src="components/Select.js"></script>
     <script src="components/EditModeSelect.js"></script>
@@ -58,12 +59,12 @@
   </body>
 
   <script>// type="text/babel"
-  (() => {
-    const e = React.createElement;
-    ReactDOM.render(
-      e(ReactRedux.Provider, {store}, e(App)),
-      document.getElementById('root'),
-    );
-  })();
+    (() => {
+      const e = React.createElement;
+      ReactDOM.render(
+        e(ReactRedux.Provider, {store}, e(App)),
+        document.getElementById('root'),
+      );
+    })();
   </script>
 </html>

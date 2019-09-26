@@ -297,7 +297,7 @@ const Note = (() => {
         length: note.length,
         pitch: note.pitch,
         color,
-        resizable: true,//state.editMode === editModes.NOTES,
+        resizable: state.editMode === editModes.NOTES,
         editMode: state.editMode,
         brush: state.selectedBrush,
         voice: state.selectedVoice,

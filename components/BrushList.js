@@ -8,8 +8,8 @@ const BrushList = (() => {
 
     return e('div', {}, [
       'Brushes:',
+      e('button', {onClick: onNew, key: 1}, 'New'),
       e(List, {...props, key: 0}),
-      e('button', {onClick: onNew, key: 1}, 'New brush'),
     ]);
   };
 

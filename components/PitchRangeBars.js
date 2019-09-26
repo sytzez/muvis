@@ -31,12 +31,13 @@ const PitchRangeBars = (() => {
       return React.createElement('div', {
         className: 'horizontalLine',
         ref: this.ref,
+        draggable: 'false',
         style: {
           top: pitch * scaleY,
           width: w,
         },
         onMouseDown: (e) => {
-          if (e.button = 1) {
+          if (e.button === 0) {
             e.stopPropagation();
             noteview.setMouseCallback(
               this.onMouseMove.bind(this),
@@ -44,7 +45,6 @@ const PitchRangeBars = (() => {
             );
           }
         },
-        onDragStart: () => false,
       });
     }
   }

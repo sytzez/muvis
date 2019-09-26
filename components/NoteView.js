@@ -225,11 +225,17 @@ const NoteView = (() => {
         key: -2,
       });
 
+      const timeBar = e(TimeBar, {
+        noteview: this,
+        h: 128 * scaleY,
+        key: -3,
+      });
+
       const selectBox = e('div', {
         className: 'selectBox',
         ref: selectDiv,
         hidden: true,
-        key: -3,
+        key: -4,
       });
 
       return e('div', {
@@ -252,13 +258,10 @@ const NoteView = (() => {
         onMouseUp: this.onMouseUp.bind(this),
         onWheel: this.onWheel.bind(this),
         onMouseMove: this.onMouseMove.bind(this),
-        // //onClick: (e) => this.onClick(e),
-        // onMouseDown: (e) => this.onPress(e),
-        // onMouseUp: (e) => this.onRelease(e),
-        // onMouseMove: (e) => this.onMouseMove(e),
       }, [
         pitchTopBar,
         pitchBotBar,
+        timeBar,
         selectBox,
         ...noteElements,
       ]));

@@ -82,6 +82,10 @@ button.selected {
   overflow: auto;
 }
 
+.canvas_outside_small {
+  text-align: center;
+}
+
 .noteview {
   overflow: scroll;
   position: relative;
@@ -140,7 +144,6 @@ button.selected {
 .horizontalLine {
   position: absolute;
   left: 0px;
-  width: auto;
   height: 16px;
   background: #f8f8f8;
   border-top: 2px solid #bbb;
@@ -154,9 +157,8 @@ button.selected {
 .verticalLine {
   position: absolute;
   top: 0px;
-  height: auto;
   width: 16px;
-  background: #f8f8f8;
+  background: rgba(255, 255, 255, 0);
   border-left: 2px solid #bbb;
   cursor: ew-resize;
 }

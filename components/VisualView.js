@@ -43,15 +43,21 @@ const VisualView = (() => {
     }
 
     render() {
+      const { w, h, small } = this.props;
+
       this.loadGL();
 
       return e('div', {
-        className: 'canvas_outside',
+        className: small ? 'canvas_small_outside' : 'canvas_outside',
+        style: small ? {
+          width: w,
+          height: h,
+        } : {},
       }, e('canvas', {
         className: 'canvas',
         ref: this.canv,
-        width: 800,//1280,
-        height: 600,//1024,
+        width: w,//1280,
+        height: h,//1024,
       }));
     }
   }
