@@ -59,13 +59,24 @@ const App = (() => {
         })(propMode),
       ]),
     ]),
-    e('footer', {key: 2}, [
-      e(EditModeSelect, {key: 0}),
-      '/\\/\\/\\/\\/\\',
-      e(ColorModeSelect, {key: 1}),
-      '/\\/\\/\\/\\/\\',
-      e(ZoomControls, {key: 2}),
-    ]),
+    (() => {
+      switch(editorMode) {
+        case editorModes.NOTES:
+          return e('footer', {key: 2}, [
+            e(EditModeSelect, {key: 0}),
+            '/\\/\\/\\/\\/\\',
+            e(ColorModeSelect, {key: 1}),
+            '/\\/\\/\\/\\/\\',
+            e(ZoomControls, {key: 2}),
+          ]);
+        case editorModes.TEMPO:
+          return e('footer', {key: 3}, [
+            e(GraphZoomControls, {key: 2}),
+          ]);
+        default:
+          return null;
+      }
+    })(),
   ]);
 
   const mapStateToProps = state => ({

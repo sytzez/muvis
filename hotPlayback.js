@@ -51,7 +51,7 @@ const hotPlayback = ((store) => {
 
     if (now > storeTime + 1000) {
       storeTime = now;
-      store.dispatch({type: 'SET_TIME', time: time, hot: false});
+      store.dispatch({type: 'SET_TIME', time, hot: false});
     }
   }
 
@@ -68,6 +68,7 @@ const hotPlayback = ((store) => {
     time = zeroTime = t;
     startTime = storeTime = now;
     
+    store.dispatch({type: 'SET_TIME', time, hot: false});
     listeners.forEach(f => f(time));
   }
 

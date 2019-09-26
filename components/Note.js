@@ -206,7 +206,7 @@ const Note = (() => {
           className: 'note_right',
           onMouseDown: (e) => {
             e.stopPropagation();
-            if (e.button === 0)
+            if (e.button === 0 && resizable)
               this.startResizing(e);
           },
         }) : null,

@@ -3,8 +3,11 @@ const midiLoader = file => {
 
   console.log(file);
 
+  let microsecs = 500000;
   const voices = [];
   const notes = [];
+  let pitchTop = 64 - 20;
+  let pitchBottom = 64 + 20;
 
   const getVoiceColor = () => (
     [
@@ -32,6 +35,8 @@ const midiLoader = file => {
         }
         
         const pitch = 127 - event.data[0];
+        if (pitch < pitchTop) pitchTop = pitch;
+        if (pitch > pitchBottom) pitchBottom = pitch;
 
         notes.push({
           id: notes.length,
@@ -49,12 +54,35 @@ const midiLoader = file => {
 
         if (id !== undefined) {
           notes[id].length = time - notes[id].start;
-          playing[pitch] === undefined;
+          playing[pitch] = undefined;
+        }
+      } else if (event.type === 255) { // meta message
+        if (event.metaType === 81 && microsecs === 500000) { // set tempo
+          microsecs = event.data;
         }
       }
     });
   });
+  
+  const tempo = [
+    { real: 0.0, midi: 0.0, id: 0 },
+    { real: microsecs * 0.000001 * 12, midi: file.timeDivision * 12, id: 1 },
+  ];
+
+  const closestPowerOf2 = x => Math.pow(2, Math.round(Math.log2(x)));
+
+  // set scale to use 128 pixels for 1 second
+  const stepsInSecond = file.timeDivision / (microsecs * 0.000001);
+  const scaleX = closestPowerOf2(128.0 / stepsInSecond);
 
   noteIdCounter = notes.length;
-  store.dispatch({ type: 'LOAD_NOTES', voices, notes });
+  tempoIdCounter = 2;
+  store.dispatch({ type: 'LOAD_NOTES', voices, notes, tempo });
+  store.dispatch({ type: 'UPDATE_PROPS', props: {
+    scaleX,
+    scaleY: 12,
+    tempoScaleX: 128,
+    tempoScaleY: scaleX,
+    pitchTop, pitchBottom,
+  } });
 };

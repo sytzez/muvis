@@ -57,9 +57,9 @@ const store = (() => {
     visibleVoices: [0, 1, 2, 3],
 
     scaleX: 1,
-    scaleY: 16,
+    scaleY: 12,
 
-    tempoScaleX: 100,
+    tempoScaleX: 128,
     tempoScaleY: 1,
 
     // song properties
@@ -119,6 +119,7 @@ const store = (() => {
           ...state,
           voices: action.voices,
           notes: action.notes,
+          tempo: action.tempo,
           selectedVoice: 0,
           selectedNotes: [],
           visibleVoices: [...action.voices.keys()],
@@ -138,6 +139,16 @@ const store = (() => {
         return {
           ...state,
           scaleY: Math.max(4, action.scaleY),
+        };
+      case 'SET_TEMPO_SCALE_X':
+        return {
+          ...state,
+          tempoScaleX: Math.max(1, action.tempoScaleX),
+        };
+      case 'SET_TEMPO_SCALE_Y':
+        return {
+          ...state,
+          tempoScaleY: Math.max(0.0078125, action.tempoScaleY),
         };
       case 'SET_PITCH_TOP':
         return {

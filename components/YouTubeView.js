@@ -4,18 +4,20 @@ const YouTubeView = (() => {
   const e = React.createElement;
 
   class YouTubeView extends React.Component {
-    iframe = React.createRef();
-    input = React.createRef();
+    iframe = null;
+    iframeParent = React.createRef();
     player = null;
+    timeCallback = this.time.bind(this);
 
     state = {
       error: '',
     }
 
     step(amount) {
-      if (this.player) {
+      const { player } = this;
+      if (player && player.getPlayerState() === YT.PlayerState.PAUSED) {
         const t = this.player.getCurrentTime() + amount;
-        this.player.seekTo(t);
+        player.seekTo(t, false);
         hotPlayback.setTime(t);
       } else {
         hotPlayback.setTime(hotPlayback.getTime() + amount);
@@ -23,14 +25,26 @@ const YouTubeView = (() => {
     }
 
     loadVideo(url) {
-      if (!this.player)
+      const { player } = this;
+      if (!player)
         this.initVideo();
       else
-        this.player.loadVideoByUrl(url, hotPlayback.getTime(), 'small');
+        player.loadVideoByUrl(url, hotPlayback.getTime(), 'small');
+    }
+
+    time(t) {
+      const { player } = this;
+      if (!player) return;
+      if (player.getPlayerState() === YT.PlayerState.PAUSED)
+        player.seekTo(t, false);
+      else if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+        const ytt = player.getCurrentTime();
+        if (Math.abs(ytt - t) > 0.1)
+          player.seekTo(t, true);
+      }
     }
 
     onStateChange(e) {
-      // e.data; // -1 unstarted, 0 ended, 1 playing, 2 paused, 3 buffering, 5 cued
       console.log(e);
 
       const { player } = this;
@@ -41,13 +55,15 @@ const YouTubeView = (() => {
         //return;
       }
 
+      console.log(player.getCurrentTime());
       hotPlayback.setTime(player.getCurrentTime()); // TODO: respond to video speed
 
       // TODO set store time? if not playing
       
       if (e.data === YT.PlayerState.PLAYING)
         hotPlayback.start();
-      else if (e.data === YT.PlayerState.PAUSED)
+      else if (e.data === YT.PlayerState.PAUSED ||
+        e.date === YT.PlayerState.ENDED)
         hotPlayback.pause();
     }
 
@@ -69,8 +85,21 @@ const YouTubeView = (() => {
           this.setState({ error: 'Unknown' });
       }
 
-      // this.player.destroy();
-      // this.player = null;
+      this.player.destroy();
+      this.player = null;
+      this.iframe = document.createElement('div');
+      this.iframeParent.current.appendChild(this.iframe);
+    }
+
+    componentDidMount() {
+      this.iframe = document.createElement('div');
+      this.iframeParent.current.appendChild(this.iframe);
+      hotPlayback.addListener(this.timeCallback);
+    }
+
+    componentWillUnmount() {
+      if (this.player) this.player.destroy();
+      hotPlayback.removeListener(this.timeCallback);
     }
 
     initVideo() {
@@ -85,7 +114,7 @@ const YouTubeView = (() => {
 
       this.setState({ error: '' });
 
-      this.player = new YT.Player(this.iframe.current, {
+      this.player = new YT.Player(this.iframe, {
         videoId: id,
         width: 200,
         height: 150,
@@ -100,13 +129,13 @@ const YouTubeView = (() => {
     render() {
       const { url, setUrl } = this.props;
       const { error } = this.state;
+      const { iframeParent } = this;
 
       if (typeof YT === 'undefined') return 'YouTube API failed to load...';
 
       return e('div', {
       }, [
         e('input', {
-          ref: this.input,
           size: 14,
           value: url,
           placeholder: 'YouTube URL',
@@ -121,7 +150,7 @@ const YouTubeView = (() => {
         }, 'Load'),
         (error !== '') ? `Error: ${error}` : null,
         e('div', {
-          ref: this.iframe,
+          ref: iframeParent,
           key: 2,
         }),
         e('button', {

@@ -84,7 +84,7 @@ const TempoGraph = (() => {
       const now = performance.now();
       const dispatch = now > this.lastDispatch + 100;
       if (dispatch) this.lastDispatch = now;
-      
+
       const { real, midi } = this.getRealAndMidi(e.clientX, e.clientY);
       this.setChange(this.grabbed, real, midi, dispatch);
     }

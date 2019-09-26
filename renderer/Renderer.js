@@ -78,7 +78,7 @@ void main() {
           colorFunc = () => [b.leftColor, b.rightColor];
       }
 
-      notes.forEach(n => {
+      notes.forEach(n => { // TODO: loop over notes only once 
         if (n.brush === b.id) {
           const colors = colorFunc(n);
           const realStart = getRealFromMidi(tempo, n.start);
