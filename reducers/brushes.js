@@ -68,6 +68,7 @@ const brushes = (state, action) => {
         {
           ...state[action.id],
           id: brushIdCounter++,
+          name: state[action.id].name + ' copy',
           noteColor: getNextBrushColor(state),
         },
         ...state.slice(index),

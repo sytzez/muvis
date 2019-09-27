@@ -5,6 +5,7 @@ const historyActions = Object.freeze(new Map([
   ['INSERT_NOTE', true, 'insert note'],
   ['INSERT_NOTES', false, 'insert notes'],
   ['UPDATE_NOTE', true, 'edit note'],
+  ['LOAD_STATE', false, 'load project'],
   // TODO finish list
 ]));
 

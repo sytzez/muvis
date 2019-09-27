@@ -231,3 +231,7 @@ button.selected {
 .tempoHandle:hover {
   fill: #888;
 }
+
+div.active {
+  background: #eef;
+}

@@ -19,7 +19,8 @@ const Note = (() => {
         nextProps.length !== props.length ||
         nextProps.pitch !== props.pitch ||
         nextProps.color !== props.color ||
-        nextProps.selected !== props.selected
+        nextProps.selected !== props.selected ||
+        nextProps.resizable !== props.resizable
       );
     }
 
@@ -61,12 +62,12 @@ const Note = (() => {
           if (e.button === 2 && e.ctrlKey)
             removeNote(id);
         } if (editMode === editModes.PAINT) {
-          if (e.button === 0 && e.ctrlKey)
+          if (e.button === 0 && !e.ctrlKey)
             paintNote(id, brush);
-          else if (e.button === 2 && e.ctrlKey)
+          else if (e.button === 2 && !e.ctrlKey)
             paintNote(id, -1);
         } else if (editMode === editModes.VOICES) {
-          if (e.button === 0 && e.ctrlKey)
+          if (e.button === 0 && !e.ctrlKey)
             voiceNote(id, voice);
         }
       }
@@ -87,12 +88,12 @@ const Note = (() => {
         if (buttons === 2 && e.ctrlKey)
           removeNote(id);
       } else if (editMode === editModes.PAINT) {
-        if (buttons === 1 && e.ctrlKey)
+        if (buttons === 1 && !e.ctrlKey)
           paintNote(id, brush);
-        else if (buttons === 2 && e.ctrlKey)
+        else if (buttons === 2 && !e.ctrlKey)
           paintNote(id, -1);
       } else if (editMode === editModes.VOICES) {
-        if (buttons === 1 && e.ctrlKey)
+        if (buttons === 1 && !e.ctrlKey)
           voiceNote(id, voice);
       }
     }
@@ -204,7 +205,7 @@ const Note = (() => {
             top: scaleY * pitch - (selected ? 2 : 1),
             width: scaleX * length,
             height: scaleY,
-            cursor: resizable ? 'move' : 'auto',
+            cursor: resizable ? 'move' : 'pointer',
           },
         }, resizable ? e('div', {
           className: 'note_right',

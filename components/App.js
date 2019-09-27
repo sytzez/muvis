@@ -7,7 +7,7 @@ const App = (() => {
     className: 'app',
   }, [
     e('header', {key: 0}, [
-      e(FileChooser, {key: 0}),
+      // e(FileChooser, {key: 0}),
       e(EditorModeSelect, {key: 1}),
       '/\\/\\/\\/\\/\\',
       //e(PlaybackControls, {key: 2}),
@@ -37,6 +37,8 @@ const App = (() => {
             return e(VisualView, { key: 2, small: false, w: 800, h: 600 });
           case editorModes.TEMPO:
             return e(TempoGraph, {key: 3});
+          case editorModes.FILES:
+            return e(FileView, {key: 4});
           //case editorModes.YOUTUBE:
           //  return e(YouTubeView, {key: 4});
           default:

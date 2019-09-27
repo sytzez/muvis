@@ -27,7 +27,7 @@ const propModes = Object.freeze({
 
 const store = (() => {
   const initialState = {
-    // editor state
+    // content
 
     voices: [
       { noteColor: noteColors.RED, voiceColor: [1,0,0] },
@@ -41,6 +41,8 @@ const store = (() => {
       { real: 0.0, midi: 0.0, id: 0 },
       { real: 1.0, midi: 100.0, id: 1 },
     ],
+
+    // editor state
 
     editorMode: editorModes.NOTES,
     editMode: editModes.NOTES,
@@ -122,6 +124,14 @@ const store = (() => {
           selectedNotes: [],
           visibleVoices: [...action.voices.keys()],
           colorMode: colorModes.VOICE,
+          editorMode: editorModes.NOTES,
+          editMode: editModes.NOTES,
+        };
+      case 'LOAD_STATE':
+        return {
+          ...initialState,
+          ...action.state,
+          history: history(state, action),
         };
       case 'UPDATE_PROPS':
         return {
@@ -174,6 +184,8 @@ const store = (() => {
             state.visibleBrushes : 
             [...state.visibleBrushes, action.id],
           selectedBrush: action.id,
+          editMode: state.editMode === editModes.VOICES ?
+            editModes.PAINT : state.editMode,
           colorMode: colorModes.BRUSH,
           propMode: propModes.BRUSH,
         };
@@ -185,6 +197,8 @@ const store = (() => {
             state.visibleVoices : 
             [...state.visibleVoices, action.id],
           selectedVoice: action.id,
+          editMode: state.editMode === editModes.PAINT ?
+            editModes.VOICES : state.editMode,
           colorMode: colorModes.VOICE,
           propMode: propModes.VOICE,
         };
@@ -200,6 +214,7 @@ const store = (() => {
         return {
           ...state,
           editorMode: action.mode,
+          editMode: editModes.NOTES,
         };
       case 'SET_COLOR_MODE':
         return {
