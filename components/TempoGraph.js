@@ -9,7 +9,7 @@ const TempoGraph = (() => {
     onMouseDown: (e) => {
       e.preventDefault();
       e.stopPropagation();
-      if (e.button === 0)
+      if (e.button === 0 && !e.altKey)
         grab(id);
       else if (e.button === 2)
         remove(id);
@@ -31,6 +31,11 @@ const TempoGraph = (() => {
     timeListener = this.time.bind(this);
     height = 0;
     lastDispatch = 0;
+    zoomFix = false;
+    zoomReal = 0;
+    zoomMidi = 0;
+    zoomX = 0;
+    zoomY = 0;
 
     state = {
       lastChanges: {},
@@ -78,15 +83,25 @@ const TempoGraph = (() => {
       this.grabbed = tempoIdCounter - 1;
     }
 
-    onMouseMove(e) {
-      if (this.grabbed === -1) return;
-
+    move(x, y) {
       const now = performance.now();
       const dispatch = now > this.lastDispatch + 100;
       if (dispatch) this.lastDispatch = now;
 
-      const { real, midi } = this.getRealAndMidi(e.clientX, e.clientY);
+      const { real, midi } = this.getRealAndMidi(x, y);
       this.setChange(this.grabbed, real, midi, dispatch);
+    }
+
+    putTime(x) {
+      const { real } = this.getRealAndMidi(x, 0);
+      hotPlayback.setTime(real);
+    }
+
+    onMouseMove(e) {
+      if (this.grabbed !== -1) this.move(e.clientX, e.clientY);
+      
+      const buttons = e.buttons !== undefined ? e.buttons : e.nativeEvent.which;
+      if (buttons === 1 && e.altKey) this.putTime(e.clientX);
     }
 
     setChange(id, real, midi, dispatch = false) {
@@ -118,14 +133,15 @@ const TempoGraph = (() => {
     }
 
     onMouseDown(e) {
-      if (e.button === 0)
+      if (e.button === 0 && !e.altKey)
         this.insert(e.clientX, e.clientY);
+      else if (e.button === 0 && e.altKey)
+        this.putTime(e.clientX);
     }
 
     onMouseUp(e) {
       if (this.grabbed === -1) return;
       
-      const { moveTempoChange } = this.props;
       const { real, midi } = this.getRealAndMidi(e.clientX, e.clientY);
       this.setChange(this.grabbed, real, midi, true);
 
@@ -140,7 +156,7 @@ const TempoGraph = (() => {
     }
 
     static renderInfiniteLine(x1, y1, x2, y2, w, h, key) {
-      const mega = 100;
+      const mega = 1000;
       let dx = (x2 - x1) * mega;
       let dy = (y2 - y1) * mega;
 
@@ -168,12 +184,29 @@ const TempoGraph = (() => {
       this.lastScrollY = this.height - this.outside.current.scrollTop;
     }
 
+    onWheel(e) {
+      if (!e.ctrlKey) return;
+      
+      const { real, midi } = this.getRealAndMidi(e.clientX, e.clientY);
+      const { setScale, scaleX, scaleY } = this.props;
+
+      const factor = Math.SQRT2 * (e.deltaY < 0 ? 1.0 : 0.5);
+      setScale(scaleX * factor, scaleY * factor);
+
+      this.zoomFix = true;
+      this.zoomX = e.clientX;
+      this.zoomY = e.clientY;
+      this.zoomReal = real;
+      this.zoomMidi = midi;
+    }
+
     componentDidMount() {
       this.outside.current.scrollTop =
         this.inside.current.getAttribute('height') -
         this.outside.current.getAttribute('height');
 
       hotPlayback.addListener(this.timeListener);
+
     }
 
     componentWillUnmount() {
@@ -252,13 +285,23 @@ const TempoGraph = (() => {
       })
 
       if (outside.current) {
-        outside.current.scrollTop = height - this.lastScrollY;
+        if (this.zoomFix) {
+          const { zoomX, zoomY, zoomMidi, zoomReal } = this;
+          const { top, left } = outside.current.getBoundingClientRect();
+          outside.current.scrollLeft = (zoomReal * scaleX) - zoomX + left;
+          outside.current.scrollTop = height - (zoomMidi * scaleY) - zoomY + top;
+          this.zoomFix = false;
+          this.lastScrollY = height - outside.current.scrollTop;
+        } else {
+          outside.current.scrollTop = height - this.lastScrollY;
+        }
       }
 
       return e('div', {
         className: 'tempograph_outside',
         ref: outside,
         onScroll: this.onScroll.bind(this),
+        onWheel: this.onWheel.bind(this),
       }, e('svg', {
         className: 'tempograph',
         ref: inside,
@@ -295,6 +338,8 @@ const TempoGraph = (() => {
       dispatch({ type: 'UPDATE_TEMPO_CHANGE', id, tempoChange: { real, midi } }),
     removeTempoChange: (id) =>
       dispatch({ type: 'REMOVE_TEMPO_CHANGE', id }),
+    setScale: (x, y) =>
+      dispatch({ type: 'SET_TEMPO_SCALE', tempoScaleX: x, tempoScaleY: y }),
   });
 
   return ReactRedux.connect(

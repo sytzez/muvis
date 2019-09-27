@@ -22,9 +22,18 @@ const PlaybackControls = (() => {
   });
 
   const mapDispatchToProps = dispatch => ({
-    play: () => dispatch({ type: 'PLAY' }),
-    pause: () => dispatch({ type: 'PAUSE' }),
-    stop: () => dispatch({ type: 'STOP' }),
+    play: () => {
+      dispatch({ type: 'PLAY' });
+      hotPlayback.start();
+    },
+    pause: () => {
+      dispatch({ type: 'PAUSE' });
+      hotPlayback.pause();
+    },
+    stop: () => {
+      dispatch({ type: 'STOP' });
+      hotPlayback.stop();
+    },
   });
 
   return ReactRedux.connect(

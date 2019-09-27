@@ -30,12 +30,13 @@ footer {
 
 main {
   display: flex;
-  flex: 1;
+  flex-grow: 1;
 }
 
 aside {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
 }
 
 aside.left {
@@ -43,7 +44,7 @@ aside.left {
 }
 
 aside.right {
-  width: 350px;
+  width: 250px;
 }
 
 button.selected {

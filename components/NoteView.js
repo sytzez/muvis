@@ -147,6 +147,12 @@ const NoteView = (() => {
       }
     }
 
+    putTime(x) {
+      const { tempo } = this.props;
+      const { time } = this.getTimeAndPitch(x, 0);
+      hotPlayback.setTime(getRealFromMidi(tempo, time));
+    }
+
     onMouseDown(e) {
       const { editMode, deselectAll } = this.props;
 
@@ -155,6 +161,9 @@ const NoteView = (() => {
           if (e.button === 0)
             this.insertNoteAtPoint(e.clientX, e.clientY);
         }
+      } else if (e.altKey) {
+        if (e.button === 0)
+          this.putTime(e.clientX);
       } else {
         if (e.button === 0) {
           if (!e.shiftKey) deselectAll();
@@ -176,6 +185,10 @@ const NoteView = (() => {
       
       const select = this.selectBox;
       if (select) this.updateSelectBox(e.clientX, e.clientY);
+
+      const buttons = e.buttons !== undefined ? e.buttons : e.nativeEvent.which;
+      if (buttons === 0 && e.altKey)
+        this.putTime(e.clientX);
     }
 
     onScroll(e) {
@@ -279,6 +292,7 @@ const NoteView = (() => {
     pitchBot: state.pitchBot,
     visibleBrushes: state.visibleBrushes,
     visibleVoices: state.visibleVoices,
+    tempo: state.tempo,
   });
 
   const mapDispatchToProps = dispatch => ({

@@ -6,7 +6,7 @@ const tempoChangeDesign = {
   id: 0,
 };
 
-let tempoIdCounter = 10;
+let tempoIdCounter = 2;
 
 const tempo = (state, action) => {
   switch(action.type) {

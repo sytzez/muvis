@@ -40,6 +40,8 @@ const Note = (() => {
     }
 
     onMouseDown(e) {
+      if (e.altKey) return;
+
       e.stopPropagation();
 
       const {
@@ -71,6 +73,8 @@ const Note = (() => {
     }
 
     onMouseEnter(e) {
+      if (e.altKey) return;
+
       // e.buttons polyfill (Safari)
       const buttons = e.buttons !== undefined ? e.buttons : e.nativeEvent.which;
 

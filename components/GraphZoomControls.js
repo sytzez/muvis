@@ -8,6 +8,7 @@ const GraphZoomControls = (() => {
       e('button', {
         key: 0,
         onClick: () => setScaleX(scaleX * Math.SQRT2 * 0.5),
+        disabled: scaleX <= 1,
       }, '-'),
       e('button', {
         key: 1,
@@ -17,6 +18,7 @@ const GraphZoomControls = (() => {
       e('button', {
         key: 2,
         onClick: () => setScaleY(scaleY * Math.SQRT2 * 0.5),
+        disabled: scaleY <= 0.0078125,
       }, '-'),
       e('button', {
         key: 3,

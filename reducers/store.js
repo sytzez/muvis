@@ -40,8 +40,6 @@ const store = (() => {
     tempo: [
       { real: 0.0, midi: 0.0, id: 0 },
       { real: 1.0, midi: 100.0, id: 1 },
-      { real: 2.0, midi: 200.0, id: 2 },
-      { real: 5.0, midi: 500.0, id: 3 },
     ],
 
     editorMode: editorModes.NOTES,
@@ -150,6 +148,12 @@ const store = (() => {
           ...state,
           tempoScaleY: Math.max(0.0078125, action.tempoScaleY),
         };
+      case 'SET_TEMPO_SCALE':
+        return {
+          ...state,
+          tempoScaleX: Math.max(1, action.tempoScaleX),
+          tempoScaleY: Math.max(0.0078125, action.tempoScaleY),
+        }
       case 'SET_PITCH_TOP':
         return {
           ...state,

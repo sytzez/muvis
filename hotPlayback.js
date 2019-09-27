@@ -66,9 +66,13 @@ const hotPlayback = ((store) => {
     const now = performance.now();
 
     time = zeroTime = t;
-    startTime = storeTime = now;
+    startTime = now;
     
-    store.dispatch({type: 'SET_TIME', time, hot: false});
+    if (now > storeTime + 1000) {
+      storeTime = now;
+      store.dispatch({type: 'SET_TIME', time, hot: false});
+    }
+
     listeners.forEach(f => f(time));
   }
 
@@ -84,4 +88,4 @@ const hotPlayback = ((store) => {
   };
 })(store);
 
-store.dispatch({type: 'SET_HOT_PLAYBACK', hotPlayback});
+// store.dispatch({type: 'SET_HOT_PLAYBACK', hotPlayback});
