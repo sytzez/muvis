@@ -7,12 +7,12 @@ const ZoomControls = (() => {
     e('div', {style: {alignSelf: 'flex-end'}}, [
       e('button', {
         key: 0,
-        onClick: () => setScaleX(scaleX * 0.5),
+        onClick: () => setScaleX(scaleX * Math.SQRT2 * 0.5),
         disabled: scaleX <= 0.0625,
       }, '-'),
       e('button', {
         key: 1,
-        onClick: () => setScaleX(scaleX * 2.0),
+        onClick: () => setScaleX(scaleX * Math.SQRT2),
       }, '+'),
       '|',
       e('button', {

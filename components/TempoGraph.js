@@ -187,12 +187,12 @@ const TempoGraph = (() => {
     onWheel(e) {
       if (!e.ctrlKey) return;
       
-      const { real, midi } = this.getRealAndMidi(e.clientX, e.clientY);
       const { setScale, scaleX, scaleY } = this.props;
 
       const factor = Math.SQRT2 * (e.deltaY < 0 ? 1.0 : 0.5);
       setScale(scaleX * factor, scaleY * factor);
 
+      const { real, midi } = this.getRealAndMidi(e.clientX, e.clientY);
       this.zoomFix = true;
       this.zoomX = e.clientX;
       this.zoomY = e.clientY;

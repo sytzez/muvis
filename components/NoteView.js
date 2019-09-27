@@ -12,6 +12,12 @@ const NoteView = (() => {
       mouseUpCallback: null,
     }
 
+    zoomFix = false;
+    zoomX = 0;
+    zoomY = 0;
+    zoomReal = 0;
+    zoomMidi = 0;
+
     selectBox = null
 
     last = {
@@ -34,6 +40,7 @@ const NoteView = (() => {
         this.state.leftTimeBound !== nextState.leftTimeBound ||
         this.state.rightTimeBound !== nextState.rightTimeBound ||
         this.props.scaleX !== nextProps.scaleX ||
+        this.props.scaleY !== nextProps.scaleY ||
         this.props.notes !== nextProps.notes
         //this.last.noteIdCounter !== noteIdCounter || // redundant?
         //this.props.notes.length !== nextProps.notes.length
@@ -187,7 +194,7 @@ const NoteView = (() => {
       if (select) this.updateSelectBox(e.clientX, e.clientY);
 
       const buttons = e.buttons !== undefined ? e.buttons : e.nativeEvent.which;
-      if (buttons === 0 && e.altKey)
+      if (buttons === 1 && e.altKey)
         this.putTime(e.clientX);
     }
 
@@ -196,10 +203,22 @@ const NoteView = (() => {
     }
 
     onWheel(e) {
-      if (e.ctrlKey) {
-        //e.preventDefault();
-        // TODO resize
+      if (!e.ctrlKey) return;
+
+      if (e.shiftKey) {
+        const { scaleY, setScaleY } = this.props;
+        setScaleY(scaleY + (e.deltaY < 0 ? 1 : -1));
+      } else {
+        const { scaleX, setScaleX } = this.props;
+        setScaleX(scaleX * Math.SQRT2 * (e.deltaY < 0 ? 1.0 : 0.5))
       }
+
+      const { time, pitch } = this.getTimeAndPitch(e.clientX, e.clientY);
+      this.zoomFix = true;
+      this.zoomX = e.clientX;
+      this.zoomY = e.clientY;
+      this.zoomTime = time;
+      this.zoomPitch = pitch;
     }
 
     render() {
@@ -251,6 +270,17 @@ const NoteView = (() => {
         key: -4,
       });
 
+      if (outerDiv.current) {
+        if (this.zoomFix) {
+          const { zoomX, zoomY, zoomTime, zoomPitch } = this;
+          const { top, left } = outerDiv.current.getBoundingClientRect();
+          outerDiv.current.scrollLeft = (zoomTime * scaleX) - zoomX + left;
+          outerDiv.current.scrollTop = (zoomPitch * scaleY) - zoomY + top;
+          this.zoomFix = false;
+          console.log(zoomY);
+        }
+      }
+
       return e('div', {
         className: 'noteview',
         id: 'noteview',
@@ -300,6 +330,8 @@ const NoteView = (() => {
     selectNotes: (ids) => dispatch({ type: 'SELECT_NOTES', ids }),
     shiftSelectNotes: (ids) => dispatch({ type: 'SHIFT_SELECT_NOTES', ids }),
     deselectAll: () => dispatch({ type: 'DESELECT_ALL_NOTES' }),
+    setScaleX: (scaleX) => dispatch({ type: 'SET_SCALE_X', scaleX }),
+    setScaleY: (scaleY) => dispatch({ type: 'SET_SCALE_Y', scaleY }),
   });
 
   return ReactRedux.connect(
