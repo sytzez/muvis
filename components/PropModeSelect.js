@@ -8,6 +8,7 @@ const PropModeSelect = (() => {
       { value: propModes.VOICE, text: 'Voice' },
     ],
     selected: state.propMode,
+    tabs: true,
   });
 
   const mapDispatchToProps = dispatch => ({

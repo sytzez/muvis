@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  font: 15px arial, ssans-serif;
+  font: 15px 'Roboto', sans-serif;
 }
 
 hr {
@@ -19,12 +19,12 @@ hr {
 }
 
 header {
-  height: 25px;
+  height: 26px;
   display: flex;
 }
 
 footer {
-  height: 25px;
+  height: 26px;
   display: flex;
 }
 
@@ -37,6 +37,7 @@ aside {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  padding: 4px;
 }
 
 aside.left {
@@ -47,14 +48,14 @@ aside.right {
   width: 250px;
 }
 
-.fileView {
-  margin: 40px;
-  font-size: 20px;
+.filler {
+  display: flex;
+  flex-grow: 1;
 }
 
-button.selected {
-  background: #f8f8f8;
-  border-style: inset;
+.fileView {
+  margin: 40px;
+  font: 22px 'Nunito Sans', sans-serif;
 }
 
 .listview {
@@ -64,6 +65,7 @@ button.selected {
 }
 
 .listitem {
+  font: 16px 'Roboto', sans-serif;
   background: #ddd;
   border-style: solid;
   border-width: 1px;
@@ -100,7 +102,7 @@ button.selected {
   z-index: 1;
   white-space: nowrap;
 
-  font-size: 20px;
+  font: 20px 'Nunito Sans', sans-serif;
   color: #fff;
   background-color: #000;
   opacity: 0.25;
@@ -255,4 +257,53 @@ button.selected {
 
 div.active {
   background: #eef;
+}
+
+button {
+  background: #eee;
+  height: 26px;
+  font: 14px 'Roboto', sans-serif;
+  border-radius: 12px;
+  border-width: 1px;
+  padding: 3px 6px;
+}
+
+button.selected {
+  background: #f8f8f8;
+  border-width: 2px;
+  border-style: inset;
+  padding: 3px 5px;
+}
+
+.select button {
+  border-radius: 0px;
+}
+
+.select button:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.select button:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.tab button {
+  background: #eee;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-bottom-style: solid;
+  height: 26px;
+}
+
+.tab button.selected {
+  background: #fff;
+  border-bottom-style: none;
+}
+
+input {
+  font: 15px 'Roboto', sans-serif;
 }

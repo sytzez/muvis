@@ -10,6 +10,7 @@ const EditorModeSelect = (() => {
       { value: editorModes.VISUAL, text: 'Preview' },
     ],
     selected: state.editorMode,
+    tabs: true,
   });
 
   const mapDispatchToProps = dispatch => ({

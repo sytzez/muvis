@@ -7,9 +7,9 @@ const App = (() => {
     className: 'app',
   }, [
     e('header', {key: 0}, [
-      // e(FileChooser, {key: 0}),
+      e('div', {className: 'filler', key: 0}),
       e(EditorModeSelect, {key: 1}),
-      '/\\/\\/\\/\\/\\',
+      e('div', {className: 'filler', key: 2}),
       //e(PlaybackControls, {key: 2}),
       //e(TimeDisplay, {key: 3}),
       e(UndoRedoControl, {key: 4}),
@@ -68,13 +68,13 @@ const App = (() => {
         case editorModes.NOTES:
           return e('footer', {key: 2}, [
             e(EditModeSelect, {key: 0}),
-            '/\\/\\/\\/\\/\\',
-            e(ColorModeSelect, {key: 1}),
-            '/\\/\\/\\/\\/\\',
-            e(ZoomControls, {key: 2}),
+            e(ColorModeSelect, {key: 2}),
+            e('div', {className: 'filler', key: 3}),
+            e(ZoomControls, {key: 4}),
           ]);
         case editorModes.TEMPO:
           return e('footer', {key: 3}, [
+            e('div', {className: 'filler', key: 1}),
             e(GraphZoomControls, {key: 2}),
           ]);
         default:
