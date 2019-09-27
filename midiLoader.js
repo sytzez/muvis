@@ -1,8 +1,6 @@
 const midiLoader = file => {
   'use strict';
 
-  console.log(file);
-
   let microsecs = 500000;
   const voices = [];
   const notes = [];

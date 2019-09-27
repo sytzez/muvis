@@ -5,9 +5,11 @@ const FileView = (() => {
 
   class FileView extends React.Component {
     state = {
+      midiError: '',
       jsonInput: '',
       jsonError: '',
       jsonUrl: '',
+      jsonError2: '',
     };
 
     midiFile = React.createRef();
@@ -22,17 +24,25 @@ const FileView = (() => {
       this.setState({ jsonUrl: url });
     }
 
-    removeLink() {
+    removeDownloadLink() {
       window.URL.revokeObjectURL(this.state.jsonUrl);
       this.setState({ jsonUrl: '' });
     }
 
+    midiParserCallback(file) {
+      if (file === false) {
+        this.setState({ midiError: 'Invalid file' });
+      } else {
+        midiLoader(file);
+      }
+    }
+
     componentDidMount() {
-      MidiParser.parse(this.midiFile.current, midiLoader);
+      MidiParser.parse(this.midiFile.current, this.midiParserCallback.bind(this));
     }
 
     render() {
-      const { jsonInput, jsonError, jsonUrl } = this.state;
+      const { midiError, jsonInput, jsonError, jsonUrl, jsonError2 } = this.state;
       const { loadEmpty } = this.props;
       const { midiFile, jsonFile } = this;
 
@@ -51,15 +61,33 @@ const FileView = (() => {
           ref: midiFile,
           key: 0,
         }),
+        midiError !== '' ? e('div', {key: 0.5}, midiError) : null,
         e('hr', {key: 1}),
 
         'Load project from JSON file: ',
         e('input', {
           type: 'file',
           accept: 'application/json,.json,.txt',
+          onChange: ((e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            const fv = this;
+            this.setState({ jsonError2: '' });
+            reader.onload = (e) => {
+              try {
+                const json = e.target.result;
+                jsonLoader(json);
+              } catch(e) {
+                fv.setState({ jsonError2: 'Invalid file' });
+                console.log(e);
+              }
+            }
+            reader.readAsText(file);
+          }).bind(this),
           ref: jsonFile,
           key: 2
         }),
+        jsonError2 !== '' ? e('div', {key: 2.5}, jsonError2) : null,
         e('hr', {key: 3}),
 
         'Load project from plain JSON text: ',
@@ -75,7 +103,7 @@ const FileView = (() => {
               jsonLoader(this.state.jsonInput);
               this.setState({ jsonError: '' });
             } catch(e) {
-              this.setState({ jsonError: e.toString() });
+              this.setState({ jsonError: 'Invalid file' });
             }
           }).bind(this),
           key: 5,
