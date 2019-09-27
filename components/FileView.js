@@ -7,21 +7,62 @@ const FileView = (() => {
     state = {
       jsonInput: '',
       jsonError: '',
+      jsonUrl: '',
     };
 
-    render() {
-      const { jsonInput, jsonError } = this.state;
+    midiFile = React.createRef();
+    jsonFile = React.createRef();
 
-      return e('div', {}, [
+    downloadJSON() {
+      const json = jsonSaver(store.getState());
+      const file = new File([json], 'project.json', {
+        type: 'application/json',
+      }); // TODO file name
+      const url = window.URL.createObjectURL(file);
+      this.setState({ jsonUrl: url });
+    }
+
+    removeLink() {
+      window.URL.revokeObjectURL(this.state.jsonUrl);
+      this.setState({ jsonUrl: '' });
+    }
+
+    componentDidMount() {
+      MidiParser.parse(this.midiFile.current, midiLoader);
+    }
+
+    render() {
+      const { jsonInput, jsonError, jsonUrl } = this.state;
+      const { loadEmpty } = this.props;
+      const { midiFile, jsonFile } = this;
+
+      return e('div', { className: 'fileView' }, [
+        'Start empty project: ',
+        e('button', {
+          onClick: loadEmpty,
+          key: -10,
+        }, 'New project'),
+        e('hr', {key: -11}),
+
         'Import MIDI file: ',
-        e(FileChooser, {key: 0}),
+        e('input', {
+          type: 'file',
+          accept: 'audio/midi,.mid,.midi',
+          ref: midiFile,
+          key: 0,
+        }),
         e('hr', {key: 1}),
 
         'Load project from JSON file: ',
-        e('div', {key: 2}),
+        e('input', {
+          type: 'file',
+          accept: 'application/json,.json,.txt',
+          ref: jsonFile,
+          key: 2
+        }),
         e('hr', {key: 3}),
 
-        'Load project from plain JSON text:',
+        'Load project from plain JSON text: ',
         e('input', {
           placeholder: 'Paste here...',
           value: jsonInput,
@@ -39,18 +80,37 @@ const FileView = (() => {
           }).bind(this),
           key: 5,
         }, 'Load'),
-        jsonError !== '' ? `Error: ${jsonError}` : null,
+        jsonError !== '' ? e('div', {key: 5.5}, jsonError) : null,
         e('hr', {key: 6}),
 
+        'Download project as JSON file: ',
         e('button', {
+          onClick: this.downloadJSON.bind(this),
           key: 10,
-        }, 'Download project as JSON file'),
+        }, 'Create file'),
+        jsonUrl !== '' ? e('a', {
+          href: jsonUrl,
+          download: true,
+          key: 11,
+        }, 'Download link') : null,
+        e('hr', {key: 12}),
 
-        'Example projects: ',
+        'Load example project: ',
         e('br', {key: 20}),
       ]);
     }
   }
 
-  return ReactRedux.connect()(FileView);
+  const mapStateToProps = state => ({
+
+  });
+
+  const mapDispatchToProps = dispatch => ({
+    loadEmpty: () => dispatch({ type: 'LOAD_EMPTY' }),
+  })
+
+  return ReactRedux.connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(FileView);
 })();

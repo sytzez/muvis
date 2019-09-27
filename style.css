@@ -47,6 +47,11 @@ aside.right {
   width: 250px;
 }
 
+.fileView {
+  margin: 40px;
+  font-size: 20px;
+}
+
 button.selected {
   background: #f8f8f8;
   border-style: inset;
@@ -85,6 +90,22 @@ button.selected {
 
 .canvas_outside_small {
   text-align: center;
+}
+
+.noteviewHelpText {
+  pointer-events: none;
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  z-index: 1;
+  white-space: nowrap;
+
+  font-size: 20px;
+  color: #fff;
+  background-color: #000;
+  opacity: 0.25;
+  border-radius: 24px;
+  padding: 8px 10px;
 }
 
 .noteview {

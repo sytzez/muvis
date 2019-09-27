@@ -2,6 +2,40 @@ const NoteView = (() => {
   'use strict';
 
   const e = React.createElement;
+  const br = key => e('br', {key});
+
+  const HelpText = ReactRedux.connect(
+    state => {
+      const text = [];
+      switch(state.editMode) {
+        case editModes.NOTES:
+          text.push(
+            'Note edit mode:', br(0),
+            'LMB: Move/resize note', br(1),
+            'Ctrl+LMB: Insert note', br(2),
+            'Ctrl+RMB: Remove note', br(3),
+          ); break;
+        case editModes.PAINT:
+          text.push(
+            'Brush paint mode:', br(0),
+            'LMB: Paint note with brush', br(1),
+            'RMB: Unpaint note', br(2),
+          ); break;
+        case editModes.VOICES:
+          text.push(
+            'Voice paint mode:', br(0),
+            'LMB: Paint note with voice', br(1),
+          ); break;
+      }
+      text.push(
+        'Alt+LMB: Set play position', br(10),
+        // 'Shift+Scroll: Vertical scroll', br(11),
+        // 'Ctrl+Scroll: Vertical zoom', br(12),
+        // 'Ctrl+Shift+Scroll: Horizontal zoom', br(13),
+      );
+      return { text };
+    },
+  )(({ text }) => e('div', { className: 'noteviewHelpText'}, text));
 
   class NoteView extends React.Component {
     internal = {
@@ -281,11 +315,16 @@ const NoteView = (() => {
         }
       }
 
-      return e('div', {
+      return [e('div', {
+        style: {position: 'relative'},
+        key: 0,
+      }, e(HelpText, {key: 1})),
+      e('div', {
         className: 'noteview',
         id: 'noteview',
         ref: outerDiv,
         onScroll: this.onScroll.bind(this),
+        key: 1,
       }, e('div', {
         className: 'noteview_inside',
         id: 'noteview_inside',
@@ -307,7 +346,7 @@ const NoteView = (() => {
         timeBar,
         selectBox,
         ...noteElements,
-      ]));
+      ]))];
     }
   }
 

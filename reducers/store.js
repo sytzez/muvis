@@ -44,7 +44,7 @@ const store = (() => {
 
     // editor state
 
-    editorMode: editorModes.NOTES,
+    editorMode: editorModes.FILES,
     editMode: editModes.NOTES,
     colorMode: colorModes.VOICE,
     propMode: propModes.PIECE,
@@ -121,17 +121,24 @@ const store = (() => {
           notes: action.notes,
           tempo: action.tempo,
           selectedVoice: 0,
+          selectedBrush: -1,
           selectedNotes: [],
-          visibleVoices: [...action.voices.keys()],
+          visibleVoices: [ ...action.voices.keys() ],
           colorMode: colorModes.VOICE,
           editorMode: editorModes.NOTES,
           editMode: editModes.NOTES,
         };
       case 'LOAD_STATE':
         return {
-          ...initialState,
           ...action.state,
+          playback: initialState.playback,
+          editorMode: editorModes.NOTES,
           history: history(state, action),
+        };
+      case 'LOAD_EMPTY':
+        return {
+          ...initialState,
+          editorMode: editorModes.NOTES,
         };
       case 'UPDATE_PROPS':
         return {

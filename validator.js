@@ -116,11 +116,11 @@ const validateState = (() => {
 
     // playback state
 
-    playback: valObject({
-      playing: valBool,
-      time: valNumber,
-      // hot: v => v !== undefined,
-    }),
+    // playback: valObject({
+    //   playing: valBool,
+    //   time: valNumber,
+    //   // hot: v => v !== undefined,
+    // }),
 
     // history (we don't want)
 

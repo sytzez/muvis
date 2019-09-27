@@ -14,7 +14,9 @@ const App = (() => {
       //e(TimeDisplay, {key: 3}),
       e(UndoRedoControl, {key: 4}),
     ]),
-    e('main', {key: 1}, [
+    e('main', {key: 1},
+      (editorMode === editorModes.FILES) ?
+      e(FileView, {key: 50}) : [
       e('aside', {key: 0, className: 'left'}, [
         e(BrushList, {key: 10}),
         e('hr', {key: 11}),
@@ -37,8 +39,8 @@ const App = (() => {
             return e(VisualView, { key: 2, small: false, w: 800, h: 600 });
           case editorModes.TEMPO:
             return e(TempoGraph, {key: 3});
-          case editorModes.FILES:
-            return e(FileView, {key: 4});
+          // case editorModes.FILES:
+          //   return e(FileView, {key: 5});
           //case editorModes.YOUTUBE:
           //  return e(YouTubeView, {key: 4});
           default:

@@ -30,7 +30,10 @@ const midiLoader = file => {
 
       if (event.type === 9) { // note on
         if (zero) { // create new voice on first note
-          voices.push({ noteColor: getVoiceColor() });
+          voices.push({
+            noteColor: getVoiceColor(),
+            voiceColor: [1,0,0], // TODO generate random color
+          });
           zero = false;
         }
         

@@ -9,3 +9,12 @@ const jsonLoader = json => {
 
   store.dispatch({ type: 'LOAD_STATE', state });
 };
+
+const jsonSaver = state => {
+  const cleanState = {
+    ...state,
+    playback: {},
+    history: {},
+  }
+  return JSON.stringify(cleanState);
+};
