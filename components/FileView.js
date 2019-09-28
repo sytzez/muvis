@@ -78,7 +78,7 @@ const FileView = (() => {
                 const json = e.target.result;
                 jsonLoader(json);
               } catch(e) {
-                fv.setState({ jsonError2: 'Invalid file' });
+                fv.setState({ jsonError2: 'Invalid JSON' });
                 console.log(e);
               }
             }

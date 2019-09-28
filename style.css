@@ -60,21 +60,33 @@ aside.right {
 
 .listview {
   width: 200px;
-  height: 150px;
+  height: 120px;
   overflow-y: scroll;
 }
 
 .listitem {
   font: 16px 'Roboto', sans-serif;
   background: #ddd;
-  border-style: solid;
-  border-width: 1px;
-  border-color: #fff;
+  padding: 2px;
+  min-height: 22px;
 }
 
 .listitem.selected {
-  border-color: #000;
+  border: 2px solid #000;
+  padding: 0px;
   font-weight: bold;
+}
+
+.listitem button {
+  padding: 0px 4px;
+  min-width: 16px;
+  height: 16px;
+  font: 12px 'Roboto', sans-serif;
+  opacity: 0;
+}
+
+.listitem:hover button {
+  opacity: 1;
 }
 
 .canvas {
@@ -268,11 +280,14 @@ button {
   padding: 3px 6px;
 }
 
+button:hover {
+  border-color: #888;
+}
+
 button.selected {
   background: #f8f8f8;
-  border-width: 2px;
-  border-style: inset;
-  padding: 3px 5px;
+  border: 2px inset #ccc;
+  padding: 2px 5px;
 }
 
 .select button {
@@ -291,11 +306,12 @@ button.selected {
 
 .tab button {
   background: #eee;
+  border-style: outset;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
-  border-bottom-style: solid;
+  border-bottom-style: none;
   height: 26px;
 }
 

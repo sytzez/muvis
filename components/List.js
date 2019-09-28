@@ -36,7 +36,7 @@ const List = ({ items, selected, checked,
         onRemove(i.value);
       },
       key: 2,
-    }, '-'));
+    }, 'del'));
     
     if (cloneable) sub.push(e('button', {
       onClick: (e) => {
@@ -44,7 +44,7 @@ const List = ({ items, selected, checked,
         onClone(i.value);
       },
       key: 3,
-    }, 'C'));
+    }, 'cpy'));
 
     return e('div', {
       className: 'listitem ' + (selected === i.value ? 'selected ' : '') + i.color,
