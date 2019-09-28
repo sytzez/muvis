@@ -43,6 +43,7 @@ const Note = (() => {
     onMouseDown(e) {
       if (e.altKey) return;
 
+      click++;
       e.stopPropagation();
 
       const {
@@ -211,6 +212,7 @@ const Note = (() => {
           className: 'note_right',
           onMouseDown: (e) => {
             e.stopPropagation();
+            click++;
             if (e.button === 0 && resizable)
               this.startResizing(e);
           },
@@ -354,21 +356,21 @@ const Note = (() => {
 
   const mapDispatchToProps = dispatch => ({
     selectNote: (id) =>
-      dispatch({ type: 'SHIFT_SELECT_NOTE', id }),
+      dispatch({ type: 'SHIFT_SELECT_NOTE', id, click }),
     paintNote: (id, brushId) =>
-      dispatch({ type: 'PAINT_NOTE', id, brushId }),
+      dispatch({ type: 'PAINT_NOTE', id, brushId, click }),
     voiceNote: (id, voiceId) =>
-      dispatch({ type: 'VOICE_NOTE', id, voiceId }),
+      dispatch({ type: 'VOICE_NOTE', id, voiceId, click }),
     moveNote: (id, start, pitch) =>
-      dispatch({ type: 'UPDATE_NOTE', id, note: { pitch, start } }),
+      dispatch({ type: 'UPDATE_NOTE', id, note: { pitch, start }, click }),
     moveNotes: (ids, time, pitch) =>
-      dispatch({ type: 'MOVE_NOTES', ids, time, pitch }),
+      dispatch({ type: 'MOVE_NOTES', ids, time, pitch, click }),
     resizeNote: (id, length) =>
-      dispatch({ type: 'UPDATE_NOTE', id, note: { length } }),
+      dispatch({ type: 'UPDATE_NOTE', id, note: { length }, click }),
     resizeNotes: (ids, length) =>
-      dispatch({ type: 'RESIZE_NOTES', ids, length }),
+      dispatch({ type: 'RESIZE_NOTES', ids, length, click }),
     removeNote: (id) =>
-      dispatch({ type: 'REMOVE_NOTE', id }),
+      dispatch({ type: 'REMOVE_NOTE', id, click }),
   });
 
   return ReactRedux.connect(

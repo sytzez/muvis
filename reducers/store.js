@@ -88,7 +88,12 @@ const store = (() => {
     }
   };
 
-  const reducer = (state = initialState, action) => {
+  const reducer = (_state = initialState, action) => {
+    const state = {
+      ..._state,
+      action,
+    };
+
     switch(action.type) {
       case 'UNDO': {
         const past = state.history.past;
@@ -127,6 +132,8 @@ const store = (() => {
           colorMode: colorModes.VOICE,
           editorMode: editorModes.NOTES,
           editMode: editModes.NOTES,
+          ...action.props,
+          history: history(state, action),
         };
       case 'LOAD_STATE':
         return {
@@ -139,11 +146,13 @@ const store = (() => {
         return {
           ...initialState,
           editorMode: editorModes.NOTES,
+          history: history(state, action),
         };
       case 'UPDATE_PROPS':
         return {
           ...state,
           ...action.props,
+          history: history(state, action),
         };
       case 'SET_SCALE_X':
         return {
@@ -176,12 +185,14 @@ const store = (() => {
           ...state,
           pitchTop: action.pitch,
           pitchBottom: Math.max(state.pitchBottom, action.pitch + 4),
+          history: history(state, action),
         };
       case 'SET_PITCH_BOTTOM':
         return {
           ...state,
           pitchBottom: action.pitch,
           pitchTop: Math.min(state.pitchTop, action.pitch - 4),
+          history: history(state, action),
         };
       case 'SELECT_BRUSH':
         return {
@@ -246,6 +257,7 @@ const store = (() => {
             editModes.PAINT,
           colorMode: colorModes.BRUSH,
           brushes: brushes(state.brushes, action),
+          history: history(state, action),
         };
       case 'REMOVE_BRUSH':
         return {
@@ -255,6 +267,7 @@ const store = (() => {
           visibleBrushes: state.visibleBrushes.filter(id => id !== action.id),
           notes: notes(state.notes, action),
           brushes: brushes(state.brushes, action),
+          history: history(state, action),
         };
       case 'SHOW_HIDE_BRUSH':
         return {
@@ -295,6 +308,7 @@ const store = (() => {
             editModes.VOICES,
           colorMode: colorModes.VOICE,
           voices: voices(state.voices, action),
+          history: history(state, action),
         }
       case 'SHOW_HIDE_VOICE':
         return {

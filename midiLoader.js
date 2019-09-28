@@ -78,12 +78,15 @@ const midiLoader = file => {
 
   noteIdCounter = notes.length;
   tempoIdCounter = 2;
-  store.dispatch({ type: 'LOAD_NOTES', voices, notes, tempo });
-  store.dispatch({ type: 'UPDATE_PROPS', props: {
-    scaleX,
-    scaleY: 12,
-    tempoScaleX: 128,
-    tempoScaleY: scaleX,
-    pitchTop, pitchBottom,
-  } });
+  store.dispatch({
+    type: 'LOAD_NOTES',
+    voices, notes, tempo,
+    props: {
+      scaleX,
+      scaleY: 12,
+      tempoScaleX: 128,
+      tempoScaleY: scaleX,
+      pitchTop, pitchBottom,
+    }
+  });
 };

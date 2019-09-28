@@ -62,10 +62,10 @@ const PieceProps = (() => {
       dispatch({ type: 'UPDATE_PROPS', props: { backgroundColor: col } }),
     setTimeSpan: (val) =>
       dispatch({ type: 'UPDATE_PROPS', props: { timeSpan: val } }),
-    setPitchTop: (val) =>
-    dispatch({ type: 'UPDATE_PROPS', props: { pitchTop: val } }),
-    setPitchBottom: (val) =>
-      dispatch({ type: 'UPDATE_PROPS', props: { pitchBottom: val } }),
+    setPitchTop: (pitch) =>
+      dispatch({ type: 'SET_PITCH_TOP', pitch }),
+    setPitchBottom: (pitch) =>
+      dispatch({ type: 'SET_PITCH_BOTTOM', pitch }),
   })
 
   return ReactRedux.connect(

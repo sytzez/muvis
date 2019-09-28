@@ -195,6 +195,8 @@ const NoteView = (() => {
     }
 
     onMouseDown(e) {
+      click++;
+
       const { editMode, deselectAll } = this.props;
 
       if (e.ctrlKey) {

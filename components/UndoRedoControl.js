@@ -9,12 +9,12 @@ const UndoRedoControl = (() => {
   }) => e('div', {}, [
     e('button', {
       onClick: undo,
-      enabled: undoAvailable.toString(),
+      disabled: !undoAvailable,
       key: 0,
     }, 'Undo'),
     e('button', {
       onClick: redo,
-      enabled: redoAvailable.toString(),
+      disabled: !redoAvailable,
       key: 1,
     }, 'Redo'),
   ]);

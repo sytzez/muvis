@@ -272,7 +272,7 @@ div.active {
 }
 
 button {
-  background: #eee;
+  background: #f0f0f0;
   height: 26px;
   font: 14px 'Roboto', sans-serif;
   border-radius: 12px;
@@ -281,11 +281,17 @@ button {
 }
 
 button:hover {
-  border-color: #888;
+  border-color: #aaa;
+}
+
+button:disabled {
+  border: 1px solid #ccc;
+  background: #f8f8f8;
+  color: #aaa;
 }
 
 button.selected {
-  background: #f8f8f8;
+  background: #fff;
   border: 2px inset #ccc;
   padding: 2px 5px;
 }
