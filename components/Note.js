@@ -40,6 +40,22 @@ const Note = (() => {
         resizeNote(id, length);
     }
 
+    paint(brush) {
+      const { id, selected, selectedNotes, paintNote, paintNotes } = this.props;
+      if (selected)
+        paintNotes(selectedNotes, brush);
+      else
+        paintNote(id, brush);
+    }
+
+    voice(voice) {
+      const { id, selected, selectedNotes, voiceNote, voiceNotes } = this.props;
+      if (selected)
+        voiceNotes(selectedNotes, voice);
+      else
+        voiceNote(id, voice);
+    }
+
     onMouseDown(e) {
       if (e.altKey) return;
 
@@ -64,12 +80,12 @@ const Note = (() => {
             removeNote(id);
         } if (editMode === editModes.PAINT) {
           if (e.button === 0 && !e.ctrlKey)
-            paintNote(id, brush);
+            this.paint(brush);
           else if (e.button === 2 && !e.ctrlKey)
-            paintNote(id, -1);
+            this.paint(-1);
         } else if (editMode === editModes.VOICES) {
           if (e.button === 0 && !e.ctrlKey)
-            voiceNote(id, voice);
+            this.voice(voice);
         }
       }
     }
@@ -359,8 +375,12 @@ const Note = (() => {
       dispatch({ type: 'SHIFT_SELECT_NOTE', id, click }),
     paintNote: (id, brushId) =>
       dispatch({ type: 'PAINT_NOTE', id, brushId, click }),
+    paintNotes: (ids, brushId) =>
+      dispatch({ type: 'PAINT_NOTES', ids, brushId }),
     voiceNote: (id, voiceId) =>
       dispatch({ type: 'VOICE_NOTE', id, voiceId, click }),
+    voiceNotes: (ids, voiceId) =>
+      dispatch({ type: 'VOICE_NOTES', ids, voiceId }),
     moveNote: (id, start, pitch) =>
       dispatch({ type: 'UPDATE_NOTE', id, note: { pitch, start }, click }),
     moveNotes: (ids, time, pitch) =>

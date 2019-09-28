@@ -96,6 +96,9 @@ const notes = (state, action) => {
       );
     case 'VOICE_NOTE':
       return state.map(n => n.id === action.id ? { ...n, voice: action.voiceId } : n);
+    case 'VOICE_NOTES':
+      return state.map(n =>
+        action.ids.includes(n.id) ? { ...n, voice: action.voiceId } : n);
     default:
       return state;
   }
