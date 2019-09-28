@@ -7,6 +7,7 @@ const TempoGraph = (() => {
     cx, cy, r: 10,
     className: 'tempoHandle',
     onMouseDown: (e) => {
+      click++;
       e.preventDefault();
       e.stopPropagation();
       if (e.button === 0 && !e.altKey)
@@ -133,6 +134,7 @@ const TempoGraph = (() => {
     }
 
     onMouseDown(e) {
+      click++;
       if (e.button === 0 && !e.altKey)
         this.insert(e.clientX, e.clientY);
       else if (e.button === 0 && e.altKey)
@@ -335,9 +337,9 @@ const TempoGraph = (() => {
     insertTempoChange: (real, midi) =>
       dispatch({ type: 'INSERT_TEMPO_CHANGE', tempoChange: { real, midi } }),
     moveTempoChange: (id, real, midi) =>
-      dispatch({ type: 'UPDATE_TEMPO_CHANGE', id, tempoChange: { real, midi } }),
+      dispatch({ type: 'UPDATE_TEMPO_CHANGE', id, tempoChange: { real, midi }, click }),
     removeTempoChange: (id) =>
-      dispatch({ type: 'REMOVE_TEMPO_CHANGE', id }),
+      dispatch({ type: 'REMOVE_TEMPO_CHANGE', id, click }),
     setScale: (x, y) =>
       dispatch({ type: 'SET_TEMPO_SCALE', tempoScaleX: x, tempoScaleY: y }),
   });

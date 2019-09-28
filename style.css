@@ -181,13 +181,14 @@ aside.right {
   position: absolute;
   left: 0px;
   height: 16px;
-  background: #f8f8f8;
+  background: rgba(255, 255, 255, 0);
   border-top: 2px solid #bbb;
   cursor: ns-resize;
 }
 
 .horizontalLine:hover {
-  border-top: 2px solid #000;
+  border-top: 2px solid #888;
+  z-index: 1;
 }
 
 .verticalLine {
@@ -200,7 +201,8 @@ aside.right {
 }
 
 .verticalLine:hover {
-  border-left: 2px solid #000;
+  border-left: 2px solid #888;
+  z-index: 1;
 }
 
 .rockBottom {

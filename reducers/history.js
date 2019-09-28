@@ -1,5 +1,6 @@
 'use strict';
 
+// increases every mouseclick, to trace which events belong together
 let click = 0;
 
 const historyActions = Object.freeze(new Set([
@@ -18,13 +19,11 @@ const historyActions = Object.freeze(new Set([
   'LOAD_NOTES', 'LOAD_STATE', 'LOAD_EMPTY',
 ]));
 
-// TODO: change timespan, pitchtop, pitchbottom, backgroundcolor, yt url
-
 const historyStackableActions = Object.freeze(new Set([
-  'REMOVE_NOTE',
-  'UPDATE_NOTE', 'UPDATE_NOTES', 'MOVE_NOTE', 'MOVE_NOTES', 'RESIZE_NOTE', 'RESIZE_NOTES',
+  'REMOVE_NOTE', 'UPDATE_NOTE', 'UPDATE_NOTES',
+  'MOVE_NOTE', 'MOVE_NOTES', 'RESIZE_NOTE', 'RESIZE_NOTES',
   'PAINT_NOTE', 'VOICE_NOTE',
-  'UPDATE_TEMPO_CHANGE',
+  'UPDATE_TEMPO_CHANGE', 'REMOVE_TEMPO_CHANGE',
 ]));
 
 const historyDepth = 32;
@@ -37,22 +36,21 @@ const history = (state, action) => {
 
     if (historyStackableActions.has(action.type) && past.length !== 0) {
       const last = past[past.length - 1];
-      if (last.hasOwnProperty('action') &&
-        last.action.type === action.type && (
-          (action.hasOwnProperty('click') && action.click === last.action.click) ||
-          (action.hasOwnProperty('id') && action.id === last.action.id) ||
-          (action.hasOwnProperty('ids') && action.ids === last.action.ids)
-        )
-      ) {
-        // stack on top of last action
-        return history;
+
+      if (last.hasOwnProperty('action') && last.action.type === action.type) {
+        if (action.hasOwnProperty('click')) {
+          if (action.click === last.action.click)
+            return history;
+        } else {
+          if ((action.hasOwnProperty('id') && action.id === last.action.id) ||
+            (action.hasOwnProperty('ids') && action.ids === last.action.ids))
+            return history;
+        }
       }
     }
 
-    // cut off lengthy past
     if (past.length > historyDepth) past = past.slice(-historyDepth);
 
-    // don't stack
     return {
       past: [
         ...history.past,
