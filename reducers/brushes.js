@@ -21,7 +21,7 @@ const brushPlayModes = Object.freeze({
 
 const brushTemplate = Object.freeze({
   id: 0,
-  name: 'BRush 1',
+  name: 'Brush',
   type: 0, // idk
   noteColor: noteColors.RED,
 
@@ -39,7 +39,7 @@ const brushTemplate = Object.freeze({
 });
 
 const maxBrushes = 32;
-var brushIdCounter = 0;
+var brushIdCounter = 1;
 
 const brushes = (state, action) => {
   switch(action.type) {
@@ -61,17 +61,17 @@ const brushes = (state, action) => {
     case 'CLONE_BRUSH':
       if (state.length >= maxBrushes) return state;
 
-      const index = state.findIndex(b => b.id === action.id) + 1;
+      const index = state.findIndex(b => b.id === action.id);
 
       return [
-        ...state.slice(0, index),
+        ...state.slice(0, index + 1),
         {
-          ...state[action.id],
+          ...state[index],
           id: brushIdCounter++,
-          name: state[action.id].name + ' copy',
+          name: state[index].name + ' copy',
           noteColor: getNextBrushColor(state),
         },
-        ...state.slice(index),
+        ...state.slice(index + 1),
       ];
     default:
       return state;

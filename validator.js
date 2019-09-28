@@ -52,7 +52,7 @@ const validateState = (() => {
 
     notes: valArray(valObject({
       id: Number.isInteger,
-      pitch: valIntRange(0, 127),
+      pitch: Number.isInteger,
       start: valNumber,
       length: valNumber,
       voice: Number.isInteger,
@@ -105,6 +105,8 @@ const validateState = (() => {
     tempoScaleY: valRange(0.0078125, Infinity),
 
     // song properties
+
+    title: valString,
 
     timeSpan: valExist,
     pitchTop: valIntRange(0, 127),

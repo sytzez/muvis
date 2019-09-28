@@ -77,6 +77,7 @@ const historyFromState = (state) => ({
   selectedNotes: state.selectedNotes,
   visibleVoices: state.visibleVoices,
   visibleBrushes: state.visibleBrushes,
+  title: state.title,
   timeSpan: state.timeSpan,
   pitchTop: state.pitchTop,
   pitchBottom: state.pitchBottom,

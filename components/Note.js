@@ -291,7 +291,8 @@ const Note = (() => {
           color = state.voices[note.voice].noteColor;
         } else if (state.colorMode === colorModes.BRUSH) {
           if (note.brush !== -1) {
-            const brush = (last.brushes !== state.brushes ||
+            const brush = (!lastBrush ||
+              last.brushes !== state.brushes ||
               lastNote.brush !== note.brush) ?
               getBrushById(state.brushes, note.brush) :
               lastBrush;

@@ -4,15 +4,22 @@ const PieceProps = (() => {
   const e = React.createElement;
 
   const PieceProps = ({
+    title, setTitle,
     background, setBackground,
     timeSpan, setTimeSpan,
     pitchTop, setPitchTop, pitchBottom, setPitchBottom,
   }) => e('div', {}, [
-    'Piece:',
-    'Title',
-    'Tempo', // initial, show if there is automation
+
+    'Title: ',
+    e(StringInput, {
+      value: title,
+      change: setTitle,
+      key: 90,
+    }),
+    e('hr', {key: 91}),
+
     e(ColorPicker, {
-      text: 'Background:',
+      text: 'Background: ',
       value: background,
       change: setBackground,
       key: 100,
@@ -51,6 +58,7 @@ const PieceProps = (() => {
   ]);
 
   const mapStateToProps = state => ({
+    title: state.title,
     background: state.backgroundColor,
     timeSpan: state.timeSpan,
     pitchTop: state.pitchTop,
@@ -58,6 +66,8 @@ const PieceProps = (() => {
   });
 
   const mapDispatchToProps = dispatch => ({
+    setTitle: (title) =>
+      dispatch({ type: 'UPDATE_PROPS', props: { title } }),
     setBackground: (col) =>
       dispatch({ type: 'UPDATE_PROPS', props: { backgroundColor: col } }),
     setTimeSpan: (val) =>

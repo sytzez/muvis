@@ -36,7 +36,9 @@ const store = (() => {
       { noteColor: noteColors.BLUE, voiceColor: [0,0,1] },
     ],
     notes: [],
-    brushes: [],
+    brushes: [
+      { ...brushTemplate, id: 0 },
+    ],
     tempo: [
       { real: 0.0, midi: 0.0, id: 0 },
       { real: 1.0, midi: 100.0, id: 1 },
@@ -49,12 +51,12 @@ const store = (() => {
     colorMode: colorModes.VOICE,
     propMode: propModes.PIECE,
 
-    selectedBrush: -1,
+    selectedBrush: 0,
     selectedVoice: 0,
     selectedNotes: [],
 
-    visibleBrushes: [],
-    visibleVoices: [0, 1, 2, 3],
+    visibleBrushes: [ 0 ],
+    visibleVoices: [ 0, 1, 2, 3 ],
 
     scaleX: 1,
     scaleY: 12,
@@ -63,6 +65,8 @@ const store = (() => {
     tempoScaleY: 1,
 
     // song properties
+
+    title: 'Untitled',
 
     timeSpan: 6, // how much time fits on a screen (in seconds)
     pitchTop: 64 - 20, // how many semitones fit on a screen

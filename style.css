@@ -48,6 +48,11 @@ aside.right {
   width: 250px;
 }
 
+.bigError {
+  margin: 15%;
+  font: 22px 'Roboto', sans-serif;
+}
+
 .filler {
   display: flex;
   flex-grow: 1;
@@ -55,7 +60,7 @@ aside.right {
 
 .fileView {
   margin: 40px;
-  font: 22px 'Nunito Sans', sans-serif;
+  font: 26px 'Nunito Sans', sans-serif;
 }
 
 .listview {
@@ -69,12 +74,22 @@ aside.right {
   background: #ddd;
   padding: 2px;
   min-height: 22px;
+
+  display: flex;
+  align-items: center;
 }
 
 .listitem.selected {
-  border: 2px solid #000;
+  border: 2px solid rgba(0, 0, 0, 0.5);
   padding: 0px;
   font-weight: bold;
+}
+
+.listitem div {
+  flex-grow: 1;
+  user-select: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .listitem button {
@@ -83,6 +98,7 @@ aside.right {
   height: 16px;
   font: 12px 'Roboto', sans-serif;
   opacity: 0;
+  flex-shrink: 0;
 }
 
 .listitem:hover button {

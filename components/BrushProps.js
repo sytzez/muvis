@@ -15,9 +15,9 @@ const BrushProps = (() => {
   }) => available ?
     e('div', {}, [
 
-      e('input', {
+      e(StringInput, {
         value: name,
-        onChange: (e) => changeName(id, e.target.value),
+        change: (val) => changeName(id, val),
         key: 1,
       }),
       e('hr', {key: 2}),
@@ -111,7 +111,7 @@ const BrushProps = (() => {
       'masking when out of view',
       'type (shape, flow)',
       'relative speed relative to other voices',
-    ]) : 'no brush selected';
+    ]) : 'No brush selected.';
 
   const mapStateToProps = state => {
     if (state.selectedBrush === -1) return { available: false };

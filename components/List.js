@@ -28,7 +28,7 @@ const List = ({ items, selected, checked,
       }, 's'));
     }
 
-    sub.push(i.name);
+    sub.push(e('div', {key: -1}, i.name))
 
     if (removable) sub.push(e('button', {
       onClick: (e) => {

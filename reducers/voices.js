@@ -15,7 +15,11 @@ const voices = (state, action) => {
           ...voiceTemplate,
           noteColor: getNextVoiceColor(state)
         },
-      ]
+      ];
+    case 'UPDATE_VOICE':
+      return state.map(v =>
+        v.id === action.id ? { ...v, ...action.voice } : v
+      );
     default:
       return state;
   }

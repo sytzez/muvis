@@ -16,6 +16,9 @@ const FileView = (() => {
     jsonFile = React.createRef();
 
     downloadJSON() {
+      if (this.state.jsonUrl !== '')
+        this.removeDownloadLink();
+
       const json = jsonSaver(store.getState());
       const file = new File([json], 'project.json', {
         type: 'application/json',
@@ -39,6 +42,11 @@ const FileView = (() => {
 
     componentDidMount() {
       MidiParser.parse(this.midiFile.current, this.midiParserCallback.bind(this));
+    }
+
+    componentWillUnmount() {
+      if (this.state.jsonUrl !== '')
+        this.removeDownloadLink();
     }
 
     render() {
