@@ -73,7 +73,18 @@ const brushes = (state, action) => {
         },
         ...state.slice(index + 1),
       ];
-    default:
+    case 'INSERT_BRUSH': {
+      const brush = getBrushById(state, action.id);
+      if (!brush) return state;
+
+      const removedState = state.filter(b => b.id !== action.id);
+
+      return [
+        ...removedState.slice(0, action.index),
+        brush,
+        ...removedState.slice(action.index),
+      ];
+    } default:
       return state;
   }
 };

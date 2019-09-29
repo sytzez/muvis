@@ -132,21 +132,21 @@ const BrushProps = (() => {
 
   const mapDispatchToProps = dispatch => ({
     changeName: (id, val) =>
-      dispatch({ type: 'UPDATE_BRUSH', id, brush: { name: val } }),
+      dispatch({ type: 'UPDATE_BRUSH', id, brush: { name: val }, click }),
     changeShape: (id, val) =>
-      dispatch({ type: 'UPDATE_BRUSH', id, brush: { shape: val } }),
+      dispatch({ type: 'UPDATE_BRUSH', id, brush: { shape: val }, click }),
     changeTimeZoom: (id, val) =>
-      dispatch({ type: 'UPDATE_BRUSH', id, brush: { timeZoom: val } }),
+      dispatch({ type: 'UPDATE_BRUSH', id, brush: { timeZoom: val }, click }),
     changeBrushColor: (id, val) =>
-      dispatch({ type: 'UPDATE_BRUSH', id, brush: { leftColor: val } }),
+      dispatch({ type: 'UPDATE_BRUSH', id, brush: { leftColor: val }, click }),
     changeColorMode: (id, val) =>
-      dispatch({ type: 'UPDATE_BRUSH', id, brush: { colorMode: val } }),
+      dispatch({ type: 'UPDATE_BRUSH', id, brush: { colorMode: val }, click }),
     changePlayMode: (id, val) =>
-      dispatch({ type: 'UPDATE_BRUSH', id, brush: { playMode: val } }),
+      dispatch({ type: 'UPDATE_BRUSH', id, brush: { playMode: val }, click }),
     changeTimeCurve1: (id, val) =>
-      dispatch({ type: 'UPDATE_BRUSH', id, brush: { timeCurve1: val } }),
+      dispatch({ type: 'UPDATE_BRUSH', id, brush: { timeCurve1: val }, click }),
     changeTimeCurve2: (id, val) =>
-      dispatch({ type: 'UPDATE_BRUSH', id, brush: { timeCurve2: val } }),
+      dispatch({ type: 'UPDATE_BRUSH', id, brush: { timeCurve2: val }, click }),
   });
 
   return ReactRedux.connect(

@@ -14,10 +14,14 @@ const StringInput = class extends React.Component {
       onChange: (e => {
         this.setState({ value: e.target.value, changed: true });
       }).bind(this),
-      onBlur: e => change(e.target.value),
+      onBlur: e => {
+        click++;
+        change(e.target.value);
+      },
       onKeyDown: e => {
         if (e.keyCode === 13) {
           e.preventDefault();
+          click++;
           change(e.target.value);
         }
       },

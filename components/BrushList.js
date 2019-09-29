@@ -33,6 +33,7 @@ const BrushList = (() => {
     checkable: true,
     removable: true,
     cloneable: true,
+    insertable: true,
     items: state.brushes.map(b => ({
       value: b.id,
       name: b.name,
@@ -54,6 +55,7 @@ const BrushList = (() => {
     onCheck: (id) => dispatch({ type: 'SHOW_HIDE_BRUSH', id: id }),
     onSolo: (id) => dispatch({ type: 'SHOW_ONLY_BRUSH', id: id }),
     onClone: (id) => dispatch({ type: 'CLONE_BRUSH', id: id }),
+    onInsert: (id, index) => dispatch({ type: 'INSERT_BRUSH', id, index, click }),
     onPaint: () =>
       dispatch({ type: 'SET_EDIT_MODE', mode: editModes.PAINT }),
     onStopPaint: () =>

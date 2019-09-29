@@ -44,6 +44,9 @@ const ValueInput = class extends React.Component {
       onBlur: (e => {
         this.set(this.state.value);
       }).bind(this),
+      onMouseDown: (e => {
+        click++;
+      }),
       onMouseUp: (e => {
         this.set(this.state.value);
       }).bind(this),

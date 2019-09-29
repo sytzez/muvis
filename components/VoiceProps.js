@@ -29,7 +29,7 @@ const VoiceProps = (() => {
 
   const mapDispatchToProps = dispatch => ({
     changeColor: (id, val) =>
-      dispatch({ type: 'UPDATE_VOICE', id, voice: { voiceColor: val } }),
+      dispatch({ type: 'UPDATE_VOICE', id, voice: { voiceColor: val }, click }),
   });
 
   return ReactRedux.connect(

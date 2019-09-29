@@ -5,7 +5,10 @@ const ColorPicker = ({text, value, change}) => {
     e('input', {
       type: 'color',
       value: color.rgbToCss(value),
-      onChange: (e) => change(color.hexToRgb(e.target.value)),
+      onChange: (e) => {
+        click++;
+        change(color.hexToRgb(e.target.value))
+      },
       key: 0,
     }),
   ])

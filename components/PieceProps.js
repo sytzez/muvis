@@ -67,15 +67,15 @@ const PieceProps = (() => {
 
   const mapDispatchToProps = dispatch => ({
     setTitle: (title) =>
-      dispatch({ type: 'UPDATE_PROPS', props: { title } }),
+      dispatch({ type: 'UPDATE_PROPS', props: { title }, click }),
     setBackground: (col) =>
-      dispatch({ type: 'UPDATE_PROPS', props: { backgroundColor: col } }),
+      dispatch({ type: 'UPDATE_PROPS', props: { backgroundColor: col } , click}),
     setTimeSpan: (val) =>
-      dispatch({ type: 'UPDATE_PROPS', props: { timeSpan: val } }),
+      dispatch({ type: 'UPDATE_PROPS', props: { timeSpan: val }, click }),
     setPitchTop: (pitch) =>
-      dispatch({ type: 'SET_PITCH_TOP', pitch }),
+      dispatch({ type: 'SET_PITCH_TOP', pitch, click }),
     setPitchBottom: (pitch) =>
-      dispatch({ type: 'SET_PITCH_BOTTOM', pitch }),
+      dispatch({ type: 'SET_PITCH_BOTTOM', pitch, click }),
   })
 
   return ReactRedux.connect(
