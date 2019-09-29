@@ -1,8 +1,19 @@
 'use strict';
 const StringInput = class extends React.Component {
   state = {
+    lastPropValue: '',
     changed: false,
     value: '',
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.value !== state.lastPropValue) {
+      return {
+        lastPropValue: props.value,
+        changed: false,
+      };
+    }
+    return null;
   }
 
   render() {

@@ -124,14 +124,12 @@ const store = (() => {
           },
         };
       } case 'LOAD_NOTES':
+        brushIdCounter = 1;
         return {
-          ...state,
+          ...initialState,
           voices: action.voices,
           notes: action.notes,
           tempo: action.tempo,
-          selectedVoice: 0,
-          selectedBrush: -1,
-          selectedNotes: [],
           visibleVoices: [ ...action.voices.keys() ],
           colorMode: colorModes.VOICE,
           editorMode: editorModes.NOTES,

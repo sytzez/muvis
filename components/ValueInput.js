@@ -1,6 +1,7 @@
 'use strict';
 const ValueInput = class extends React.Component {
   state = {
+    lastPropValue: 0,
     changed: false,
     value: 0,
   }
@@ -13,6 +14,16 @@ const ValueInput = class extends React.Component {
       value: floatVal,
     });
     this.props.change(floatVal);
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.value !== state.lastPropValue) {
+      return {
+        lastPropValue: props.value,
+        changed: false,
+      };
+    }
+    return null;
   }
 
   render() {
@@ -33,23 +44,14 @@ const ValueInput = class extends React.Component {
       type: 'range',
       min: 0, max: 512,
       value:
-        ((this.state.changed ? this.state.value: this.props.value) - min)
+        ((this.state.changed ? this.state.value : this.props.value) - min)
         * 512.0 / (max - min),
       onChange: (e => {
-        this.setState({
-          value: (e.target.value / 512.0) * (max - min) + min,
-          changed: true,
-        });
-      }).bind(this),
-      onBlur: (e => {
-        this.set(this.state.value);
+        this.set((e.target.value / 512.0) * (max - min) + min);
       }).bind(this),
       onMouseDown: (e => {
         click++;
       }),
-      onMouseUp: (e => {
-        this.set(this.state.value);
-      }).bind(this),
       key: 1,
     });
 

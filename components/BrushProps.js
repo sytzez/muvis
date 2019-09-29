@@ -89,8 +89,8 @@ const BrushProps = (() => {
       }),
       e(ValueInput, {
         text: 'Time curve width: ',
-        min: 0.0,
-        max: 50.0,
+        min: 0.1,
+        max: 3.0,
         value: timeCurve1,
         automated: false,
         change: (c) => changeTimeCurve1(id, c),
