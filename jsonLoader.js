@@ -7,6 +7,18 @@ const jsonLoader = json => {
     throw(new Error('Invalid structure'));
   }
 
+  brushIdCounter = 0;
+  state.brushes.forEach(b => 
+    (b.id >= brushIdCounter) && brushIdCounter++);
+  
+  tempoIdCounter = 0;
+  state.tempo.forEach(t =>
+    (t.id >= tempoIdCounter) && tempoIdCounter++);
+  
+  noteIdCounter = 0;
+  state.notes.forEach(n =>
+    (n.id >= noteIdCounter) && noteIdCounter++);
+
   store.dispatch({ type: 'LOAD_STATE', state });
 };
 
