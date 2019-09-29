@@ -45,7 +45,7 @@ const midiLoader = file => {
           start: time,
           length: 10,
           voice: voices.length - 1,
-          brush: -1,
+          brush: 0,
         });
         
         playing[pitch] = notes.length - 1;
