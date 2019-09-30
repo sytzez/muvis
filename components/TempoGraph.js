@@ -2,6 +2,14 @@ const TempoGraph = (() => {
   'use strict';
 
   const e = React.createElement;
+  const br = key => e('br', {key});
+
+  const HelpText = () => e('div', { className: 'noteviewHelpText'}, [
+    'LMB: Move nodes', br(0),
+    'Ctrl+LMB: Create node', br(1),
+    'Ctrl+RMB: Remove node', br(2),
+    'Alt+LMB: Set play position',
+  ]);
 
   const GraphHandle = ({ id, cx, cy, grab, remove }) => e('circle', {
     cx, cy, r: 10,
@@ -12,12 +20,12 @@ const TempoGraph = (() => {
       e.stopPropagation();
       if (e.button === 0 && !e.altKey)
         grab(id);
-      else if (e.button === 2)
+      else if (e.button === 2 && e.ctrlKey)
         remove(id);
     },
     onMouseEnter: (e) => {
       const buttons = e.buttons !== undefined ? e.buttons : e.nativeEvent.which;
-      if (buttons === 2)
+      if (buttons === 2 && e.ctrlKey)
         remove(id);
     },
   });
@@ -136,7 +144,7 @@ const TempoGraph = (() => {
 
     onMouseDown(e) {
       click++;
-      if (e.button === 0 && !e.altKey)
+      if (e.button === 0 && e.ctrlKey)
         this.insert(e.clientX, e.clientY);
       else if (e.button === 0 && e.altKey)
         this.putTime(e.clientX);
@@ -189,8 +197,6 @@ const TempoGraph = (() => {
 
       this.lastScrollY = this.height - scrollTop;
       this.lastScrollTop = scrollTop;
-      console.log('scrollTop', scrollTop);
-      console.log('lastscrollY', this.lastScrollY);
     }
 
     onWheel(e) {
@@ -310,11 +316,16 @@ const TempoGraph = (() => {
         key: -3,
       })
 
-      return e('div', {
+      return [ e('div', {
+        style: {position: 'relative'},
+        key: 0,
+      }, e(HelpText, {key: 1})),
+      e('div', {
         className: 'tempograph_outside',
         ref: outside,
         onScroll: this.onScroll.bind(this),
         onWheel: this.onWheel.bind(this),
+        key: 1,
       }, e('svg', {
         className: 'tempograph',
         ref: inside,
@@ -334,7 +345,7 @@ const TempoGraph = (() => {
           key: -1,
         }),
         ...handles
-      ]));
+      ])) ];
     }
   }
 
