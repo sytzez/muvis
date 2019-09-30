@@ -30,10 +30,10 @@ const store = (() => {
     // content
 
     voices: [
-      { noteColor: noteColors.RED, voiceColor: [1,0,0] },
-      { noteColor: noteColors.TURQOISE, voiceColor: [0,1,0] },
-      { noteColor: noteColors.YELLOW, voiceColor: [1,1,0] },
-      { noteColor: noteColors.BLUE, voiceColor: [0,0,1] },
+      { noteColor: noteColors[0], voiceColor: [1,0,0] },
+      { noteColor: noteColors[1], voiceColor: [0,1,0] },
+      { noteColor: noteColors[2], voiceColor: [1,1,0] },
+      { noteColor: noteColors[3], voiceColor: [0,0,1] },
     ],
     notes: [],
     brushes: [
@@ -247,7 +247,7 @@ const store = (() => {
           propMode: action.mode,
         };
       case 'NEW_BRUSH': case 'CLONE_BRUSH':
-        if (state.brushes.length > maxBrushes) return state;
+        if (state.brushes.length >= maxBrushes) return state;
 
         return {
           ...state,

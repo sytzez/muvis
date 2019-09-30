@@ -9,12 +9,13 @@ const noteDesign = {
   brush: -1, // the brush used to render it
 };
 
-const noteColors = Object.freeze({
-  RED: 'color1',
-  TURQOISE: 'color2',
-  YELLOW: 'color3',
-  BLUE: 'color4',
-});
+const noteColors = Object.freeze((() => {
+  const a = [];
+  for(let i = 1; i < 19; i++) {
+    a.push(`color${i}`);
+  }
+  return a;
+})());
 
 let noteIdCounter = 0;
 

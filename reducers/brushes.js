@@ -21,9 +21,9 @@ const brushPlayModes = Object.freeze({
 
 const brushTemplate = Object.freeze({
   id: 0,
-  name: 'Brush',
+  name: 'Brush 1',
   type: 0, // idk
-  noteColor: noteColors.RED,
+  noteColor: noteColors[0],
 
   timeZoom: 1.0, // relative zoom on time axis
   timeCurve1: 0.3, // curvature around center
@@ -50,6 +50,7 @@ const brushes = (state, action) => {
         ...brushTemplate,
         ...action.brush,
         id:  brushIdCounter++,
+        name: getNextBrushName(state),
         noteColor: getNextBrushColor(state),
        } ];
     case 'REMOVE_BRUSH':
@@ -95,23 +96,33 @@ const getBrushById = (state, id) => {
   return null;
 };
 
-const getNextBrushColor = (state) => {
-  const colors = {}
-  colors[noteColors.RED] = 0;
-  colors[noteColors.TURQOISE] = 0;
-  colors[noteColors.YELLOW] = 0;
-  colors[noteColors.BLUE] = 0;
+const getNextBrushColor = state => {
+  const colors = new Map();
 
-  state.forEach(b => colors[b.noteColor]++);
+  noteColors.forEach(c => colors.set(c, 0));
+
+  state.forEach(b =>
+    colors.set(b.noteColor, colors.get(b.noteColor) + 1)
+  );
 
   let min = Number.MAX_SAFE_INTEGER;
-  let color = noteColors.RED;
-  Object.keys(colors).forEach(c => {
-    if (colors[c] < min) {
+  let color = noteColors[0];
+  colors.forEach((value, c) => {
+    if (value < min) {
       color = c;
-      min = colors[c];
+      min = value;
     }
-  })
+  });
   
   return color;
+};
+
+const getNextBrushName = state => {
+  let i = 1;
+  while(true) {
+    const name = `Brush ${i}`;
+    if (state.findIndex(b => b.name === name) === -1)
+      return name;
+    i++;
+  }
 };
