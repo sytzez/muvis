@@ -29,6 +29,7 @@ const TempoGraph = (() => {
     realBar = React.createRef();
     grabbed = -1;
     lastScrollY = 0;
+    lastScrollTop = 0;
     timeListener = this.time.bind(this);
     height = 0;
     lastDispatch = 0;
@@ -183,11 +184,18 @@ const TempoGraph = (() => {
     }
 
     onScroll() {
-      this.lastScrollY = this.height - this.outside.current.scrollTop;
+      const scrollTop = this.outside.current.scrollTop;
+      if (scrollTop === this.lastScrollTop) return;
+
+      this.lastScrollY = this.height - scrollTop;
+      this.lastScrollTop = scrollTop;
+      console.log('scrollTop', scrollTop);
+      console.log('lastscrollY', this.lastScrollY);
     }
 
     onWheel(e) {
-      if (!e.ctrlKey) return;
+      if (!e.ctrlKey)
+        return;
       
       const { setScale, scaleX, scaleY } = this.props;
 
@@ -203,9 +211,11 @@ const TempoGraph = (() => {
     }
 
     componentDidMount() {
-      this.outside.current.scrollTop =
-        this.inside.current.getAttribute('height') -
-        this.outside.current.getAttribute('height');
+      const innerRect = this.inside.current.getBoundingClientRect();
+      const outerRect = this.outside.current.getBoundingClientRect();
+
+      this.outside.current.scrollTop = innerRect.height - outerRect.height;
+      this.lastScrollY = outerRect.height;
 
       hotPlayback.addListener(this.timeListener);
 
@@ -213,6 +223,20 @@ const TempoGraph = (() => {
 
     componentWillUnmount() {
       hotPlayback.removeListener(this.timeListener);
+    }
+
+    componentDidUpdate() {
+      const { scaleX, scaleY } = this.props
+      const { zoomX, zoomY, zoomMidi, zoomReal, outside, height } = this;
+      if (this.zoomFix) {
+        const { top, left } = outside.current.getBoundingClientRect();
+        outside.current.scrollLeft = (zoomReal * scaleX) - zoomX + left;
+        outside.current.scrollTop = height - (zoomMidi * scaleY) - zoomY + top;
+        this.zoomFix = false;
+        this.lastScrollY = height - outside.current.scrollTop;
+      } else {
+        outside.current.scrollTop = height - this.lastScrollY;
+      }
     }
 
     render() {
@@ -285,19 +309,6 @@ const TempoGraph = (() => {
         y2: height - midi * scaleY,
         key: -3,
       })
-
-      if (outside.current) {
-        if (this.zoomFix) {
-          const { zoomX, zoomY, zoomMidi, zoomReal } = this;
-          const { top, left } = outside.current.getBoundingClientRect();
-          outside.current.scrollLeft = (zoomReal * scaleX) - zoomX + left;
-          outside.current.scrollTop = height - (zoomMidi * scaleY) - zoomY + top;
-          this.zoomFix = false;
-          this.lastScrollY = height - outside.current.scrollTop;
-        } else {
-          outside.current.scrollTop = height - this.lastScrollY;
-        }
-      }
 
       return e('div', {
         className: 'tempograph_outside',
