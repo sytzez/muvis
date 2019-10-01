@@ -73,6 +73,7 @@ const historyFromState = (state) => ({
   brushes: state.brushes,
   tempo: state.tempo,
   colorMode: state.colorMode,
+  editorMode: state.editorMode,
   editMode: state.editMode,
   propMode: state.propMode,
   selectedBrush: state.selectedBrush,

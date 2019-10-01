@@ -256,7 +256,7 @@ const TempoGraph = (() => {
       ], [0, 0]);
 
       const outsideRect = outside.current ?
-        outside.current.getBoundingClientRect() : {width: 1000, height: 1000};
+        outside.current.getBoundingClientRect() : {width: 2000, height: 2000};
       const width = maxReal * scaleX + outsideRect.width;
       const height = maxMidi * scaleY + outsideRect.height;
       this.height = height;
