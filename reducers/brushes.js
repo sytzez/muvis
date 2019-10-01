@@ -19,6 +19,13 @@ const brushPlayModes = Object.freeze({
   FLASH: '4', // flip color and slowly change back
 });
 
+const brushConnectModes = Object.freeze({
+  NONE: '1',
+  LINE: '2', // connect through a line
+  FLOAT: '3', // float whole note towards next note
+  BEND: '4',
+});
+
 const brushTemplate = Object.freeze({
   id: 0,
   name: 'Brush 1',
@@ -36,6 +43,10 @@ const brushTemplate = Object.freeze({
   sizeCurve: 0.0, // size change when being played
   leftColor: [0,0,1], // before being played
   rightColor: [1,1,1], // after being played
+
+  connectMode: brushConnectModes.NONE,
+  connectDistance: 0.1,
+  appearBack: '1',
 });
 
 const maxBrushes = 32;

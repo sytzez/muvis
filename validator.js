@@ -77,6 +77,8 @@ const validateState = (() => {
 
       leftColor: valArrayOfLength(3, valRange(0, 1)),
       rightColor: valArrayOfLength(3, valRange(0, 1)),
+
+      connectMode: valEnum(brushConnectModes),
     })),
 
     tempo: valArray(valObject({

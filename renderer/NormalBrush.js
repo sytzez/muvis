@@ -5,6 +5,8 @@ const NormalBrush = (gl, vertexShader) => {
 #line 6
 
 #define M_PI 3.1415926535897932384626433832795
+#define FALSE 0
+#define TRUE 1
 
 #define SHAPE_RECT 1
 #define SHAPE_CIRCLE 2
@@ -15,10 +17,17 @@ const NormalBrush = (gl, vertexShader) => {
 #define PLAY_ON_OFF 3 // flips color when played and flip back
 #define PLAY_FLASH 4 // flip color and slowly change back
 
+#define CONN_NONE 1
+#define CONN_LINE 2 // connect through a line
+#define CONN_FLOAT 3 // float whole note towards next note
+#define CONN_BEND 4
+
 precision lowp float;
 
-uniform int u_play_mode;
 uniform int u_shape;
+uniform int u_play_mode;
+uniform int u_conn_mode;
+uniform int u_appear_back;
 
 uniform vec2 u_scale;
 uniform vec2 u_offset;
@@ -27,21 +36,30 @@ uniform float u_time; // current time
 uniform vec2 u_curve; // time curvature
 
 uniform vec3 u_note; // x: start, y: pitch, z: length
+uniform vec3 u_next_note;
 
 uniform vec3 u_color1;
 uniform vec3 u_color2;
 
-float rect(const vec2 coord) {
-  if (coord.x < u_note.x || coord.x > u_note.x + u_note.z ||
-    coord.y < u_note.y - 0.5 || coord.y > u_note.y + 0.5)
+float rect(const vec2 coord, const vec3 note) {
+  if (coord.x < note.x || coord.x > note.x + note.z ||
+    coord.y < note.y - 0.5 || coord.y > note.y + 0.5)
   {
     return 0.0;
   }
   return 1.0;
 }
 
-float triangle(const vec2 coord) {
-  return 0.0;
+float triangle(const vec2 coord, const vec3 note) {
+  if (coord.x < note.x || coord.x > note.x + note.z ||
+    coord.y < note.y - 0.5 || coord.y > note.y + 0.5)
+  {
+    return 0.0;
+  }
+  
+  float width = (1.0 - (coord.x - note.x) / note.z) * 0.5;
+
+  return clamp((width - abs(coord.y - note.y)) * 10.0, 0.0, 1.0);
 }
 
 void main() {
@@ -61,10 +79,45 @@ void main() {
   coord.x *= u_curve.x;
   coord.x += u_time;
 
+  vec3 note = u_note;
+
+  float opacity = 1.0;
+
+  if (u_next_note.x != 0.0) {
+    if (u_conn_mode == CONN_LINE) {
+
+    } else if (u_conn_mode == CONN_BEND) {
+      if (coord.x > note.x)
+        note.y += (u_next_note.y - note.y) * (coord.x - note.x) / (u_next_note.x - note.x);
+    } else if (u_conn_mode == CONN_FLOAT) {
+      if (u_time > u_next_note.x) {
+        if (u_appear_back == FALSE) {
+          gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+          return;
+        }
+      } else if (u_time > note.x) {
+        float transition = (u_time  - note.x) / (u_next_note.x - note.x);
+        note.x += (u_next_note.x - note.x) * transition;
+        note.y += (u_next_note.y - note.y) * pow(transition, 1.5);
+        note.z += (u_next_note.z - note.z) * transition;
+        opacity = 1.0 - pow(transition, 2.0);
+      }
+    }
+  }
+
+  #define RENDER(func) {` +
+    `val = func(coord, note);` +
+    `if (val == 0.0 && u_appear_back == TRUE) {` +
+      `val = func(coord, u_note);` +
+      `opacity = 1.0 - opacity;` +
+    `}` +
+  `}
+
   float val;
-  if (u_shape == SHAPE_RECT) {
-    val = rect(coord);
-  } else {
+
+  if (u_shape == SHAPE_RECT) RENDER(rect)
+  else if (u_shape == SHAPE_TRIANGLE) RENDER(triangle)
+  else {
     return;
   }
 
@@ -76,7 +129,7 @@ void main() {
   vec3 color;
 
   if (u_play_mode == PLAY_MASK) {
-    if (coord.x > u_time)
+    if (coord.x - (note.x - u_note.x) > u_time)
       color = u_color1;
     else
       color = u_color2;
@@ -99,7 +152,7 @@ void main() {
     color = u_color1;
   }
 
-  gl_FragColor = vec4(color * val, val);
+  gl_FragColor = vec4(color, opacity * val);
 }`; // end of GLSL shader
 
   const shader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -118,11 +171,14 @@ void main() {
   const u = name => gl.getUniformLocation(prog, name),
     u_playMode = u('u_play_mode'),
     u_shape = u('u_shape'),
+    u_connMode = u('u_conn_mode'),
+    u_appearBack = u('u_appear_back'),
     u_scale = u('u_scale'),
     u_offset = u('u_offset'),
     u_time = u('u_time'),
     u_curve = u('u_curve'),
     u_note = u('u_note'),
+    u_nextNote = u('u_next_note'),
     u_color1 = u('u_color1'),
     u_color2 = u('u_color2');
 
@@ -143,6 +199,8 @@ void main() {
 
     gl.uniform1i(u_playMode, brush.playMode);
     gl.uniform1i(u_shape, brush.shape);
+    gl.uniform1i(u_connMode, brush.connectMode);
+    gl.uniform1i(u_appearBack, brush.appearBack);
     gl.uniform2f(u_curve, brush.timeCurve1, brush.timeCurve2);
 
     gl.enableVertexAttribArray(a_position);
@@ -156,16 +214,26 @@ void main() {
     let nxt;
 
     for(nxt = i.next();
-      nxt.done !== true && nxt.value.start + nxt.value.length < leftBound;
-      nxt = i.next());
+      nxt.done !== true && (
+        nxt.value.next ?
+          (nxt.value.start + nxt.value.next.length < leftBound) :
+          (nxt.value.start + nxt.value.length < leftBound)
+      ); nxt = i.next());
 
     for(;nxt.done !== true && nxt.value.start < rightBound;
       nxt = i.next())
     { // TODO: put whole note into one datastructure, at load()
       const note = nxt.value;
+      const nextNote = note.next;
       gl.uniform3f(u_note, note.start, note.pitch, note.length);
       gl.uniform3f(u_color1, ...note.color1);
       gl.uniform3f(u_color2, ...note.color2);
+      if (brush.connectMode !== brushConnectModes.NONE) {
+        if (nextNote)
+          gl.uniform3f(u_nextNote, nextNote.start, nextNote.pitch, nextNote.length);
+        else
+          gl.uniform3f(u_nextNote, 0.0, 0.0, 0.0);
+      }
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
   };

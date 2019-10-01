@@ -35,6 +35,7 @@ void main() {
     gl.clearColor(...background, 1.0);
 
     brushes = [];
+    notes = notes.sort((a, b) => a.start - b.start);
 
     newBrushes.forEach(b => {
       const brush = {
@@ -49,6 +50,8 @@ void main() {
         sizeCurve: b.sizeCurve,
         timeCurve1: b.timeCurve1,
         timeCurve2: 1.0 / b.timeCurve2,
+        connectMode: b.connectMode,
+        appearBack: b.appearBack,
         // TODO other properties
       };
 
@@ -78,22 +81,34 @@ void main() {
           colorFunc = () => [b.leftColor, b.rightColor];
       }
 
+      const lastNotePerVoice = new Array(voices.length);
+
       notes.forEach(n => { // TODO: loop over notes only once 
         if (n.brush === b.id) {
           const colors = colorFunc(n);
           const realStart = getRealFromMidi(tempo, n.start);
           const realLength = getRealFromMidi(tempo, n.start + n.length) - realStart;
-          brush.notes.push({
+          
+          const note = {
             pitch: n.pitch,
             start: realStart,
             length: realLength,
+            next: null,
             color1: colors[0],
             color2: colors[1],
-          });
+          };
+
+          const last = lastNotePerVoice[n.voice];
+          if (last && (note.start - (last.start + last.length)) < b.connectDistance) {
+            last.next = note;
+          }
+          lastNotePerVoice[n.voice] = note;
+
+          brush.notes.push(note);
         }
       });
 
-      brush.notes = brush.notes.sort((a, b) => a.start - b.start);
+      //brush.notes = brush.notes.sort((a, b) => a.start - b.start);
 
       brushes.push(brush);
     });

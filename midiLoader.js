@@ -7,15 +7,6 @@ const midiLoader = file => {
   let pitchTop = 64 - 20;
   let pitchBottom = 64 + 20;
 
-  const getVoiceColor = () => (
-    [
-      noteColors.RED,
-      noteColors.TURQOISE,
-      noteColors.YELLOW,
-      noteColors.BLUE,
-    ][voices.length % 4]
-  );
-
   // TODO: set scaleY and tempo to reflect tick resolution
   
   file.track.forEach(track => {
@@ -29,7 +20,7 @@ const midiLoader = file => {
       if (event.type === 9) { // note on
         if (zero) { // create new voice on first note
           voices.push({
-            noteColor: getVoiceColor(),
+            noteColor: getNextVoiceColor(voices),
             voiceColor: [1,0,0], // TODO generate random color
           });
           zero = false;
