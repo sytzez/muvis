@@ -36,21 +36,15 @@ const PieceProps = (() => {
       change: setTimeSpan,
       key: 110,
     }),
-    e(ValueInput, { // TODO: note formatting
+    e(PitchInput, {
       text: 'Highest pitch: ',
-      min: 0,
-      max: 127,
       value: pitchTop,
-      automated: false,
       change: setPitchTop,
       key: 111,
     }),
-    e(ValueInput, { // TODO: note formatting
+    e(PitchInput, {
       text: 'Lowest pitch: ',
-      min: 0,
-      max: 127,
       value: pitchBottom,
-      automated: false,
       change: setPitchBottom,
       key: 112,
     }),

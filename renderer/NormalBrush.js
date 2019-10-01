@@ -117,9 +117,7 @@ void main() {
 
   if (u_shape == SHAPE_RECT) RENDER(rect)
   else if (u_shape == SHAPE_TRIANGLE) RENDER(triangle)
-  else {
-    return;
-  }
+  else return;
 
   if (val == 0.0) {
     gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
