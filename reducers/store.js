@@ -181,7 +181,7 @@ const store = (() => {
           ...state,
           tempoScaleX: Math.max(1, action.tempoScaleX),
           tempoScaleY: Math.max(0.0078125, action.tempoScaleY),
-        }
+        };
       case 'SET_PITCH_TOP':
         return {
           ...state,
@@ -311,7 +311,7 @@ const store = (() => {
           colorMode: colorModes.VOICE,
           voices: voices(state.voices, action),
           history: history(state, action),
-        }
+        };
       case 'SHOW_HIDE_VOICE':
         return {
           ...state,
