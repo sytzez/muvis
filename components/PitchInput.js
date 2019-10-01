@@ -27,7 +27,10 @@ const PitchInput = (() => {
       
       return e('div', {}, [ text, e('select', {
         value,
-        onChange: e => change(parseInt(e.target.value)),
+        onChange: e => {
+          click++;
+          change(parseInt(e.target.value));
+        },
         key: 0,
       }, options) ]);
     }
