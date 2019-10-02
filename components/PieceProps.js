@@ -26,9 +26,9 @@ const PieceProps = (() => {
     }),
     e('hr', {key: 101}),
 
-    'Span of the screen:',
-    e(ValueInput, { // TODO: time formatting 00:00:00
-      text: 'Time: ',
+    'Span of the screen:', e('br', {key: 109}),
+    e(ValueInput, {
+      text: 'Width (seconds): ',
       min: 0.1,
       max: 60.0,
       value: timeSpan,

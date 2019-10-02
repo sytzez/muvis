@@ -1,5 +1,6 @@
-'use strict';
 const PitchInput = (() => {
+  'use strict';
+  
   const noteNames = Object.freeze((() => {
     const names = [];
     for(let i = 127; i >= 0; i--) {

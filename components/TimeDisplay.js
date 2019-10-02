@@ -1,7 +1,7 @@
 const TimeDisplay = (() => {
   class TimeDisplay extends React.Component {
     state = {
-      time: 0.0,
+      time: hotPlayback.getTime(),
       listener: this.setTime.bind(this),
     }
 
@@ -18,20 +18,12 @@ const TimeDisplay = (() => {
     }
 
     render() {
-      return React.createElement('input', {
-        size: 2,
-        value: this.state.time.toFixed(2),
-        onChange: (e) => this.props.setTime(parseFloat(e.target.value)),
+      return React.createElement(TimeInput, {
+        value: this.state.time,
+        change: time => hotPlayback.setTime(time),
       });
     }
   }
 
-  const mapDispatchToProps = dispatch => ({
-    setTime: (time) => dispatch({ type: 'SET_TIME', time, hot: true }),
-  });
-
-  return ReactRedux.connect(
-    null,
-    mapDispatchToProps,
-  )(TimeDisplay);
+  return TimeDisplay;
 })();
