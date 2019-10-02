@@ -12,6 +12,6 @@ const ErrorView = (() => {
       },
       key: 1,
     }, 'undo'), br(2),
-    'Or you can download the last state as a JSON file', // TODO
+    // 'Or you can download the project's state as a JSON file', // TODO
   ]);
 })();

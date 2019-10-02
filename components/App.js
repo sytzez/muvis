@@ -55,13 +55,9 @@ const App = (() => {
               case editorModes.NOTES:
                 return e(NoteView, {key: 1});
               case editorModes.VISUAL:
-                return e(VisualView, { key: 2, small: false, w: 800, h: 600 });
+                return e(VisualView, { key: 2, small: false, w: 1280, h: 1024 });
               case editorModes.TEMPO:
                 return e(TempoGraph, {key: 3});
-              // case editorModes.FILES:
-              //   return e(FileView, {key: 5});
-              //case editorModes.YOUTUBE:
-              //  return e(YouTubeView, {key: 4});
               default:
                 return null;
             }

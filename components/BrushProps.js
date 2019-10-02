@@ -31,6 +31,7 @@ const BrushProps = (() => {
           { value: brushShapes.RECT, text: 'Rectangle' },
           { value: brushShapes.CIRCLE, text: 'Circle' },
           { value: brushShapes.TRIANGLE, text: 'Triangle' },
+          { value: brushShapes.BLOB, text: 'Blob' },
         ],
         selected: shape,
         change: m => changeShape(id, m),

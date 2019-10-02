@@ -11,6 +11,7 @@ const NormalBrush = (gl, vertexShader) => {
 #define SHAPE_RECT 1
 #define SHAPE_CIRCLE 2
 #define SHAPE_TRIANGLE 3
+#define SHAPE_BLOB 4
 
 #define PLAY_MASK 1 // color changes at current point
 #define PLAY_FLIP 2 // whole note flips color at once
@@ -60,6 +61,28 @@ float triangle(const vec2 coord, const vec3 note) {
   float width = (1.0 - (coord.x - note.x) / note.z) * 0.5;
 
   return clamp((width - abs(coord.y - note.y)) * 10.0, 0.0, 1.0);
+}
+
+float circle(const vec2 coord, const vec3 note) {
+  float center = note.x + note.z * 0.5;
+  float a = note.z * 0.5;
+  float x = (coord.x - center) / a;
+  float y = (coord.y - note.y) * 2.0; // / 0.5
+  float dist2 = x*x + y*y;
+  if (dist2 > 1.0) return 0.0;
+  float dist = sqrt(dist2);
+  return clamp((1.0 - dist) * 10.0, 0.0, 1.0);
+}
+
+float blob(const vec2 coord, const vec3 note) {
+  float center = note.x + note.z * 0.5;
+  float a = note.z * 0.5;
+  float x = (coord.x - center) / a;
+  float y = (coord.y - note.y);
+  float dist2 = x*x + y*y;
+  if (dist2 > 1.0) return 0.0;
+  float dist = sqrt(dist2);
+  return clamp((1.0 - dist), 0.0, 1.0);
 }
 
 void main() {
@@ -117,6 +140,8 @@ void main() {
 
   if (u_shape == SHAPE_RECT) RENDER(rect)
   else if (u_shape == SHAPE_TRIANGLE) RENDER(triangle)
+  else if (u_shape == SHAPE_CIRCLE) RENDER(circle)
+  else if (u_shape == SHAPE_BLOB) RENDER(blob)
   else return;
 
   if (val == 0.0) {
