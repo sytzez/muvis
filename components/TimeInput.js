@@ -55,12 +55,12 @@ const TimeInput = (() => {
           this.setState({ value: e.target.value, changed: true });
         }).bind(this),
         onBlur: e => this.apply(e.target.value),
-        onKeyDown: e => {
+        onKeyDown: (e => {
           if (e.keyCode === 13) {
             e.preventDefault();
-            change(e.target.value);
+            this.apply(e.target.value);
           }
-        },
+        }).bind(this),
       });
     }
   }

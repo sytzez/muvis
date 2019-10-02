@@ -3,8 +3,10 @@ const renderer = (canv) => {
 
   const source = `// vertex shader
 attribute vec2 a_position;
+uniform vec2 u_vertex_position;
+uniform float u_vertex_scale;
 void main() {
-  gl_Position = vec4(a_position, 0, 1);
+  gl_Position = vec4(a_position * u_vertex_scale + u_vertex_position, 0, 1);
 }`;
 
   const attributes = {preserveDrawingBuffer: true};
@@ -23,6 +25,7 @@ void main() {
   const shader = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
+  console.log(gl.getShaderInfoLog(shader));
 
   const normalBrush = NormalBrush(gl, shader);
 

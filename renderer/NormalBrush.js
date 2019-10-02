@@ -192,6 +192,8 @@ void main() {
   const a_position = gl.getAttribLocation(prog, 'a_position');
 
   const u = name => gl.getUniformLocation(prog, name),
+    u_vertexPosition = u('u_vertex_position'),
+    u_vertexScale = u('u_vertex_scale'),
     u_playMode = u('u_play_mode'),
     u_shape = u('u_shape'),
     u_connMode = u('u_conn_mode'),
@@ -242,12 +244,22 @@ void main() {
           (nxt.value.start + nxt.value.next.length < leftBound) :
           (nxt.value.start + nxt.value.length < leftBound)
       ); nxt = i.next());
+    
+    const inv_xzoom = 2.0 / brush.xzoom;
+    const inv_yzoom = 2.0 / brush.yzoom;
 
     for(;nxt.done !== true && nxt.value.start < rightBound;
       nxt = i.next())
     { // TODO: put whole note into one datastructure, at load()
       const note = nxt.value;
       const nextNote = note.next;
+
+      gl.uniform2f(u_vertexPosition,
+        (note.start + note.length * 0.5 - leftBound) * inv_xzoom - 1.0,
+        (note.pitch - brush.yoffset) * inv_yzoom - 1.0,
+      );
+      gl.uniform1f(u_vertexScale, note.length * inv_xzoom * 2.0 + inv_yzoom );
+
       gl.uniform3f(u_note, note.start, note.pitch, note.length);
       gl.uniform3f(u_color1, ...note.color1);
       gl.uniform3f(u_color2, ...note.color2);
