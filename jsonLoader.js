@@ -27,6 +27,7 @@ const jsonSaver = state => {
     ...state,
     playback: {},
     history: {},
+    action: {},
   }
   return JSON.stringify(cleanState);
 };

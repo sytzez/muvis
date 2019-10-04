@@ -62,11 +62,8 @@ const YouTubeView = (() => {
         player.seekTo(t, true);
       else if (player.getPlayerState() === YT.PlayerState.PLAYING) {
         const ytt = player.getCurrentTime();
-        if (Math.abs(ytt - t) > 0.05) {
-          console.log(' correct');
+        if (Math.abs(ytt - t) > 0.05)
           hotPlayback.setTime(ytt);
-          // player.seekTo(t, true);
-        }
       }
     }
 

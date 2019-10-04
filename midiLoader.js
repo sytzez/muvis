@@ -17,7 +17,7 @@ const midiLoader = file => {
     track.event.forEach(event => {
       time += event.deltaTime;
 
-      if (event.type === 9) { // note on
+      if (event.type === 9 && event.data[1] !== 0) { // note on
         if (zero) { // create new voice on first note
           voices.push({
             noteColor: getNextVoiceColor(voices),
@@ -40,7 +40,7 @@ const midiLoader = file => {
         });
         
         playing[pitch] = notes.length - 1;
-      } else if (event.type === 8) { // note off
+      } else if (event.type === 8 || (event.type === 9 && event.data[1] === 0)) { // note off
         const pitch = 127 - event.data[0];
         const id = playing[pitch];
 
