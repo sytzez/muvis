@@ -28,7 +28,7 @@ const midiLoader = file => {
         
         const pitch = 127 - event.data[0];
         if (pitch < pitchTop) pitchTop = pitch;
-        if (pitch > pitchBottom) pitchBottom = pitch;
+        if (pitch > pitchBottom - 1) pitchBottom = pitch + 1;
 
         notes.push({
           id: notes.length,

@@ -11,6 +11,7 @@ let tempoIdCounter = 2;
 const tempo = (state, action) => {
   switch(action.type) {
     case 'INSERT_TEMPO_CHANGE':
+      while(state.some(c => c.id === tempoIdCounter)) tempoIdCounter++;
       return [
         ...state,
         { ...action.tempoChange, id: tempoIdCounter++ } 
