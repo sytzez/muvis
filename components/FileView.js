@@ -150,6 +150,14 @@ const FileView = (() => {
           key: 21
         }, 'de Machaut - Missa de Notre Dame - Kyrie'),
         e('br', {key: 22}),
+        '- ',
+        e('a', {
+          href: '#',
+          onClick: () => this.openJSON.bind(this)('states/tristan.json'),
+          key: 23
+        }, 'Wagner - Tristan und Isolde - Prelude'),
+        e('br', {key: 24}),
+
         projectError !== '' ? e('div', {key: 30}, projectError) : null,
       ]);
     }
