@@ -168,6 +168,17 @@ const NoteView = (() => {
       this.internal.selectDiv.current.hidden = true;
     }
 
+    selectAll() {
+      const { notes, selectNotes, visibleBrushes, visibleVoices } = this.props;
+
+      const selection = notes.filter(n =>
+        (n.brush === -1 || visibleBrushes.includes(n.brush)) &&
+        visibleVoices.includes(n.voice)
+      ).map(n => n.id);
+
+      selectNotes(selection);
+    }
+
     updateTimeBounds() {
       const { scaleX } = this.props;
       const { leftTimeBound, rightTimeBound } = this.state;
@@ -257,6 +268,13 @@ const NoteView = (() => {
       this.zoomPitch = pitch;
     }
 
+    onKeyPress(e) {
+      if (e.keyCode === 65 && e.ctrlKey) { // Ctrl+A
+        e.preventDefault();
+        this.selectAll();
+      }
+    }
+
     render() {
       console.log('nv rerender');
 
@@ -335,6 +353,8 @@ const NoteView = (() => {
           width: fullWidth,
           height: 128 * scaleY,
         },
+        tabIndex: '0',
+        onKeyDown: this.onKeyPress.bind(this),
         onMouseDown: this.onMouseDown.bind(this),
         onContextMenu: (e) => {
           e.preventDefault();
