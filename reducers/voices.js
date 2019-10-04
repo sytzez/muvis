@@ -17,8 +17,8 @@ const voices = (state, action) => {
         },
       ];
     case 'UPDATE_VOICE':
-      return state.map(v =>
-        v.id === action.id ? { ...v, ...action.voice } : v
+      return state.map((v, id) =>
+        id === action.id ? { ...v, ...action.voice } : v
       );
     default:
       return state;

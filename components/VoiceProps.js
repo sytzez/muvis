@@ -23,6 +23,7 @@ const VoiceProps = (() => {
     const voice = state.voices[state.selectedVoice];
     return {
       available: true,
+      id: state.selectedVoice,
       voiceColor: voice.voiceColor,
     };
   };
