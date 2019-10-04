@@ -241,7 +241,7 @@ void main() {
     for(nxt = i.next();
       nxt.done !== true && (
         nxt.value.next ?
-          (nxt.value.start + nxt.value.next.length < leftBound) :
+          (nxt.value.next.start + nxt.value.next.length < leftBound) :
           (nxt.value.start + nxt.value.length < leftBound)
       ); nxt = i.next());
     
@@ -255,10 +255,10 @@ void main() {
       const nextNote = note.next;
 
       gl.uniform2f(u_vertexPosition,
-        (note.start + note.length * 0.5 - leftBound) * inv_xzoom - 1.0,
-        (note.pitch - brush.yoffset) * inv_yzoom - 1.0,
+        note.vertexPosition[0] - leftBound * inv_xzoom - 1.0,
+        note.vertexPosition[1] - 1.0,
       );
-      gl.uniform1f(u_vertexScale, note.length * inv_xzoom * 2.0 + inv_yzoom );
+      gl.uniform1f(u_vertexScale, note.vertexScale);
 
       gl.uniform3f(u_note, note.start, note.pitch, note.length);
       gl.uniform3f(u_color1, ...note.color1);

@@ -17,7 +17,7 @@ const YouTubeView = (() => {
       const { player } = this;
       if (player && player.getPlayerState() === YT.PlayerState.PAUSED) {
         const t = this.player.getCurrentTime() + amount;
-        player.seekTo(t, false);
+        player.seekTo(t, true);
         hotPlayback.setTime(t);
       } else {
         hotPlayback.setTime(hotPlayback.getTime() + amount);
@@ -36,11 +36,14 @@ const YouTubeView = (() => {
       const { player } = this;
       if (!player) return;
       if (player.getPlayerState() === YT.PlayerState.PAUSED)
-        player.seekTo(t, false);
+        player.seekTo(t, true);
       else if (player.getPlayerState() === YT.PlayerState.PLAYING) {
         const ytt = player.getCurrentTime();
-        if (Math.abs(ytt - t) > 0.1)
-          player.seekTo(t, true);
+        if (Math.abs(ytt - t) > 0.05) {
+          console.log(' correct');
+          hotPlayback.setTime(ytt);
+          // player.seekTo(t, true);
+        }
       }
     }
 
@@ -50,10 +53,10 @@ const YouTubeView = (() => {
       const { player } = this;
       const { url } = this.props;
 
-      if (player.getVideoUrl() !== this.url && e.data === YT.PlayerState.PAUSED) {
-        //this.loadVideo(url);
-        //return;
-      }
+      // if (player.getVideoUrl() !== this.url && e.data === YT.PlayerState.PAUSED) {
+      //   this.loadVideo(url);
+      //   return;
+      // }
 
       console.log(player.getCurrentTime());
       hotPlayback.setTime(player.getCurrentTime()); // TODO: respond to video speed
@@ -95,6 +98,9 @@ const YouTubeView = (() => {
       this.iframe = document.createElement('div');
       this.iframeParent.current.appendChild(this.iframe);
       hotPlayback.addListener(this.timeCallback);
+
+      if (this.props.url !== '')
+        this.loadVideo(this.props.url);
     }
 
     componentWillUnmount() {

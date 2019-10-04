@@ -4,8 +4,8 @@ const EditModeSelect = (() => {
   const mapStateToProps = state => ({
     options: [
       { value: editModes.NOTES, text: 'Note edit mode' },
-      { value: editModes.PAINT, text: 'Brush assign mode' },
-      { value: editModes.VOICES, text: 'Voice assign mode' },
+      { value: editModes.PAINT, text: 'Brush paint mode' },
+      { value: editModes.VOICES, text: 'Voice paint mode' },
     ],
     selected: state.editMode,
   });

@@ -30,3 +30,7 @@ const jsonSaver = state => {
   }
   return JSON.stringify(cleanState);
 };
+
+const loadJsonFromUrl = url => {
+
+};

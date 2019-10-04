@@ -86,6 +86,9 @@ void main() {
 
       const lastNotePerVoice = new Array(voices.length);
 
+      const inv_xzoom = 2.0 / brush.xzoom;
+      const inv_yzoom = 2.0 / brush.yzoom;
+
       notes.forEach(n => { // TODO: loop over notes only once 
         if (n.brush === b.id) {
           const colors = colorFunc(n);
@@ -99,11 +102,25 @@ void main() {
             next: null,
             color1: colors[0],
             color2: colors[1],
+            vertexPosition: [
+              (realStart + realLength * 0.5) * inv_xzoom,
+              (n.pitch - brush.yoffset) * inv_yzoom,
+            ],
+            vertexScale: (realLength + brush.timeCurve1) * inv_xzoom * 2.0 + inv_yzoom,
           };
 
           const last = lastNotePerVoice[n.voice];
-          if (last && (note.start - (last.start + last.length)) < b.connectDistance) {
+          if (brush.connectMode !== brushConnectModes.NONE &&
+            last &&
+            (note.start - (last.start + last.length)) < b.connectDistance)
+          {
             last.next = note;
+            const length = note.start + note.length - last.start;
+            last.vertexPosition[0] = (last.start + length * 0.5) * inv_xzoom;
+            last.vertexScale = Math.max(
+              (length + brush.timeCurve1),
+              Math.abs(note.pitch - last.pitch),
+            ) * inv_xzoom * 2.0 + inv_yzoom;
           }
           lastNotePerVoice[n.voice] = note;
 
