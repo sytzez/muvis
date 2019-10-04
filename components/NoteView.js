@@ -52,7 +52,9 @@ const NoteView = (() => {
     zoomReal = 0;
     zoomMidi = 0;
 
-    selectBox = null
+    selectBox = null;
+
+    keyEvent = this.onKeyPress.bind(this);
 
     last = {
       noteIdCounter: 0,
@@ -67,6 +69,11 @@ const NoteView = (() => {
       const { outerDiv, innerDiv } = this.internal;
       outerDiv.current.scrollTop = this.props.scaleY * this.props.pitchTop;
       this.updateTimeBounds();
+      window.addEventListener('keydown', this.keyEvent);
+    }
+
+    componentWillUnmount() {
+      window.removeEventListener('keydown', this.keyEvent);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -353,8 +360,6 @@ const NoteView = (() => {
           width: fullWidth,
           height: 128 * scaleY,
         },
-        tabIndex: '0',
-        onKeyDown: this.onKeyPress.bind(this),
         onMouseDown: this.onMouseDown.bind(this),
         onContextMenu: (e) => {
           e.preventDefault();

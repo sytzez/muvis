@@ -5,7 +5,7 @@ const editorModes = Object.freeze({
   NOTES: 'NOTES',
   VISUAL: 'VISUAL',
   TEMPO: 'TEMPO',
-  YOUTUBE: 'YOUTUBE',
+  // YOUTUBE: 'YOUTUBE',
 })
 
 const editModes = Object.freeze({
@@ -141,7 +141,7 @@ const store = (() => {
         return {
           ...action.state,
           playback: initialState.playback,
-          editorMode: editorModes.NOTES,
+          editorMode: action.editorMode,
           history: history(state, action),
         };
       case 'LOAD_EMPTY':

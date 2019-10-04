@@ -1,4 +1,4 @@
-const jsonLoader = json => {
+const jsonLoader = (json, editorMode = editorModes.NOTES)  => {
   const state = JSON.parse(json);
 
   const errors = validateState(state);
@@ -19,7 +19,7 @@ const jsonLoader = json => {
   state.notes.forEach(n =>
     (n.id >= noteIdCounter) && noteIdCounter++);
 
-  store.dispatch({ type: 'LOAD_STATE', state });
+  store.dispatch({ type: 'LOAD_STATE', state, editorMode });
 };
 
 const jsonSaver = state => {
@@ -37,7 +37,7 @@ const loadJsonFromUrl = (url, errorCallback) => {
   req.onload = () => {
     if (req.status === 200) {
       try {
-        jsonLoader(req.responseText);
+        jsonLoader(req.responseText, editorModes.VISUAL);
       } catch(e) {
         errorCallback();
       }

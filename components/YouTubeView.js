@@ -9,9 +9,30 @@ const YouTubeView = (() => {
     player = null;
     timeCallback = this.time.bind(this);
     qualityChanged = false;
+    keyEvent = this.onKeyPress.bind(this);
 
     state = {
       error: '',
+    }
+
+    onKeyPress(e) {
+      if (e.keyCode === 32) {
+        e.preventDefault();
+        const { player } = this;
+        if (player) {
+          const state = player.getPlayerState();
+          if (state === YT.PlayerState.PAUSED ||
+            state === YT.PlayerState.CUED)
+            player.playVideo();
+          else if (state === YT.PlayerState.PLAYING)
+            player.pauseVideo();
+        } else {
+          if (hotPlayback.isPlaying())
+            hotPlayback.pause();
+          else 
+            hotPlayback.start();
+        }
+      }
     }
 
     step(amount) {
@@ -105,6 +126,7 @@ const YouTubeView = (() => {
       this.iframe = document.createElement('div');
       this.iframeParent.current.appendChild(this.iframe);
       hotPlayback.addListener(this.timeCallback);
+      window.addEventListener('keydown', this.keyEvent);
 
       if (this.props.url !== '')
         this.loadVideo(this.props.url);
@@ -113,6 +135,7 @@ const YouTubeView = (() => {
     componentWillUnmount() {
       if (this.player) this.player.destroy();
       hotPlayback.removeListener(this.timeCallback);
+      window.removeEventListener('keydown', this.keyEvent);
     }
 
     initVideo() {
