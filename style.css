@@ -41,7 +41,7 @@ aside {
 }
 
 aside.left {
-  width: 200px;
+  width: 250px;
 }
 
 aside.right {
@@ -68,7 +68,7 @@ aside.right {
 }
 
 .listview {
-  width: 200px;
+  width: 250px;
   height: 120px;
   overflow-y: scroll;
 }

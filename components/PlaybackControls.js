@@ -2,6 +2,9 @@ const PlaybackControls = (() => {
   const e = React.createElement;
 
   const PlaybackControls = ({playing, play, pause, stop}) => e('div', {}, [
+    e(TimeDisplay, {
+      key: 3,
+    }),
     e('button', {
       className: playing ? 'selected' : '',
       onClick: playing ? pause : play,

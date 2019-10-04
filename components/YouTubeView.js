@@ -8,6 +8,7 @@ const YouTubeView = (() => {
     iframeParent = React.createRef();
     player = null;
     timeCallback = this.time.bind(this);
+    qualityChanged = false;
 
     state = {
       error: '',
@@ -26,6 +27,7 @@ const YouTubeView = (() => {
 
     loadVideo(url) {
       const { player } = this;
+      this.qualityChanged = false;
       if (!player)
         this.initVideo();
       else
@@ -52,6 +54,11 @@ const YouTubeView = (() => {
 
       const { player } = this;
       const { url } = this.props;
+
+      if (!this.qualityChanged && player.getPlaybackQuality() !== 'small') {
+        player.setPlaybackQuality('small');
+        this.qualityChanged = true;
+      }
 
       // if (player.getVideoUrl() !== this.url && e.data === YT.PlayerState.PAUSED) {
       //   this.loadVideo(url);
@@ -122,8 +129,8 @@ const YouTubeView = (() => {
 
       this.player = new YT.Player(this.iframe, {
         videoId: id,
-        width: 200,
-        height: 150,
+        width: 250,
+        height: 200,
         suggestedQuality: 'small',
         events: {
           'onStateChange': this.onStateChange.bind(this),
@@ -173,7 +180,6 @@ const YouTubeView = (() => {
           key: 4,
         },'>>'),
         (url === '') ? e(PlaybackControls, {key: 10}) : null,
-        e(TimeDisplay, {key: 11}),
       ]);
     }
   }

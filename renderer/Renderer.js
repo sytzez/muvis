@@ -106,7 +106,7 @@ void main() {
               (realStart + realLength * 0.5) * inv_xzoom,
               (n.pitch - brush.yoffset) * inv_yzoom,
             ],
-            vertexScale: (realLength + brush.timeCurve1) * inv_xzoom * 2.0 + inv_yzoom,
+            vertexScale: (realLength + brush.timeCurve1) * inv_xzoom - inv_yzoom,
           };
 
           const last = lastNotePerVoice[n.voice];
@@ -116,11 +116,13 @@ void main() {
           {
             last.next = note;
             const length = note.start + note.length - last.start;
+            const pitch = (note.pitch + last.pitch) * 0.5
             last.vertexPosition[0] = (last.start + length * 0.5) * inv_xzoom;
+            last.vertexPosition[1] = (pitch - brush.yoffset) * inv_yzoom;
             last.vertexScale = Math.max(
-              (length + brush.timeCurve1),
-              Math.abs(note.pitch - last.pitch),
-            ) * inv_xzoom * 2.0 + inv_yzoom;
+              (length + brush.timeCurve1) * inv_xzoom,
+              Math.abs(note.pitch - last.pitch) * -inv_yzoom,
+            );
           }
           lastNotePerVoice[n.voice] = note;
 

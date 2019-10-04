@@ -46,7 +46,7 @@ const App = (() => {
             (editorMode !== editorModes.VISUAL ?
               e(VisualView, {
                 small: true,
-                w: 200, h: 150,
+                w: 250, h: 200,
                 key: 40
               }) : null),
           ]),
