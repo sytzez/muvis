@@ -10,6 +10,7 @@ const FileView = (() => {
       jsonError: '',
       jsonUrl: '',
       jsonError2: '',
+      projectError: '',
     };
 
     midiFile = React.createRef();
@@ -40,6 +41,15 @@ const FileView = (() => {
       }
     }
 
+    openJSON(url) {
+      this.setState({ projectError: '' });
+      loadJsonFromUrl(url, this.jsonLoadErrorCallback.bind(this));
+    }
+
+    jsonLoadErrorCallback() {
+      this.stetState({ projectError: 'Failed to open project' });
+    }
+
     componentDidMount() {
       MidiParser.parse(this.midiFile.current, this.midiParserCallback.bind(this));
     }
@@ -50,7 +60,7 @@ const FileView = (() => {
     }
 
     render() {
-      const { midiError, jsonInput, jsonError, jsonUrl, jsonError2 } = this.state;
+      const { midiError, jsonInput, jsonError, jsonUrl, jsonError2, projectError } = this.state;
       const { loadEmpty } = this.props;
       const { midiFile, jsonFile } = this;
 
@@ -133,6 +143,14 @@ const FileView = (() => {
 
         'Load example project: ',
         e('br', {key: 20}),
+        '- ',
+        e('a', {
+          href: '#',
+          onClick: () => this.openJSON.bind(this)('states/kyrie.json'),
+          key: 21
+        }, 'de Machaut - Missa de Notre Dame - Kyrie'),
+        e('br', {key: 22}),
+        projectError !== '' ? e('div', {key: 30}, projectError) : null,
       ]);
     }
   }

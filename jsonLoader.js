@@ -31,6 +31,19 @@ const jsonSaver = state => {
   return JSON.stringify(cleanState);
 };
 
-const loadJsonFromUrl = url => {
-
+const loadJsonFromUrl = (url, errorCallback) => {
+  const req = new XMLHttpRequest();
+  req.open('GET', url);
+  req.onload = () => {
+    if (req.status === 200) {
+      try {
+        jsonLoader(req.responseText);
+      } catch(e) {
+        errorCallback();
+      }
+    } else {
+      errorCallback();
+    }
+  };
+  req.send();
 };

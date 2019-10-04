@@ -63,6 +63,10 @@ aside.right {
   font: 26px 'Nunito Sans', sans-serif;
 }
 
+.fileView a {
+  color: inherit;
+}
+
 .listview {
   width: 200px;
   height: 120px;
