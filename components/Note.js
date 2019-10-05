@@ -181,9 +181,11 @@ const Note = (() => {
     }
 
     resizeRelease(e) {
-      const { noteview, scaleX } = this.props;
-      const { width } = this.ref.current.style;
+      const { noteview, scaleX, length } = this.props;
+      const div = this.ref.current;
+      const { width } = div.style;
       this.resize(Math.max(Math.round(parseInt(width) / scaleX), 1));
+      div.style.width = scaleX * length;
       noteview.removeMouseCallback();
     }
 
