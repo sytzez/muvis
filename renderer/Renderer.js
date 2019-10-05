@@ -49,8 +49,7 @@ void main() {
         xoffset: -0.5 * timeSpan / b.timeZoom, // set 0 in the middle of the screen
         shape: b.shape,
         playMode: b.playMode,
-        size: b.size,
-        sizeCurve: b.sizeCurve,
+        size: [b.size, b.sizeCurve],
         timeCurve1: b.timeCurve1,
         timeCurve2: 1.0 / b.timeCurve2,
         connectMode: b.connectMode,
@@ -88,6 +87,7 @@ void main() {
 
       const inv_xzoom = 2.0 / brush.xzoom;
       const inv_yzoom = 2.0 / brush.yzoom;
+      const max_ysize = brush.size[0] * (1.0 + brush.size[1]);
 
       notes.forEach(n => { // TODO: loop over notes only once 
         if (n.brush === b.id) {
@@ -106,7 +106,7 @@ void main() {
               (realStart + realLength * 0.5) * inv_xzoom,
               (n.pitch - brush.yoffset) * inv_yzoom,
             ],
-            vertexScale: (realLength + brush.timeCurve1) * inv_xzoom - inv_yzoom,
+            vertexScale: (realLength + brush.timeCurve1) * inv_xzoom - inv_yzoom * max_ysize,
           };
 
           const last = lastNotePerVoice[n.voice];
@@ -121,7 +121,7 @@ void main() {
             last.vertexPosition[1] = (pitch - brush.yoffset) * inv_yzoom;
             last.vertexScale = Math.max(
               (length + brush.timeCurve1) * inv_xzoom,
-              Math.abs(note.pitch - last.pitch) * -inv_yzoom,
+              Math.abs(note.pitch - last.pitch) * -inv_yzoom * max_ysize,
             );
           }
           lastNotePerVoice[n.voice] = note;

@@ -37,48 +37,49 @@ uniform float u_time; // current time
 uniform vec2 u_curve; // time curvature
 
 uniform vec3 u_note; // x: start, y: pitch, z: length
+uniform vec2 u_size; // x: size, y: size curve
 uniform vec3 u_next_note;
 
 uniform vec3 u_color1;
 uniform vec3 u_color2;
 
-float rect(const vec2 coord, const vec3 note) {
+float rect(const vec2 coord, const vec3 note, const float size) {
   if (coord.x < note.x || coord.x > note.x + note.z ||
-    coord.y < note.y - 0.5 || coord.y > note.y + 0.5)
+    coord.y < note.y - size * 0.5 || coord.y > note.y + size * 0.5)
   {
     return 0.0;
   }
   return 1.0;
 }
 
-float triangle(const vec2 coord, const vec3 note) {
+float triangle(const vec2 coord, const vec3 note, float size) {
+  size *= 0.5;
+
   if (coord.x < note.x || coord.x > note.x + note.z ||
-    coord.y < note.y - 0.5 || coord.y > note.y + 0.5)
+    coord.y < note.y - size || coord.y > note.y + size)
   {
     return 0.0;
   }
   
-  float width = (1.0 - (coord.x - note.x) / note.z) * 0.5;
+  float width = (1.0 - (coord.x - note.x) / note.z) * size;
 
   return clamp((width - abs(coord.y - note.y)) * 10.0, 0.0, 1.0);
 }
 
-float circle(const vec2 coord, const vec3 note) {
+float circle(const vec2 coord, const vec3 note, const float size) {
   float center = note.x + note.z * 0.5;
-  float a = note.z * 0.5;
-  float x = (coord.x - center) / a;
-  float y = (coord.y - note.y) * 2.0; // / 0.5
+  float x = (coord.x - center) / (note.z * 0.5);
+  float y = (coord.y - note.y) / (size * 0.5);
   float dist2 = x*x + y*y;
   if (dist2 > 1.0) return 0.0;
   float dist = sqrt(dist2);
   return clamp((1.0 - dist) * 10.0, 0.0, 1.0);
 }
 
-float blob(const vec2 coord, const vec3 note) {
+float blob(const vec2 coord, const vec3 note, const float size) {
   float center = note.x + note.z * 0.5;
-  float a = note.z * 0.5;
-  float x = (coord.x - center) / a;
-  float y = (coord.y - note.y);
+  float x = (coord.x - center) / (note.z * 0.5);
+  float y = (coord.y - note.y) / (size * 0.5);
   float dist2 = x*x + y*y;
   if (dist2 > 1.0) return 0.0;
   float dist = sqrt(dist2);
@@ -129,14 +130,17 @@ void main() {
   }
 
   #define RENDER(func) {` +
-    `val = func(coord, note);` +
-    `if (val == 0.0 && u_appear_back == TRUE) {` +
-      `val = func(coord, u_note);` +
-      `opacity = 1.0 - opacity;` +
+    `val = func(coord, note, size) * opacity;` +
+    `if (u_appear_back == TRUE) {` +
+      `val = max(val, func(coord, u_note, u_size.x) * (1.0 - opacity));` +
     `}` +
   `}
 
   float val;
+
+  float size = u_size.x;
+  if (u_time > u_note.x && u_time < u_note.x + u_note.z)
+    size *= 1.0 + u_size.y * pow(1.0 - (u_time - u_note.x) / u_note.z, 0.5);
 
   if (u_shape == SHAPE_RECT) RENDER(rect)
   else if (u_shape == SHAPE_TRIANGLE) RENDER(triangle)
@@ -175,7 +179,7 @@ void main() {
     color = u_color1;
   }
 
-  gl_FragColor = vec4(color, opacity * val);
+  gl_FragColor = vec4(color, val);
 }`; // end of GLSL shader
 
   const shader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -203,6 +207,7 @@ void main() {
     u_time = u('u_time'),
     u_curve = u('u_curve'),
     u_note = u('u_note'),
+    u_size = u('u_size'),
     u_nextNote = u('u_next_note'),
     u_color1 = u('u_color1'),
     u_color2 = u('u_color2');
@@ -222,6 +227,7 @@ void main() {
     gl.uniform2f(u_offset, brush.xoffset + time, brush.yoffset);
     gl.uniform1f(u_time, time);
 
+    gl.uniform2f(u_size, ...brush.size);
     gl.uniform1i(u_playMode, brush.playMode);
     gl.uniform1i(u_shape, brush.shape);
     gl.uniform1i(u_connMode, brush.connectMode);
@@ -238,6 +244,7 @@ void main() {
     const i = notes[Symbol.iterator]();
     let nxt;
 
+    // iterate towards the first note in view
     for(nxt = i.next();
       nxt.done !== true && (
         nxt.value.next ?

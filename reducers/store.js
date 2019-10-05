@@ -72,7 +72,7 @@ const store = (() => {
     pitchTop: 64 - 20, // how many semitones fit on a screen
     pitchBottom: 64 + 20, // which pitch is at the center of the screen
 
-    backgroundColor: [0.1, 0.1, 0.1],
+    backgroundColor: [0.08, 0.08, 0.08],
 
     ytUrl: '',
 

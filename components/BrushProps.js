@@ -7,6 +7,8 @@ const BrushProps = (() => {
     id, available,
     name, changeName,
     shape, changeShape,
+    size, changeSize,
+    sizeCurve, changeSizeCurve,
     brushColor, changeBrushColor,
     colorMode, changeColorMode,
     playMode, changePlayMode,
@@ -39,12 +41,21 @@ const BrushProps = (() => {
       }),
       e(ValueInput, {
         text: 'Size: ',
-        min: 0.1,
-        max: 10.0,
-        value: 0,
+        min: 0.0,
+        max: 6.0,
+        value: size,
         automated: false,
-        change: () => false,
+        change: s => changeSize(id, s),
         key: 11,
+      }),
+      e(ValueInput, {
+        text: 'Size bump on play: ',
+        min: 0.0,
+        max: 3.0,
+        value: sizeCurve,
+        automated: false,
+        change: s => changeSizeCurve(id, s),
+        key: 12,
       }),
       e('hr', {key: 12}),
 
@@ -156,6 +167,8 @@ const BrushProps = (() => {
       name: brush.name,
       timeZoom: brush.timeZoom,
       shape: brush.shape,
+      size: brush.size,
+      sizeCurve: brush.sizeCurve,
       brushColor: brush.leftColor,
       colorMode: brush.colorMode,
       playMode: brush.playMode,
@@ -172,6 +185,10 @@ const BrushProps = (() => {
       dispatch({ type: 'UPDATE_BRUSH', id, brush: { name: val }, click }),
     changeShape: (id, val) =>
       dispatch({ type: 'UPDATE_BRUSH', id, brush: { shape: val }, click }),
+    changeSize: (id, val) =>
+      dispatch({ type: 'UPDATE_BRUSH', id, brush: { size: val }, click }),
+    changeSizeCurve: (id, val) =>
+      dispatch({ type: 'UPDATE_BRUSH', id, brush: { sizeCurve: val }, click }),
     changeTimeZoom: (id, val) =>
       dispatch({ type: 'UPDATE_BRUSH', id, brush: { timeZoom: val }, click }),
     changeBrushColor: (id, val) =>

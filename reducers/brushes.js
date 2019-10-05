@@ -42,7 +42,7 @@ const brushTemplate = Object.freeze({
   colorMode: brushColorModes.UNIFORM,
   size: 1.0, // size of the notes
   sizeCurve: 0.0, // size change when being played
-  leftColor: [0,0,1], // before being played
+  leftColor: [.25, .25, 1.0], // before being played
   rightColor: [1,1,1], // after being played
 
   connectMode: brushConnectModes.NONE,
