@@ -173,6 +173,7 @@ aside.right {
   position: absolute;
   background: #fff;
   border: 1px outset #888;
+  z-index: 1;
 }
 
 .note.selected {
@@ -181,7 +182,7 @@ aside.right {
 
 .note:hover {
   border-color: #000;
-  z-index: 1;
+  z-index: 2;
 }
 
 .note_right {

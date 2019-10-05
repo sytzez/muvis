@@ -276,10 +276,38 @@ const NoteView = (() => {
     }
 
     onKeyPress(e) {
+      const { selectedNotes } = this.props;
       if (e.keyCode === 65 && e.ctrlKey) { // Ctrl+A
         e.preventDefault();
         this.selectAll();
+      } else if (e.keyCode === 46) { // Delete
+        e.preventDefault();
+        this.deleteSelection();
+      } else if (e.keyCode === 88 && e.ctrlKey) { // Ctrl+X
+        e.preventDefault();
+        clipboard.cut(selectedNotes);
+      } else if (e.keyCode === 67 && e.ctrlKey) { // Ctrl+C
+        e.preventDefault();
+        clipboard.copy(selectedNotes);
+      } else if (e.keyCode === 86 && e.ctrlKey) { // Ctrl+V
+        e.preventDefault();
+        this.paste();
       }
+    }
+
+    paste() {
+      const { top, left, width, height } =
+        this.internal.outerDiv.current.getBoundingClientRect();
+      const { pitch, time } = this.getTimeAndPitch(
+        left + width * 0.5,
+        top + height * 0.5
+      );
+      clipboard.paste(time, pitch);
+    }
+
+    deleteSelection() {
+      const { removeNotes, selectedNotes } = this.props;
+      removeNotes(selectedNotes);
     }
 
     render() {
@@ -389,15 +417,17 @@ const NoteView = (() => {
     visibleBrushes: state.visibleBrushes,
     visibleVoices: state.visibleVoices,
     tempo: state.tempo,
+    selectedNotes: state.selectedNotes,
   });
 
   const mapDispatchToProps = dispatch => ({
-    insertNote: (note) => dispatch({ type: 'INSERT_NOTE', note }),
-    selectNotes: (ids) => dispatch({ type: 'SELECT_NOTES', ids }),
-    shiftSelectNotes: (ids) => dispatch({ type: 'SHIFT_SELECT_NOTES', ids }),
+    insertNote: note => dispatch({ type: 'INSERT_NOTE', note }),
+    selectNotes: ids => dispatch({ type: 'SELECT_NOTES', ids }),
+    shiftSelectNotes: ids => dispatch({ type: 'SHIFT_SELECT_NOTES', ids }),
     deselectAll: () => dispatch({ type: 'DESELECT_ALL_NOTES' }),
-    setScaleX: (scaleX) => dispatch({ type: 'SET_SCALE_X', scaleX }),
-    setScaleY: (scaleY) => dispatch({ type: 'SET_SCALE_Y', scaleY }),
+    removeNotes: ids => dispatch({ type: 'REMOVE_NOTES', ids }),
+    setScaleX: scaleX => dispatch({ type: 'SET_SCALE_X', scaleX }),
+    setScaleY: scaleY => dispatch({ type: 'SET_SCALE_Y', scaleY }),
   });
 
   return ReactRedux.connect(

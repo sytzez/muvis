@@ -132,7 +132,9 @@ const selectedNotes = (state, action) => {
         ...state,
         ...action.ids.filter(id => !state.includes(id)), // ignore duplicates
       ];
-    case 'DESELECT_NOTES':
+    case 'REMOVE_NOTE':
+      return state.filter(id => action.id !== id);
+    case 'DESELECT_NOTES': case 'REMOVE_NOTES':
       return state.filter(id => !action.ids.includes(id));
     case 'DESELECT_ALL_NOTES':
       return [];
