@@ -99,7 +99,12 @@ const Note = (() => {
       const {
         id, editMode, brush, voice,
         paintNote, voiceNote, removeNote,
+        noteview,
       } = this.props;
+
+      // in case of select box etc.
+      if (noteview.selectBox !== null)
+        return;
 
       if (editMode === editModes.NOTES) {
         if (buttons === 2 && e.ctrlKey)
