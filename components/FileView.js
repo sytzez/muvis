@@ -147,23 +147,23 @@ const FileView = (() => {
         e('a', {
           href: '#',
           onClick: () => this.openJSON.bind(this)('states/tristan.json'),
-          key: 23
+          key: 21,
         }, 'Wagner - Tristan und Isolde - Prelude'),
-        e('br', {key: 24}),
-        '- ',
-        e('a', {
-          href: '#',
-          onClick: () => this.openJSON.bind(this)('states/rameau.json'),
-          key: 21
-        }, 'Rameau - Gavotte et six doubles'),
         e('br', {key: 22}),
         '- ',
         e('a', {
           href: '#',
-          onClick: () => this.openJSON.bind(this)('states/kyrie.json'),
-          key: 23
-        }, 'de Machaut - Missa de Notre Dame - Kyrie'),
+          onClick: () => this.openJSON.bind(this)('states/rameau.json'),
+          key: 23,
+        }, 'Rameau - Gavotte et six doubles'),
         e('br', {key: 24}),
+        '- ',
+        e('a', {
+          href: '#',
+          onClick: () => this.openJSON.bind(this)('states/kyrie.json'),
+          key: 25,
+        }, 'de Machaut - Missa de Notre Dame - Kyrie'),
+        e('br', {key: 26}),
 
         projectError !== '' ? e('div', {key: 30}, projectError) : null,
       ]);

@@ -3,21 +3,52 @@ const UndoRedoControl = (() => {
 
   const e = React.createElement;
 
-  const UndoRedoControl = ({
-    undoAvailable, redoAvailable,
-    undo, redo,
-  }) => e('div', {}, [
-    e('button', {
-      onClick: undo,
-      disabled: !undoAvailable,
-      key: 0,
-    }, 'Undo'),
-    e('button', {
-      onClick: redo,
-      disabled: !redoAvailable,
-      key: 1,
-    }, 'Redo'),
-  ]);
+  class UndoRedoControl extends React.Component {
+    keyListener = this.onKeyDown.bind(this);
+    
+    onKeyDown(e) {
+      const {
+        undoAvailable, redoAvailable,
+        undo, redo,
+      } = this.props;
+
+      if (e.keyCode === 90 && e.ctrlKey) {
+        e.preventDefault();
+        if (undoAvailable) undo();
+      } else if (e.keyCode === 89 && e.ctrlKey) {
+        e.preventDefault();
+        if (redoAvailable) redo();
+      }
+    }
+
+    componentDidMount() {
+      window.addEventListener('keydown', this.keyListener);
+    }
+
+    componentWillUnmount() {
+      window.removeEventListener('keydown', this.keyListener);
+    }
+
+    render() {
+      const {
+        undoAvailable, redoAvailable,
+        undo, redo,
+      } = this.props;
+
+      return e('div', {}, [
+        e('button', {
+          onClick: undo,
+          disabled: !undoAvailable,
+          key: 0,
+        }, 'Undo'),
+        e('button', {
+          onClick: redo,
+          disabled: !redoAvailable,
+          key: 1,
+        }, 'Redo'),
+      ]);
+    }
+  }
 
   const mapStateToProps = state => ({
     undoAvailable: state.history.past.length !== 0,
