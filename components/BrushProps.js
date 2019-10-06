@@ -57,7 +57,7 @@ const BrushProps = (() => {
         change: s => changeSizeCurve(id, s),
         key: 12,
       }),
-      e('hr', {key: 12}),
+      e('hr', {key: 19}),
 
       'Color:',
       e(Select, {

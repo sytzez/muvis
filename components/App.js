@@ -55,7 +55,7 @@ const App = (() => {
               case editorModes.NOTES:
                 return e(NoteView, {key: 1});
               case editorModes.VISUAL:
-                return e(VisualView, { key: 2, small: false, w: 1280, h: 1024 });
+                return e(VisualView, { key: 2, small: false, w: 1000, h: 800 });
               case editorModes.TEMPO:
                 return e(TempoGraph, {key: 3});
               default:

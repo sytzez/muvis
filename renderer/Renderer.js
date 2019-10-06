@@ -1,13 +1,37 @@
-const renderer = (canv) => {
+const renderer = canv => {
   'use strict';
 
   const source = `// vertex shader
+#line 6
+
+precision lowp float;
+
 attribute vec2 a_position;
+
 uniform vec2 u_vertex_position;
 uniform float u_vertex_scale;
+
+uniform vec2 u_scale;
+uniform vec2 u_offset;
+
+uniform vec2 u_curve;
+
+uniform float u_time; // current time
+uniform vec3 u_note; // x: start, y: pitch, z: length
+uniform vec2 u_size; // x: size, y: size curve
+
+varying float v_size;
+varying float v_inv_size;
+
 void main() {
+  v_size = u_size.x;
+  if (u_time > u_note.x && u_time < u_note.x + u_note.z)
+    v_size *= 1.0 + u_size.y * pow(1.0 - (u_time - u_note.x) / u_note.z, 0.5);
+
+  v_inv_size = 1.0 / (v_size * 0.5);
+
   gl_Position = vec4(a_position * u_vertex_scale + u_vertex_position, 0, 1);
-}`;
+}`; // end of vertex shader
 
   const attributes = {preserveDrawingBuffer: true};
   const gl = canv.getContext('webgl', attributes) ||
@@ -107,6 +131,8 @@ void main() {
               (n.pitch - brush.yoffset) * inv_yzoom,
             ],
             vertexScale: (realLength + brush.timeCurve1) * inv_xzoom - inv_yzoom * max_ysize,
+            vertexPositionPlaying: [0, 0],
+            vertexScalePlaying: 0,
           };
 
           const last = lastNotePerVoice[n.voice];
@@ -117,9 +143,11 @@ void main() {
             last.next = note;
             const length = note.start + note.length - last.start;
             const pitch = (note.pitch + last.pitch) * 0.5
-            last.vertexPosition[0] = (last.start + length * 0.5) * inv_xzoom;
-            last.vertexPosition[1] = (pitch - brush.yoffset) * inv_yzoom;
-            last.vertexScale = Math.max(
+            last.vertexPositionPlaying = [
+              (last.start + length * 0.5) * inv_xzoom,
+              (pitch - brush.yoffset) * inv_yzoom,
+            ];
+            last.vertexScalePlaying = Math.max(
               (length + brush.timeCurve1) * inv_xzoom,
               Math.abs(note.pitch - last.pitch) * -inv_yzoom * max_ysize,
             );

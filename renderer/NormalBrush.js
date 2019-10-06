@@ -43,6 +43,9 @@ uniform vec3 u_next_note;
 uniform vec3 u_color1;
 uniform vec3 u_color2;
 
+varying float v_size;
+varying float v_inv_size;
+
 float rect(const vec2 coord, const vec3 note, const float size) {
   if (coord.x < note.x || coord.x > note.x + note.z ||
     coord.y < note.y - size * 0.5 || coord.y > note.y + size * 0.5)
@@ -52,56 +55,53 @@ float rect(const vec2 coord, const vec3 note, const float size) {
   return 1.0;
 }
 
-float triangle(const vec2 coord, const vec3 note, float size) {
-  size *= 0.5;
+bool rectb(const vec2 coord, const vec3 note, const float size) {
+  return !(coord.x < note.x || coord.x > note.x + note.z ||
+    coord.y < note.y - size * 0.5 || coord.y > note.y + size * 0.5);
+}
 
-  if (coord.x < note.x || coord.x > note.x + note.z ||
-    coord.y < note.y - size || coord.y > note.y + size)
-  {
-    return 0.0;
-  }
-  
-  float width = (1.0 - (coord.x - note.x) / note.z) * size;
-
+float triangle(const vec2 coord, const vec3 note, const float size) {
+  if (!rectb(coord, note, size)) return 0.0;
+  float width = (1.0 - (coord.x - note.x) / note.z) * size * 0.5;
   return clamp((width - abs(coord.y - note.y)) * 10.0, 0.0, 1.0);
 }
 
 float circle(const vec2 coord, const vec3 note, const float size) {
+  if (!rectb(coord, note, size)) return 0.0;
   float center = note.x + note.z * 0.5;
   float x = (coord.x - center) / (note.z * 0.5);
   float y = (coord.y - note.y) / (size * 0.5);
-  float dist2 = x*x + y*y;
-  if (dist2 > 1.0) return 0.0;
-  float dist = sqrt(dist2);
+  float dist = length(vec2(x, y));
   return clamp((1.0 - dist) * 10.0, 0.0, 1.0);
 }
 
 float blob(const vec2 coord, const vec3 note, const float size) {
+  if (!rectb(coord, note, size)) return 0.0;
   float center = note.x + note.z * 0.5;
   float x = (coord.x - center) / (note.z * 0.5);
   float y = (coord.y - note.y) / (size * 0.5);
-  float dist2 = x*x + y*y;
-  if (dist2 > 1.0) return 0.0;
-  float dist = sqrt(dist2);
+  float dist = length(vec2(x, y));
   return clamp((1.0 - dist), 0.0, 1.0);
 }
 
 void main() {
   vec2 coord = (gl_FragCoord.xy * u_scale) + u_offset;
 
-  coord.x -= u_time;
-  coord.x /= u_curve.x;
+  if (u_curve.y != 1.0) {
+    coord.x -= u_time;
+    coord.x /= u_curve.x;
 
-  if (coord.x <= -1.0) {
-    coord.x += 1.0 - u_curve.y;
-  } else if (coord.x < 1.0) {
-    coord.x *= u_curve.y; // += cos
-  } else {
-    coord.x -= 1.0 - u_curve.y;
+    if (coord.x <= -1.0) {
+      coord.x += 1.0 - u_curve.y;
+    } else if (coord.x < 1.0) {
+      coord.x *= u_curve.y; // += cos
+    } else {
+      coord.x -= 1.0 - u_curve.y;
+    }
+
+    coord.x *= u_curve.x;
+    coord.x += u_time;
   }
-
-  coord.x *= u_curve.x;
-  coord.x += u_time;
 
   vec3 note = u_note;
 
@@ -130,17 +130,13 @@ void main() {
   }
 
   #define RENDER(func) {` +
-    `val = func(coord, note, size) * opacity;` +
+    `val = func(coord, note, v_size) * opacity;` +
     `if (u_appear_back == TRUE) {` +
       `val = max(val, func(coord, u_note, u_size.x) * (1.0 - opacity));` +
     `}` +
   `}
 
   float val;
-
-  float size = u_size.x;
-  if (u_time > u_note.x && u_time < u_note.x + u_note.z)
-    size *= 1.0 + u_size.y * pow(1.0 - (u_time - u_note.x) / u_note.z, 0.5);
 
   if (u_shape == SHAPE_RECT) RENDER(rect)
   else if (u_shape == SHAPE_TRIANGLE) RENDER(triangle)
@@ -191,6 +187,7 @@ void main() {
   gl.attachShader(prog, shader);
   gl.attachShader(prog, vertexShader);
   gl.linkProgram(prog);
+  console.log(gl.getProgramInfoLog(prog));
   gl.useProgram(prog);
 
   const a_position = gl.getAttribLocation(prog, 'a_position');
@@ -261,11 +258,20 @@ void main() {
       const note = nxt.value;
       const nextNote = note.next;
 
-      gl.uniform2f(u_vertexPosition,
-        note.vertexPosition[0] - leftBound * inv_xzoom - 1.0,
-        note.vertexPosition[1] - 1.0,
-      );
-      gl.uniform1f(u_vertexScale, note.vertexScale);
+      if (brush.connectMode !== brushConnectModes.NONE && nextNote &&
+        time >= note.start && time <= nextNote.start + nextNote.length) {
+        gl.uniform2f(u_vertexPosition,
+          note.vertexPositionPlaying[0] - leftBound * inv_xzoom - 1.0,
+          note.vertexPositionPlaying[1] - 1.0,
+        );
+        gl.uniform1f(u_vertexScale, note.vertexScalePlaying);
+      } else {
+        gl.uniform2f(u_vertexPosition,
+          note.vertexPosition[0] - leftBound * inv_xzoom - 1.0,
+          note.vertexPosition[1] - 1.0,
+        );
+        gl.uniform1f(u_vertexScale, note.vertexScale);
+      }
 
       gl.uniform3f(u_note, note.start, note.pitch, note.length);
       gl.uniform3f(u_color1, ...note.color1);
