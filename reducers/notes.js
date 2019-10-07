@@ -26,14 +26,14 @@ const notes = (state, action) => {
         ...state,
         { ...action.note, id: noteIdCounter++ },
       ];
-    case 'INSERT_NOTES':
-      return [
-        ...state,
-        ...action.notes.map(n => ({
-          ...n,
-          id: noteIdCounter++,
-        })),
-      ];
+    // case 'INSERT_NOTES':
+    //   return [
+    //     ...state,
+    //     ...action.notes.map(n => ({
+    //       ...n,
+    //       id: noteIdCounter++,
+    //     })),
+    //   ];
     case 'REMOVE_NOTE':
       return state.filter(n => n.id !== action.id);
     case 'REMOVE_NOTES':

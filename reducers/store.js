@@ -137,6 +137,28 @@ const store = (() => {
           ...action.props,
           history: history(state, action),
         };
+      case 'INSERT_NOTES':
+        return {
+          ...state,
+          notes: [
+            ...state.notes,
+            ...action.notes.map(n => ({
+              ...n,
+              id: noteIdCounter++,
+              brush: state.brushes.some(b =>
+                b.id === n.brush) ? n.brush : -1,
+              voice: n.voice % state.voices.length,
+            })),
+          ],
+          selectedNotes: (() => {
+            const array = [];
+            for(let i = noteIdCounter - action.notes.length; i < noteIdCounter; i++) {
+              array.push(i);
+            }
+            return array;
+          })(),
+          history: history(state, action),
+        };
       case 'LOAD_STATE':
         return {
           ...action.state,
@@ -272,11 +294,13 @@ const store = (() => {
           history: history(state, action),
         };
       case 'SHOW_HIDE_BRUSH':
+        console.log(state.visibleBrushes);
+        console.log(state.visibleBrushes.includes(action.id));
         return {
           ...state,
           visibleBrushes: state.visibleBrushes.includes(action.id) ?
             state.visibleBrushes.filter(id => id !== action.id) :
-            [...state.visibleBrushes, action.id],
+            [ ...state.visibleBrushes, action.id ],
         };
       case 'SHOW_ALL_BRUSHES':
         return {

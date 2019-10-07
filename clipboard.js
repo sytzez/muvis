@@ -9,18 +9,15 @@ const clipboard = (() => {
   const copy = ids => {
     if (ids.length === 0) return;
     const notes = getNotesByIds(store.getState().notes, ids);
-    let pitch = -Infinity, time = Infinity;
+    let pitch = Infinity, time = Infinity;
     notes.forEach(n => {
       if (n.start < time)
         time = n.start;
-      if (n.pitch > pitch)
-        pitch = n.pitch;
     });
     console.log(pitch, time);
     clipboard = notes.map(n => ({
       ...n,
       start: n.start - time,
-      pitch: n.pitch - pitch,
     }));
     console.log(clipboard);
   };
@@ -31,7 +28,7 @@ const clipboard = (() => {
       notes: clipboard.map(
         n => ({
           ...n,
-          pitch: n.pitch + pitch,
+          pitch: n.pitch,
           start: n.start + time,
         })
       ),

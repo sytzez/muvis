@@ -16,6 +16,7 @@ const List = class extends React.Component {
         sub.push(e('input', {
           type: 'checkbox',
           checked: checked.includes(i.value),
+          onMouseDown: (e) => e.stopPropagation(),
           onChange: (e) => {
             e.stopPropagation();
             onCheck(i.value, e.target.checked);

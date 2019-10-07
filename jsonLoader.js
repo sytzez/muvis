@@ -16,9 +16,12 @@ const jsonLoader = (json, editorMode = editorModes.NOTES)  => {
     (t.id >= tempoIdCounter) && tempoIdCounter++);
   
   noteIdCounter = 0;
-  state.notes.forEach(n =>
-    (n.id >= noteIdCounter) && noteIdCounter++);
+  state.notes.forEach(n => {
+    if (n.id >= noteIdCounter)
+      noteIdCounter = n.id + 1;
+  });
 
+  hotPlayback.stop();
   store.dispatch({ type: 'LOAD_STATE', state, editorMode });
 };
 
