@@ -60,9 +60,13 @@ const store = (() => {
 
     scaleX: 1,
     scaleY: 12,
+    scrollX: 0,
+    scrollY: 64 - 20,
 
     tempoScaleX: 128,
     tempoScaleY: 1,
+    tempoScrollX: 0,
+    tempoScrollY: 0,
 
     // song properties
 
@@ -181,12 +185,24 @@ const store = (() => {
       case 'SET_SCALE_X':
         return {
           ...state,
-          scaleX: Math.max(0.0625, action.scaleX),
+          scaleX: Math.max(0.015625, action.scaleX),
         };
       case 'SET_SCALE_Y':
         return {
           ...state,
           scaleY: Math.max(4, action.scaleY),
+        };
+      case 'SET_SCROLL':
+        return {
+          ...state,
+          scrollX: Math.max(0, action.scrollX),
+          scrollY: Math.max(0, action.scrollY),
+        };
+      case 'SET_TEMPO_SCROLL':
+        return {
+          ...state,
+          tempoScrollX: Math.max(0, action.tempoScrollX),
+          tempoScrollY: Math.max(0, action.tempoScrollY),
         };
       case 'SET_TEMPO_SCALE_X':
         return {
@@ -196,13 +212,13 @@ const store = (() => {
       case 'SET_TEMPO_SCALE_Y':
         return {
           ...state,
-          tempoScaleY: Math.max(0.0078125, action.tempoScaleY),
+          tempoScaleY: Math.max(0.001953125, action.tempoScaleY),
         };
       case 'SET_TEMPO_SCALE':
         return {
           ...state,
           tempoScaleX: Math.max(1, action.tempoScaleX),
-          tempoScaleY: Math.max(0.0078125, action.tempoScaleY),
+          tempoScaleY: Math.max(0.001953125, action.tempoScaleY),
         };
       case 'SET_PITCH_TOP':
         return {

@@ -1,13 +1,21 @@
-const logger = store => next => action => {
-  if (action.type === 'UPDATE_NOTE') return next(action);
+const logger = (() => {
+  const omit = Object.freeze(new Set([
+    'UPDATE_NOTE', 'SET_SCROLL', 
+    'MOVE_NOTES', 'RESIZE_NOTES',
+  ]));
 
-  console.groupCollapsed(action.type);
-  console.log('DISPATCH', action);
+  return store => next => action => {
+    if (omit.has(action.type))
+      return next(action);
   
-  let result = next(action);
-  
-  console.log('NEW STATE', store.getState());
-  console.groupEnd();
-  
-  return result;
-};
+    console.groupCollapsed(action.type);
+    console.log('DISPATCH', action);
+    
+    const result = next(action);
+    
+    console.log('NEW STATE', store.getState());
+    console.groupEnd();
+    
+    return result;
+  };
+})();

@@ -66,8 +66,10 @@ const NoteView = (() => {
     }
 
     componentDidMount() {
-      const { outerDiv, innerDiv } = this.internal;
-      outerDiv.current.scrollTop = this.props.scaleY * this.props.pitchTop;
+      const { scaleX, scaleY, scrollX, scrollY } = this.props;
+      const div = this.internal.outerDiv.current;
+      div.scrollLeft = scrollX * scaleX;
+      div.scrollTop = scrollY * scaleY; 
       this.updateTimeBounds();
       window.addEventListener('keydown', this.keyEvent);
     }
@@ -252,8 +254,20 @@ const NoteView = (() => {
         this.putTime(e.clientX);
     }
 
+    lastScrollDispatch = 0;
+
     onScroll(e) {
       this.updateTimeBounds();
+
+      const now = performance.now();
+      if (true) {
+        this.lastScrollDispatch = now;
+
+        const { scaleX, scaleY, setScroll } = this.props;
+        const div = this.internal.outerDiv.current;
+
+        setScroll(div.scrollLeft / scaleX, div.scrollTop / scaleY);
+      }
     }
 
     onWheel(e) {
@@ -366,7 +380,6 @@ const NoteView = (() => {
           outerDiv.current.scrollLeft = (zoomTime * scaleX) - zoomX + left;
           outerDiv.current.scrollTop = (zoomPitch * scaleY) - zoomY + top;
           this.zoomFix = false;
-          console.log(zoomY);
         }
       }
 
@@ -412,6 +425,8 @@ const NoteView = (() => {
     voice: state.selectedVoice,
     scaleX: state.scaleX,
     scaleY: state.scaleY,
+    scrollX: state.scrollX,
+    scrollY: state.scrollY,
     pitchTop: state.pitchTop,
     pitchBot: state.pitchBot,
     visibleBrushes: state.visibleBrushes,
@@ -428,6 +443,8 @@ const NoteView = (() => {
     removeNotes: ids => dispatch({ type: 'REMOVE_NOTES', ids }),
     setScaleX: scaleX => dispatch({ type: 'SET_SCALE_X', scaleX }),
     setScaleY: scaleY => dispatch({ type: 'SET_SCALE_Y', scaleY }),
+    setScroll: (scrollX, scrollY) =>
+      dispatch({ type: 'SET_SCROLL', scrollX, scrollY }),
   });
 
   return ReactRedux.connect(

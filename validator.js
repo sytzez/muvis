@@ -103,8 +103,12 @@ const validateState = (() => {
 
     scaleX: valRange(0.0625, Infinity),
     scaleY: valRange(4, Infinity),
+    //scrollX: valRange(0, Infinity),
+    //scrollY: valRange(0, 127),
     tempoScaleX: valRange(1, Infinity),
     tempoScaleY: valRange(0.0078125, Infinity),
+    //tempoScrollX: valRange(0, Infinity),
+    //tempoScrollY: valRange(0, 127),
 
     // song properties
 

@@ -14,12 +14,10 @@ const clipboard = (() => {
       if (n.start < time)
         time = n.start;
     });
-    console.log(pitch, time);
     clipboard = notes.map(n => ({
       ...n,
       start: n.start - time,
     }));
-    console.log(clipboard);
   };
 
   const paste = (time, pitch) => {

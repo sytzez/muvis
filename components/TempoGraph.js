@@ -193,10 +193,17 @@ const TempoGraph = (() => {
 
     onScroll() {
       const scrollTop = this.outside.current.scrollTop;
-      if (scrollTop === this.lastScrollTop) return;
+      //if (scrollTop === this.lastScrollTop) return;
 
       this.lastScrollY = this.height - scrollTop;
       this.lastScrollTop = scrollTop;
+
+      if (true) {
+        const { scaleX, scaleY, setScroll } = this.props;
+        const div = this.outside.current;
+
+        setScroll(div.scrollLeft / scaleX, this.lastScrollY / scaleY);
+      }
     }
 
     onWheel(e) {
@@ -219,12 +226,15 @@ const TempoGraph = (() => {
     componentDidMount() {
       const innerRect = this.inside.current.getBoundingClientRect();
       const outerRect = this.outside.current.getBoundingClientRect();
+      const { scrollX, scrollY, scaleX, scaleY } = this.props;
 
-      this.outside.current.scrollTop = innerRect.height - outerRect.height;
-      this.lastScrollY = outerRect.height;
+      this.lastScrollY = scrollY * scaleY;
+      this.outside.current.scrollTop =
+        innerRect.height - this.lastScrollY;
+      this.outside.current.scrollLeft = scrollX * scaleX;
+      console.log(scrollX * scaleX);
 
       hotPlayback.addListener(this.timeListener);
-
     }
 
     componentWillUnmount() {
@@ -353,6 +363,8 @@ const TempoGraph = (() => {
     changes: state.tempo,
     scaleX: state.tempoScaleX,
     scaleY: state.tempoScaleY,
+    scrollX: state.tempoScrollX,
+    scrollY: state.tempoScrollY,
   });
 
   const mapDispatchToProps = dispatch => ({
@@ -364,6 +376,8 @@ const TempoGraph = (() => {
       dispatch({ type: 'REMOVE_TEMPO_CHANGE', id, click }),
     setScale: (x, y) =>
       dispatch({ type: 'SET_TEMPO_SCALE', tempoScaleX: x, tempoScaleY: y }),
+    setScroll: (x, y) =>
+      dispatch({ type: 'SET_TEMPO_SCROLL', tempoScrollX: x, tempoScrollY: y }),
   });
 
   return ReactRedux.connect(
