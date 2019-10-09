@@ -8,6 +8,7 @@ const Note = (() => {
     grabY = 0;
     ref = React.createRef();
     last = 0;
+    interval = 0;
 
     shouldComponentUpdate(nextProps, nextState) {
       const props = this.props;
@@ -121,8 +122,8 @@ const Note = (() => {
     }
 
     startMoving(e) {
-      const { left } = this.ref.current.getBoundingClientRect();
-      this.grabX = e.clientX - left;
+      const { left, selected } = this.ref.current.getBoundingClientRect();
+      this.grabX = e.clientX - left - (selected ? 2 : 1);
 
       const { noteview } = this.props;
       noteview.setMouseCallback(
@@ -146,15 +147,26 @@ const Note = (() => {
         div.style.left = scaleX * time - (selected ? 2 : 1);
         div.style.top = scaleY * pitch - (selected ? 2 : 1);
       } else {
-        this.last = now + 80;
+        this.last = now + 100;
         this.move(time, pitch);
+        if (this.interval !== 0) clearTimeout(this.interval);
+        this.interval = setTimeout(this.fixMove.bind(this), 150);
       }
     }
 
-    moveRelease(e) {
-      const { noteview, scaleX, scaleY } = this.props;
+    // fix movement after mouse stopped moving
+    fixMove() {
+      const { scaleX, scaleY, selected } = this.props;
       const { top, left } = this.ref.current.style;
-      this.move(Math.round(parseInt(left) / scaleX), Math.round(parseInt(top) / scaleY))
+      this.move(
+        Math.round(parseInt(left) / scaleX) + (selected ? 2 : 1),
+        Math.round(parseInt(top) / scaleY),
+      );
+    }
+
+    moveRelease(e) {
+      const { noteview } = this.props;
+      this.fixMove();
       noteview.removeMouseCallback();
     }
 
@@ -182,14 +194,23 @@ const Note = (() => {
       } else {
         this.last = now + 100;
         this.resize(Math.max(time - start, 1));
+        if (this.interval !== 0) clearTimeout(this.interval);
+        this.interval = setTimeout(this.fixResize.bind(this), 150);
       }
     }
 
-    resizeRelease(e) {
-      const { noteview, scaleX, length } = this.props;
+    // fix resize after mouse stops moving around
+    fixResize() {
+      const { scaleX } = this.props;
       const div = this.ref.current;
       const { width } = div.style;
       this.resize(Math.max(Math.round(parseInt(width) / scaleX), 1));
+    }
+
+    resizeRelease(e) {
+      this.fixResize();
+      const { noteview, scaleX, length } = this.props;
+      const div = this.ref.current;
       div.style.width = scaleX * length;
       noteview.removeMouseCallback();
     }
