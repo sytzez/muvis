@@ -21,7 +21,7 @@ const App = (() => {
       const { hasError } = this.state;
       if (hasError) return e(ErrorView, { fix: this.fix.bind(this) });
 
-      const { editorMode, propMode, resolution } = this.props;
+      const { editorMode, propMode, resolution, previewScale } = this.props;
       return e('div', {
         className: 'app',
       }, [
@@ -59,8 +59,8 @@ const App = (() => {
                 return e(VisualView, {
                   key: 2,
                   small: false,
-                  w: resolution[0],
-                  h: resolution[1],
+                  w: resolution[0] * previewScale,
+                  h: resolution[1] * previewScale,
                 });
               case editorModes.TEMPO:
                 return e(TempoGraph, {key: 3});
@@ -110,6 +110,7 @@ const App = (() => {
     editorMode: state.editorMode,
     propMode: state.propMode,
     resolution: state.resolution,
+    previewScale: state.previewScale,
   });
 
   return ReactRedux.connect(

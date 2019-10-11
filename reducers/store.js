@@ -74,6 +74,7 @@ const store = (() => {
 
     aspectRatio: aspectRatios.r16x9,
     resolution: resolutions.r16x9[0],
+    previewScale: '1.0',
 
     timeSpan: 6, // how much time fits on a screen (in seconds)
     pitchTop: 64 - 20, // how many semitones fit on a screen

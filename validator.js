@@ -114,6 +114,10 @@ const validateState = (() => {
 
     title: valString,
 
+    aspectRatio: valEnum(aspectRatios),
+    resolution: valArrayOfLength(3, Number.isInteger),
+    previewScale: valString,
+
     timeSpan: valExist,
     pitchTop: valIntRange(0, 127),
     pitchBottom: valIntRange(0, 127),

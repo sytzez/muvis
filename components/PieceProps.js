@@ -8,6 +8,7 @@ const PieceProps = (() => {
     background, setBackground,
     timeSpan, setTimeSpan,
     pitchTop, setPitchTop, pitchBottom, setPitchBottom,
+    previewScale, setPreviewScale,
   }) => e('div', {}, [
 
     'Title: ',
@@ -30,7 +31,18 @@ const PieceProps = (() => {
       text: 'Resolution: ',
       key: 105,
     }),
-    e('hr', {key: 106}),
+    'Preview resolution:',
+    e(Select, {
+      options: [
+        { value: '0.25', text: '25%' },
+        { value: '0.5', text: '50%' },
+        { value: '1.0', text: '100%' },
+      ],
+      selected: previewScale,
+      change: setPreviewScale,
+      key: 106,
+    }),
+    e('hr', {key: 107}),
 
     'Span of the screen:', e('br', {key: 109}),
     e(ValueInput, {
@@ -63,6 +75,7 @@ const PieceProps = (() => {
     timeSpan: state.timeSpan,
     pitchTop: state.pitchTop,
     pitchBottom: state.pitchBottom,
+    previewScale: state.previewScale,
   });
 
   const mapDispatchToProps = dispatch => ({
@@ -76,6 +89,8 @@ const PieceProps = (() => {
       dispatch({ type: 'SET_PITCH_TOP', pitch, click }),
     setPitchBottom: (pitch) =>
       dispatch({ type: 'SET_PITCH_BOTTOM', pitch, click }),
+    setPreviewScale: (previewScale) =>
+      dispatch({ type: 'UPDATE_PROPS', props: { previewScale }, click }),
   })
 
   return ReactRedux.connect(
