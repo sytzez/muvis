@@ -47,7 +47,7 @@ const FileView = (() => {
     }
 
     jsonLoadErrorCallback() {
-      this.stetState({ projectError: 'Failed to open project' });
+      this.setState({ projectError: 'Failed to open project' });
     }
 
     componentDidMount() {
