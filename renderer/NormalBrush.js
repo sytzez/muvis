@@ -286,5 +286,11 @@ void main() {
     }
   };
 
-  return { render };
+  function destroy() {
+    gl.deleteProgram(prog);
+    gl.deleteShader(shader);
+    gl.deleteBuffer(square);
+  }
+
+  return { render, destroy };
 };

@@ -49,6 +49,7 @@ const VisualView = (() => {
       if (w !== this.lastW || h !== this.lastH) {
         this.lastW = w;
         this.lastH = h;
+        this.renderer.destroy();
         this.renderer = renderer(this.canv.current);
       }
       this.loadGL();
@@ -56,6 +57,7 @@ const VisualView = (() => {
 
     componentWillUnmount() {
       cancelAnimationFrame(this.animationFrame);
+      this.renderer.destroy();
     }
 
     render() {

@@ -39,13 +39,6 @@ void main() {
   
   var brushes = [];
 
-  const square = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, square);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    -1.0,-1.0, 1.0,-1.0, -1.0,1.0,
-    -1.0,1.0 ,1.0,-1.0, 1.0,1.0,
-  ]), gl.STATIC_DRAW);
-
   const shader = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
@@ -158,8 +151,6 @@ void main() {
         }
       });
 
-      //brush.notes = brush.notes.sort((a, b) => a.start - b.start);
-
       brushes.push(brush);
     });
   };
@@ -173,8 +164,14 @@ void main() {
     });
   };
 
+  function destroy() {
+    normalBrush.destroy();
+    gl.deleteShader(shader);
+  }
+
   return {
     load,
     render,
+    destroy,
   };
 };

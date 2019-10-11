@@ -16,6 +16,11 @@ const ErrorView = (() => {
       this.setState({ url });
     }
 
+    componentWillUnmount() {
+      const { url } = this.state;
+      if (url !== '') window.URL.revokeObjectURL(url);
+    }
+
     render() {
       const { fix } = this.props;
       const { url } = this.state;
