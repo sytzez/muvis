@@ -190,7 +190,7 @@ const store = (() => {
       case 'SET_SCALE_Y':
         return {
           ...state,
-          scaleY: Math.max(4, action.scaleY),
+          scaleY: Math.max(8, action.scaleY),
         };
       case 'SET_SCROLL':
         return {

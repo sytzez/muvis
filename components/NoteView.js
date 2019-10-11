@@ -287,6 +287,8 @@ const NoteView = (() => {
       this.zoomY = e.clientY;
       this.zoomTime = time;
       this.zoomPitch = pitch;
+
+      this.updateTimeBounds();
     }
 
     onKeyPress(e) {
@@ -380,6 +382,10 @@ const NoteView = (() => {
           outerDiv.current.scrollLeft = (zoomTime * scaleX) - zoomX + left;
           outerDiv.current.scrollTop = (zoomPitch * scaleY) - zoomY + top;
           this.zoomFix = false;
+        } else {
+          const { scaleX, scaleY, scrollX, scrollY } = this.props;
+          outerDiv.current.scrollLeft = scaleX * scrollX;
+          outerDiv.current.scrollLeft = scaleY * scrollY;
         }
       }
 

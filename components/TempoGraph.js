@@ -212,7 +212,7 @@ const TempoGraph = (() => {
       
       const { setScale, scaleX, scaleY } = this.props;
 
-      const factor = Math.SQRT2 * (e.deltaY < 0 ? 1.0 : 0.5);
+      const factor = e.deltaY < 0 ? 2.0 : 0.5;
       setScale(scaleX * factor, scaleY * factor);
 
       const { real, midi } = this.getRealAndMidi(e.clientX, e.clientY);
@@ -242,7 +242,7 @@ const TempoGraph = (() => {
     }
 
     componentDidUpdate() {
-      const { scaleX, scaleY } = this.props
+      const { scaleX, scaleY, scrollX, scrollY } = this.props
       const { zoomX, zoomY, zoomMidi, zoomReal, outside, height } = this;
       if (this.zoomFix) {
         const { top, left } = outside.current.getBoundingClientRect();
@@ -251,6 +251,8 @@ const TempoGraph = (() => {
         this.zoomFix = false;
         this.lastScrollY = height - outside.current.scrollTop;
       } else {
+        outside.current.scrollLeft = scaleX * scrollX;
+        this.lastScrollY = scrollY * scaleY;
         outside.current.scrollTop = height - this.lastScrollY;
       }
     }
@@ -324,7 +326,7 @@ const TempoGraph = (() => {
         x2: width, 
         y2: height - midi * scaleY,
         key: -3,
-      })
+      });
 
       return [ e('div', {
         style: {position: 'relative'},
