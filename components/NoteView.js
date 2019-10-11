@@ -385,7 +385,7 @@ const NoteView = (() => {
         } else {
           const { scaleX, scaleY, scrollX, scrollY } = this.props;
           outerDiv.current.scrollLeft = scaleX * scrollX;
-          outerDiv.current.scrollLeft = scaleY * scrollY;
+          outerDiv.current.scrollTop = scaleY * scrollY;
         }
       }
 
