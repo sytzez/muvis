@@ -1,13 +1,13 @@
 'use strict';
 
 const aspectRatios = Object.freeze({
-  r3x4: 'r3x4',
+  r4x3: 'r4x3',
   r16x9: 'r16x9',
   other: 'other',
 });
 
 const resolutions = Object.freeze({
-  r3x4: [
+  r4x3: [
     [800, 600],
   ],
   r16x9: [

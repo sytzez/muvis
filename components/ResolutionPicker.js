@@ -58,7 +58,7 @@ const ResolutionPicker = (() => {
 
       const aspectOptions = [
         [ aspectRatios.r16x9, '16:9' ],
-        [ aspectRatios.r3x4, '4:3' ],
+        [ aspectRatios.r4x3, '4:3' ],
         [ aspectRatios.other, 'Custom' ],
       ].map(([value, text]) => e('option', {
         value,
