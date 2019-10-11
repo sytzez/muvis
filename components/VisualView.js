@@ -9,6 +9,8 @@ const VisualView = (() => {
     animationFrame = 0;
     frameCallback = this.frame.bind(this);
     lastTime = 0;
+    lastW = 0;
+    lastH = 0;
 
     loadGL() {
       const {
@@ -36,6 +38,20 @@ const VisualView = (() => {
       this.renderer = renderer(this.canv.current);
       this.loadGL();
       this.animationFrame = requestAnimationFrame(this.frameCallback);
+
+      const { w, h } = this.props;
+      this.lastW = w;
+      this.lastH = h;
+    }
+
+    componentDidUpdate() {
+      const { w, h } = this.props;
+      if (w !== this.lastW || h !== this.lastH) {
+        this.lastW = w;
+        this.lastH = h;
+        this.renderer = renderer(this.canv.current);
+      }
+      this.loadGL();
     }
 
     componentWillUnmount() {
@@ -44,8 +60,6 @@ const VisualView = (() => {
 
     render() {
       const { w, h, small } = this.props;
-
-      this.loadGL();
 
       return e('div', {
         className: small ? 'canvas_small_outside' : 'canvas_outside',

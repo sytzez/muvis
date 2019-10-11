@@ -26,6 +26,12 @@ const PieceProps = (() => {
     }),
     e('hr', {key: 101}),
 
+    e(ResolutionPicker, {
+      text: 'Resolution: ',
+      key: 105,
+    }),
+    e('hr', {key: 106}),
+
     'Span of the screen:', e('br', {key: 109}),
     e(ValueInput, {
       text: 'Width (seconds): ',

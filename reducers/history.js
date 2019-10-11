@@ -82,6 +82,8 @@ const historyFromState = (state) => ({
   visibleVoices: state.visibleVoices,
   visibleBrushes: state.visibleBrushes,
   title: state.title,
+  aspectRatio: state.aspectRatio,
+  resolution: state.resolution,
   timeSpan: state.timeSpan,
   pitchTop: state.pitchTop,
   pitchBottom: state.pitchBottom,

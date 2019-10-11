@@ -23,7 +23,7 @@ const propModes = Object.freeze({
   PIECE: 'PIECE',
   VOICE: 'VOICE',
   BRUSH: 'BRUSH',
-})
+});
 
 const store = (() => {
   const initialState = {
@@ -71,6 +71,9 @@ const store = (() => {
     // song properties
 
     title: 'Untitled',
+
+    aspectRatio: aspectRatios.r16x9,
+    resolution: resolutions.r16x9[0],
 
     timeSpan: 6, // how much time fits on a screen (in seconds)
     pitchTop: 64 - 20, // how many semitones fit on a screen

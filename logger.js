@@ -1,6 +1,6 @@
 const logger = (() => {
   const omit = Object.freeze(new Set([
-    'UPDATE_NOTE', 'SET_SCROLL', 
+    'UPDATE_NOTE', 'SET_SCROLL', 'SET_TEMPO_SCROLL',
     'MOVE_NOTES', 'RESIZE_NOTES',
   ]));
 

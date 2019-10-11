@@ -21,7 +21,7 @@ const App = (() => {
       const { hasError } = this.state;
       if (hasError) return e(ErrorView, { fix: this.fix.bind(this) });
 
-      const { editorMode, propMode } = this.props;
+      const { editorMode, propMode, resolution } = this.props;
       return e('div', {
         className: 'app',
       }, [
@@ -46,7 +46,8 @@ const App = (() => {
             (editorMode !== editorModes.VISUAL ?
               e(VisualView, {
                 small: true,
-                w: 250, h: 200,
+                w: 250,
+                h: getResolutionHeight(resolution, 250),
                 key: 40
               }) : null),
           ]),
@@ -55,7 +56,12 @@ const App = (() => {
               case editorModes.NOTES:
                 return e(NoteView, {key: 1});
               case editorModes.VISUAL:
-                return e(VisualView, { key: 2, small: false, w: 1000, h: 800 });
+                return e(VisualView, {
+                  key: 2,
+                  small: false,
+                  w: resolution[0],
+                  h: resolution[1],
+                });
               case editorModes.TEMPO:
                 return e(TempoGraph, {key: 3});
               default:
@@ -103,6 +109,7 @@ const App = (() => {
   const mapStateToProps = state => ({
     editorMode: state.editorMode,
     propMode: state.propMode,
+    resolution: state.resolution,
   });
 
   return ReactRedux.connect(
