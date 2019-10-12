@@ -48,6 +48,10 @@ aside.right {
   width: 250px;
 }
 
+.error {
+  color: #ff4444;
+}
+
 .bigError {
   margin: 15%;
   font: 22px 'Roboto', sans-serif;
@@ -347,6 +351,24 @@ button.selected {
 .tab button.selected {
   background: #fff;
   border-bottom-style: none;
+}
+
+.loader {
+  position: absolute;
+  border: 32px solid #ccc;
+  border-top: 32px double #ccc;
+  border-radius: 50%;
+  width: 256px;
+  height: 256px;
+  left: 50%;
+  top: 50%;
+  margin: -160px;
+  animation: loadSpin 700ms linear infinite;
+}
+
+@keyframes loadSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 input {

@@ -36,18 +36,26 @@ const jsonSaver = state => {
 };
 
 const loadJsonFromUrl = (url, errorCallback) => {
-  const req = new XMLHttpRequest();
-  req.open('GET', url);
-  req.onload = () => {
-    if (req.status === 200) {
-      try {
-        jsonLoader(req.responseText, editorModes.VISUAL);
-      } catch(e) {
-        errorCallback();
-      }
-    } else {
-      errorCallback();
-    }
-  };
-  req.send();
+  try {
+    fetch(url)
+      .then(res => jsonLoader(res.text(), editorModes.VISUAL))
+      .catch(errorCallback);
+  } catch(e) {
+    errorCallback(e);
+  }
+
+  // const req = new XMLHttpRequest();
+  // req.open('GET', url);
+  // req.onload = () => {
+  //   if (req.status === 200) {
+  //     try {
+  //       jsonLoader(req.responseText, editorModes.VISUAL);
+  //     } catch(e) {
+  //       errorCallback();
+  //     }
+  //   } else {
+  //     errorCallback();
+  //   }
+  // };
+  // req.send();
 };

@@ -3,6 +3,28 @@ const FileView = (() => {
 
   const e = React.createElement;
 
+  class ProjectLink extends React.Component {
+    openJSON() {
+      const { url, setParentLoading, setParentError } = this.props;
+      setParentLoading(true);
+      loadJsonFromUrl(url, setParentError);
+    }
+
+    render() {
+      const { text } = this.props;
+
+      return [
+        '- ',
+        e('a', {
+          href: '#',
+          onClick: this.openJSON.bind(this),
+          key: 0,
+        }, text),
+        e('br', {key: 2}),
+      ];
+    }
+  }
+
   class FileView extends React.Component {
     state = {
       midiError: '',
@@ -11,10 +33,15 @@ const FileView = (() => {
       jsonUrl: '',
       jsonError2: '',
       projectError: '',
+      isLoading: false,
     };
 
     midiFile = React.createRef();
     jsonFile = React.createRef();
+
+    setLoading(isLoading) {
+      this.setState({ isLoading });
+    }
 
     downloadJSON() {
       if (this.state.jsonUrl !== '')
@@ -41,13 +68,8 @@ const FileView = (() => {
       }
     }
 
-    openJSON(url) {
-      this.setState({ projectError: '' });
-      loadJsonFromUrl(url, this.jsonLoadErrorCallback.bind(this));
-    }
-
-    jsonLoadErrorCallback() {
-      this.setState({ projectError: 'Failed to open project' });
+    setProjectError(e) {
+      this.setState({ projectError: e.toString(), isLoading: false });
     }
 
     componentDidMount() {
@@ -60,9 +82,14 @@ const FileView = (() => {
     }
 
     render() {
-      const { midiError, jsonInput, jsonError, jsonUrl, jsonError2, projectError } = this.state;
+      const { midiError, jsonInput, jsonError,
+        jsonUrl, jsonError2, projectError, isLoading } = this.state;
       const { loadEmpty } = this.props;
       const { midiFile, jsonFile } = this;
+
+      if (isLoading) {
+        return e('div',{className: 'loader', key: -100});
+      }
 
       return e('div', { className: 'fileView' }, [
         'Start empty project: ',
@@ -143,29 +170,40 @@ const FileView = (() => {
 
         'Load example project: ',
         e('br', {key: 20}),
-        '- ',
-        e('a', {
-          href: '#',
-          onClick: () => this.openJSON.bind(this)('states/tristan.json'),
-          key: 21,
-        }, 'Wagner - Tristan und Isolde - Prelude'),
-        e('br', {key: 22}),
-        '- ',
-        e('a', {
-          href: '#',
-          onClick: () => this.openJSON.bind(this)('states/rameau.json'),
-          key: 23,
-        }, 'Rameau - Gavotte et six doubles'),
-        e('br', {key: 24}),
-        '- ',
-        e('a', {
-          href: '#',
-          onClick: () => this.openJSON.bind(this)('states/kyrie.json'),
-          key: 25,
-        }, 'de Machaut - Missa de Notre Dame - Kyrie'),
-        e('br', {key: 26}),
 
-        projectError !== '' ? e('div', {key: 30}, projectError) : null,
+        e(ProjectLink, {
+          text: 'Wagner - Tristan und Isolde - Prelude',
+          url: 'states/tristan.json',
+          setParentLoading: this.setLoading.bind(this),
+          setParentError: this.setProjectError.bind(this),
+          key: 21,
+        }),
+        // '- ',
+        // e('a', {
+        //   href: '#',
+        //   onClick: () => this.openJSON.bind(this)('states/tristan.json'),
+        //   key: 21,
+        // }, 'Wagner - Tristan und Isolde - Prelude'),
+        // e('br', {key: 22}),
+        // '- ',
+        // e('a', {
+        //   href: '#',
+        //   onClick: () => this.openJSON.bind(this)('states/rameau.json'),
+        //   key: 23,
+        // }, 'Rameau - Gavotte et six doubles'),
+        // e('br', {key: 24}),
+        // '- ',
+        // e('a', {
+        //   href: '#',
+        //   onClick: () => this.openJSON.bind(this)('states/kyrie.json'),
+        //   key: 25,
+        // }, 'de Machaut - Missa de Notre Dame - Kyrie'),
+        // e('br', {key: 26}),
+
+        projectError !== '' ? e('div', {
+          className: 'error',
+          key: 30,
+        }, projectError) : null,
       ]);
     }
   }

@@ -181,7 +181,10 @@ const YouTubeView = (() => {
           }).bind(this),
           key: 1,
         }, 'Load'),
-        (error !== '') ? `Error: ${error}` : null,
+        (error !== '') ? e('div', {
+          className: 'error',
+          key: 1.5,
+        }, `Error: ${error}`) : null,
         e('div', {
           ref: iframeParent,
           key: 2,
