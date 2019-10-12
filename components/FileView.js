@@ -106,7 +106,10 @@ const FileView = (() => {
           ref: midiFile,
           key: 0,
         }),
-        midiError !== '' ? e('div', {key: 0.5}, midiError) : null,
+        midiError !== '' ? e('div', {
+          className: 'error',
+          key: 0.5,
+        }, midiError) : null,
         e('hr', {key: 1}),
 
         'Load project from JSON file: ',
@@ -132,7 +135,10 @@ const FileView = (() => {
           ref: jsonFile,
           key: 2
         }),
-        jsonError2 !== '' ? e('div', {key: 2.5}, jsonError2) : null,
+        jsonError2 !== '' ? e('div', {
+          className: 'error',
+          key: 2.5,
+        }, jsonError2) : null,
         e('hr', {key: 3}),
 
         'Load project from plain JSON text: ',
@@ -153,7 +159,10 @@ const FileView = (() => {
           }).bind(this),
           key: 5,
         }, 'Load'),
-        jsonError !== '' ? e('div', {key: 5.5}, jsonError) : null,
+        jsonError !== '' ? e('div', {
+          className: 'error',
+          key: 5.5
+        }, jsonError) : null,
         e('hr', {key: 6}),
 
         'Download project as JSON file: ',
@@ -177,6 +186,22 @@ const FileView = (() => {
           setParentLoading: this.setLoading.bind(this),
           setParentError: this.setProjectError.bind(this),
           key: 21,
+        }),
+
+        e(ProjectLink, {
+          text: 'Machaut - Missa de Notre Dame - Kyrie',
+          url: 'states/kyrie.json',
+          setParentLoading: this.setLoading.bind(this),
+          setParentError: this.setProjectError.bind(this),
+          key: 23,
+        }),
+        
+        e(ProjectLink, {
+          text: 'Rameau - Gavotte et six doubles (video down)',
+          url: 'states/rameau.json',
+          setParentLoading: this.setLoading.bind(this),
+          setParentError: this.setProjectError.bind(this),
+          key: 24,
         }),
         // '- ',
         // e('a', {

@@ -38,7 +38,8 @@ const jsonSaver = state => {
 const loadJsonFromUrl = (url, errorCallback) => {
   try {
     fetch(url)
-      .then(res => jsonLoader(res.text(), editorModes.VISUAL))
+      .then(res => res.text())
+      .then(text => jsonLoader(text, editorModes.VISUAL))
       .catch(errorCallback);
   } catch(e) {
     errorCallback(e);
