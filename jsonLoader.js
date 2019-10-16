@@ -1,5 +1,5 @@
 const jsonLoader = (json, editorMode = editorModes.NOTES)  => {
-  const state = JSON.parse(json);
+  const state = typeof json === 'string' ? JSON.parse(json) : json;
 
   const errors = validateState(state);
   if (errors !== '') {
@@ -31,32 +31,17 @@ const jsonSaver = state => {
     playback: {},
     history: {},
     action: {},
-  }
+  };
   return JSON.stringify(cleanState);
 };
 
 const loadJsonFromUrl = (url, errorCallback) => {
   try {
     fetch(url)
-      .then(res => res.text())
-      .then(text => jsonLoader(text, editorModes.VISUAL))
+      .then(res => res.json())
+      .then(obj => jsonLoader(obj, editorModes.VISUAL))
       .catch(errorCallback);
   } catch(e) {
     errorCallback(e);
   }
-
-  // const req = new XMLHttpRequest();
-  // req.open('GET', url);
-  // req.onload = () => {
-  //   if (req.status === 200) {
-  //     try {
-  //       jsonLoader(req.responseText, editorModes.VISUAL);
-  //     } catch(e) {
-  //       errorCallback();
-  //     }
-  //   } else {
-  //     errorCallback();
-  //   }
-  // };
-  // req.send();
 };
