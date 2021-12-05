@@ -65,7 +65,7 @@ You can also assign *voices* to notes, which gives them a different color if col
 All operations are undoable and redoable.
 By changing the play position, you can see what the animation will look like at a specific moment, by looking at the preview in the bottom left corner.
 
-On the right panel you can change the style of animation for the selected brush, or the color of the selected voice.
+On the right panel you can change the style of animation for the selected brush, the color of the selected voice, or some details about the whole piece.
 
 ## The Time Syncher
 
@@ -76,9 +76,13 @@ The horizontal axis represents the time in the YouTube video, the vertical axis 
 By adding points to the graph, you can map these two times to eachother.
 Like in the Note Editor, you can change the play position to see a preview at the current moment, allowing you to accurately synch the audio and video.
 
+On the bottom right, there are some tools to zoom in/out per dimension.
+
 ## The Preview view
 
 A large view of the resulting animation.
+
+![](/final.png)
 
 
 
